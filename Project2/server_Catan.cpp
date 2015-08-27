@@ -12,8 +12,6 @@
 //		doing this in a thread would allow other functionalities to go on while waiting for the response. but thread should be spawned by higher
 //		function so that we cant jump ahead of ourselves?
 
-
-
 /***
 todo:
 Will need to have the initialization period set up a listen socket for some port, and then keep listening for new clients until game is started!
@@ -39,7 +37,6 @@ Launch this operation in another thread, and once the start game command is rece
 #include <stdlib.h>
 
 using namespace std;
-
 
 /*
 Function needed (what ive come up with so far anyways)

@@ -26,8 +26,8 @@
 							    \_______/
 */
 
-#include <iomanip>
 #include <iostream>
+#include <iomanip>
 #include "game.h"
 #include <fstream>
 #include <sstream>
