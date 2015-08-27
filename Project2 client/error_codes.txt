@@ -1,0 +1,8 @@
+**Error codes:
+
+-20		Invalid resource type selected
+-21		Insufficient wheat for transaction
+-22		Insufficient ore for transaction
+-23		Insufficient wood for transaction
+-24		Insufficient sheep for transaction
+-25		Insufficient brick for transaction
