@@ -98,7 +98,7 @@ public:
 	int start_turn(int);
 	int start_game(int, vector<string>);
 	int get_dice_roll(int);			//used to get the dice roll of a tile.
-	int get_current_roll(void);		//used to read what the current dice roll is for the turn.
+	unsigned int get_current_roll(void);		//used to read what the current dice roll is for the turn.
 	string get_board_info(void);
 	SOCKET get_player_socket(int);
 	void trade_cards(int player1, int player2, vector<int> offer, vector<int> request);	//player1 offers x to player2 for request.
