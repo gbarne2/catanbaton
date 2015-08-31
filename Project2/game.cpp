@@ -636,6 +636,7 @@ int game::start_turn(int rollnumvalam)
 	int retval = 0;
 	int tempres = 0;
 	int rollnumvalamt = (rand()*rand()) % 11 + 2;
+	current_roll = rollnumvalamt;				//save current_roll value. this is the only place that this variable should ever be changed!
 	player_ptr = player_list.begin();
 	for(int i = 0; i < players; i++)
 	{
@@ -689,6 +690,12 @@ int game::start_game(int size, vector<string> player_names)
 	}
 	return(temp_num_players);
 }
+
+unsigned int game::get_current_roll()
+{
+	return(current_roll);
+}
+
 string game::get_board_info()
 {
 //data to send
