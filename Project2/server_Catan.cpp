@@ -18,6 +18,8 @@ Will need to have the initialization period set up a listen socket for some port
 Launch this operation in another thread, and once the start game command is received, then rejoin threads and start game.
 -have every functio that sends data add its packet type to the begining of the message! 
 -make all packets be formatted to whatever the standard format will be. Maybe have sendpacket(...) call a function in this file rahter than tcpserver.cpp. this function would format the data and then call the sendpacket(...) function from tcpserver.cpp.
+-make send packet accept the session name as an input and use the session name and player number to get the socket info.
+
 */
 #include "tcpserver.h"
 #include <thread>
@@ -130,7 +132,7 @@ int framehandler(char *datain, int size_of_data)
 		case GET_PLAYER_INFO:
 			break;
 		case SEND_DICE_ROLL:
-			retval = send_dice_roll();
+			retval = send_dice_roll(catan);
 			//maybe just send dice roll to every client?
 			break;
 		case GET_QTY_ROADS_LEFT:
@@ -228,12 +230,12 @@ int framehandler(char *datain, int size_of_data)
 			break;
 		case START_TURN:
 			retval = catan.start_turn(0);
-			read_dice_roll(69, retval);
+			retval = read_dice_roll(catan);
 			//Data format:
 			//1:		dice roll
 			//2 - 7:	resource amnts
 			//8:		current players turn
-			//retval = send_dice_roll();
+			//retval = send_dice_roll(catan);
 			//need to make this do a bunch more stuff probably. like update each user of their respective resources and what not.
 			break;
 		default:
@@ -243,26 +245,25 @@ int framehandler(char *datain, int size_of_data)
 	}
 }
 
-int read_dice_roll(int opt, int opt2)
+unsigned int read_dice_roll(game session)
 {
-	static int roll_val = 0;
-	if (opt == 69)
-		roll_val = opt2;
-	return(roll_val);
+	return(session.get_current_roll());
 }
-int send_dice_roll()
+int send_dice_roll(game session)
 {
-	int temp = read_dice_roll(0, 0);
-	for (int x = 1; x < catan.check_number_of_players() + 1; x++)
+	int temp = read_dice_roll(session);
+	for (int x = 1; x < session.check_number_of_players() + 1; x++)
 		send_packet(x, temp, SEND_DICE_ROLL);
 	return(temp);
 }
 
+/*		This function should never be uncommented! the dice rolling is handled at the beginning of every turn, and should only be read from the game session at this level.
 int roll_dice()
 {
 	int temp = (rand()*rand()) % 11 + 2;	//rand() is seeded whenever board is build, aka start of game.
 	return(read_dice_roll(69, temp));
 }
+*/
 
 int send_board_info(game session, char *datain, int size_of_datain)
 {
