@@ -53,6 +53,7 @@ private:
 	tile pieces[X_tiles][Y_tiles]; //data[x][y], invalid indexes will need to be checked against! ((0,3),(0,4),(1,3),(3,1),(4,0),(4,1) dont exist)
 //	vector<tile> pieces;
 	int players;
+	unsigned int current_roll;
 	vector<player>::iterator player_ptr;
 	int assign_resources();
 	int current_player;
@@ -96,7 +97,8 @@ public:
 	int check_resources(int player, int type);
 	int start_turn(int);
 	int start_game(int, vector<string>);
-	int get_dice_roll(int);
+	int get_dice_roll(int);			//used to get the dice roll of a tile.
+	int get_current_roll(void);		//used to read what the current dice roll is for the turn.
 	string get_board_info(void);
 	SOCKET get_player_socket(int);
 	void trade_cards(int player1, int player2, vector<int> offer, vector<int> request);	//player1 offers x to player2 for request.
