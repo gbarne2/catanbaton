@@ -4,6 +4,7 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
+/*
 struct trade_cards
 {
 	unsigned int qty_wood_to_trade;
@@ -17,7 +18,7 @@ struct trade_cards
 	unsigned int qty_sheep_to_trade;
 	unsigned int qty_sheep_to_receive;
 };
-
+*/
 struct dev_cards
 {
 	int qty_knights;
