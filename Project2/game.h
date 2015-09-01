@@ -77,6 +77,9 @@ private:
 	void get_corners_from_road(int, int&, int&);
 	int deduct_resources_devcard(int playernum);
 	int determine_neighbor_tile_road(int, int, int, int&, int&, int&);
+	int deduct_resources(int, int, int);
+	int check_resources_trade(trade_cards, int, int);
+	int trade_with_player(trade_cards, int, int, int);
 public:
 	game(void);
 	int next_player(void);
