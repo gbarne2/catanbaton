@@ -1,17 +1,25 @@
 **Error codes:
 
+#general resource query codes
 -20		Invalid resource type selected
 -21		Insufficient wheat for transaction
 -22		Insufficient ore for transaction
 -23		Insufficient wood for transaction
 -24		Insufficient sheep for transaction
 -25		Insufficient brick for transaction
+
+#building codes
 -31		unable to build road
 -32		unable to build settlement
 -33		unable to upgrade settlement to city, requesting player does not own the settlement
 -34		a settlement is not build on that corner!
 -35		insufficient resources to build city.
+
+#trade codes
 -40   The current player/player who started the trade does not have sufficient resources for the proposed trade
 -41   The requested player does not have sufficient resources
 -42   Neither player has sufficient resources to complete trade
+-43   The trade has been rejected by the requested player
+
+#server game manager level codes
 -99		Game already started, unable to add new player
