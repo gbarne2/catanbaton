@@ -126,8 +126,42 @@ int framehandler(char *datain, int size_of_data)
 		switch (datatype)
 		{
 		case PROPOSE_TRADE:
+		//data field:
+		//this case should create a new trade_cards object in a place that will keep it in memory while the players review trade.
+		//to avoid issues with going from int to char to possibly unsigned char somewhere back to int, the notion of -2 wood = i want 2 wood isnt used.
+		//instead, the data will be sent in # wood to give, # wood to receive, etc.
+		//data[0] = player to trade with
+		//data[1] = qty wood to trade
+		//data[2] = qty wood to receive
+		//data[3] = qty ore to trade
+		//data[4] = qty ore to receive
+		//data[5] = qty brick to trade
+		//data[6] = qty brick to receive
+		//data[7] = qty wheat to trade
+		//data[8] = qty wheat to receive
+		//data[9] = qty sheep to trade
+		//data[10] = qty sheep to receive
+		//this function needs to maybe format the data, and send this off to the requested player.
+		//it should also update some status variable to indicate a trade is pending so when the packet comes back, the server can proceed with trade?
 			break;
 		case ACCEPT_REJECT_TRADE:
+		//datafield
+		//playernum should contain the requested player.
+		//the original trade should be used, and then deleted at the end of this case.
+		//this should make sure that a trade was proposed by the player in data[0] and the original trade object should be used, not the one send to the user for approval
+		//if approved, call trade_with_player(...) function to execute trade. send a message to both parties to tell them the resulting stauts of the trade after (success or fail, and the reason why?)
+		//data[0] = player who requested trade
+		//data[1] = qty wood to trade
+		//data[2] = qty wood to receive
+		//data[3] = qty ore to trade
+		//data[4] = qty ore to receive
+		//data[5] = qty brick to trade
+		//data[6] = qty brick to receive
+		//data[7] = qty wheat to trade
+		//data[8] = qty wheat to receive
+		//data[9] = qty sheep to trade
+		//data[10] = qty sheep to receive
+		//data[11] = trade status
 			break;
 		case GET_PLAYER_INFO:
 			break;
