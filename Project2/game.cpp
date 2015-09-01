@@ -691,11 +691,110 @@ int game::start_game(int size, vector<string> player_names)
 	return(temp_num_players);
 }
 
+int game::deduct_resources(int player, int resource, int qty)
+{
+	player_ptr = player_list.begin() + player;
+	if(qty > 0)		//if non-negative number, assume they meant to deduct the amount and multiply by neg1
+		qty = qty*(-1);
+	return(player_ptr.update_resources(resource, qty));
+}
+
+int game::deduct_resources_trade(trade_cards, int playernum, int req_player)
+{
+	int retval = 0;
+	retval = check_resources_trade(trade_cards, playernum, req_player);
+	if(retval >= 0)
+	{
+		retval = deduct_resources(playernum, WOOD, trade_cards.qty_wood_to_trade);
+		retval = deduct_resources(playernum, ORE, trade_cards.qty_ore_to_trade);
+		retval = deduct_resources(playernum, BRICK, trade_cards.qty_brick_to_trade);
+		retval = deduct_resources(playernum, WHEAT, trade_cards.qty_wheat_to_trade);
+		retval = deduct_resources(playernum, SHEEP, trade_cards.qty_sheep_to_trade);
+		retval = deduct_resources(req_player, WOOD, trade_cards.qty_wood_to_receive);
+		retval = deduct_resources(req_player, ORE, trade_cards.qty_ore_to_receive);
+		retval = deduct_resources(req_player, BRICK, trade_cards.qty_brick_to_receive);
+		retval = deduct_resources(req_player, WHEAT, trade_cards.qty_wheat_to_receive);
+		retval = deduct_resources(req_player, SHEEP, trade_cards.qty_sheep_to_receive);
+	}
+	return(retval);
+}
+//-40 = current player doesnt have enough resources
+//-41 = requested player doesnt have enough resources
+//-42 = neither player has enough resources
+int game::check_resources_trade(trade_cards trade, int playernum, int req_player)
+{
+	int tempcheck = 1;
+	int tempcheckreq = 1;
+	int retval = 1;
+	vector<player>::iterator req_player_ptr;
+	req_player_ptr = player_list.begin() + req_player;
+	player_ptr = player_list.begin() + playernum;
+	//for all checks below, if either player does not have enough cards to fulfill trade, then return error that tells which player doesnt have enough cards
+	if(trade_cards.qty_wood_to_trade < player_ptr.check_resource_amount(WOOD))
+		tempcheck = -40;
+	if(trade_cards.qty_ore_to_trade < player_ptr.check_resource_amount(ORE))
+		tempcheck = -40;		
+	if(trade_cards.qty_brick_to_trade < player_ptr.check_resource_amount(BRICK))
+		tempcheck = -40;
+	if(trade_cards.qty_wheat_to_trade < player_ptr.check_resource_amount(WHEAT))
+		tempcheck = -40;
+	if(trade_cards.qty_sheep_to_trade < player_ptr.check_resource_amount(SHEEP))
+		tempcheck = -40;
+	if(trade_cards.qty_wood_to_receive < req_player_ptr.check_resource_amount(WOOD))
+		tempcheckreq = -41;
+	if(trade_cards.qty_ore_to_receive < req_player_ptr.check_resource_amount(ORE))
+		tempcheckreq = -41;
+	if(trade_cards.qty_brick_to_receive < req_player_ptr.check_resource_amount(BRICK))
+		tempcheckreq = -41;
+	if(trade_cards.qty_wheat_to_receive < req_player_ptr.check_resource_amount(WHEAT))
+		tempcheckreq = -41;
+	if(trade_cards.qty_sheep_to_receive < req_player_ptr.check_resource_amount(SHEEP))
+		tempcheckreq = -41;
+	if(tempcheck == 1)
+		if(tempcheckreq == 1)		//if both = 1, then both players had enough resources
+			retval = 0;
+		else				//if tempcheck = 1 but tempcheckreq != 1, then req player doesnt have enough resources
+			retval = tempcheckreq;
+	else if(tempcheckreq == 1)		//if tempcheck == 0, current player who started trade doesnt have enough resources. check is req player does. if neither do return -42.
+		retval = tempcheck;	//if tempcheckreq = 1, then only the player who initialized trade doesnt have enough
+	else
+		retval = -42;
+	return(retval);
+}
+
 unsigned int game::get_current_roll()
 {
 	return(current_roll);
 }
 
+//trade_cards is a struct defined in game.h
+//player will contain the player number that started the trade request. if this number does not match the current player number, the trade is invalid
+//if the requested player is different than player and current player, then continue
+int game::trade_with_player(trade_cards trade, int playernum, int requested_player, int status_of_trade)
+{
+	int retval = 0;
+	if(status_of_trade == APPROVE_TRADE)
+	{
+		//the two lines below are done in the deduct_resources_trade functoin to ensure the resources cant be deducted maliciously
+	//	retval = check_resources_trade(trade, playernum, requested_player);	
+	//	if(retval >= 0)
+		retval = deduct_resources_trade(trade, playernum, requested_player);		//checks if resources are sufficient and then deducts them if they are
+	}
+}
+/*
+int game::deduct_resources_settlement(int playernum)
+{
+	int retval = 0;
+	vector<player>::iterator player_ptr1;
+	//it costs 1 wheat, 1 brick, 1 wood, and 1 sheep to build a settlement
+	player_ptr1 = player_list.begin() + playernum;
+	retval  = player_ptr1->update_resources(WHEAT,	-1);
+	retval += player_ptr1->update_resources(WOOD,	-1);
+	retval += player_ptr1->update_resources(SHEEP,	-1);
+	retval += player_ptr1->update_resources(BRICK,	-1);
+	return(retval);
+}
+*/
 string game::get_board_info()
 {
 //data to send
