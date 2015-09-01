@@ -770,6 +770,7 @@ unsigned int game::get_current_roll()
 //trade_cards is a struct defined in game.h
 //player will contain the player number that started the trade request. if this number does not match the current player number, the trade is invalid
 //if the requested player is different than player and current player, then continue
+//this function should be called after checking with the requested player if they accept the trade, which means the calling function should call check_resources_trade before querying user.
 int game::trade_with_player(trade_cards trade, int playernum, int requested_player, int status_of_trade)
 {
 	int retval = 0;
@@ -780,6 +781,11 @@ int game::trade_with_player(trade_cards trade, int playernum, int requested_play
 	//	if(retval >= 0)
 		retval = deduct_resources_trade(trade, playernum, requested_player);		//checks if resources are sufficient and then deducts them if they are
 	}
+	else if(status_of_trade == REJECT_TRADE)	//if the trade failed, this function should return an error code. see error_codes.txt?
+		retval = -43;
+	else
+		retval = -49;
+	return(retval);
 }
 /*
 int game::deduct_resources_settlement(int playernum)
