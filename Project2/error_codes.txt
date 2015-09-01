@@ -20,6 +20,9 @@
 -41   The requested player does not have sufficient resources
 -42   Neither player has sufficient resources to complete trade
 -43   The trade has been rejected by the requested player
+-49   Invalid trade status
+
+#general error codes/wtf happened codes?
 
 #server game manager level codes
 -99		Game already started, unable to add new player
