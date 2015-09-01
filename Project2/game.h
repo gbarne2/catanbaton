@@ -4,6 +4,9 @@
 #include "player.h"
 #include "Tile.h"
 
+#define APPROVE_TRADE 	1
+#define DENY_TRADE	0
+
 #define X_tiles 5
 #define Y_tiles 5
 #define active_num_tiles 19
