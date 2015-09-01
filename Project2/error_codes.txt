@@ -11,4 +11,6 @@
 -33		unable to upgrade settlement to city, requesting player does not own the settlement
 -34		a settlement is not build on that corner!
 -35		insufficient resources to build city.
+-40   The current player/player who started the trade does not have sufficient resources for the proposed trade
+-40   The requested player does not have sufficient resources
 -99		Game already started, unable to add new player
