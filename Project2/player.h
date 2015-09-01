@@ -4,8 +4,6 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
-#define APPROVE_TRADE 	1
-#define DENY_TRADE	0
 struct trade_cards
 {
 	unsigned int qty_wood_to_trade;
