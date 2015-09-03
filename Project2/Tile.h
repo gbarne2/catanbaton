@@ -79,7 +79,8 @@ public:
 	int set_resource_type(int res_type);
 	int set_dice_roll(int dicerollval);
 	int check_robber(void);
-	int place_robber(void);
+	void place_robber(void);
+	void remove_robber(void);
 	string get_tile_data_string(void);
 
 	//i really need corners to be a struct, and it needs to contain the following info
