@@ -14,6 +14,10 @@
 
 /***
 todo:
+-Need to start working on actual game play flow as well as the server/client communication. Most of the communications can be
+	done after the game is built, but the server needs to be able to run the game. aka, it needs to call start turn, and 
+	process the roll val, then do other things. the server should start turn once the client tells it to, BUT it needs to handle
+	all of the other things that happen after start turn as well.
 Will need to have the initialization period set up a listen socket for some port, and then keep listening for new clients until game is started!
 Launch this operation in another thread, and once the start game command is received, then rejoin threads and start game.
 -have every functio that sends data add its packet type to the begining of the message! 
