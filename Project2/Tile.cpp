@@ -25,6 +25,7 @@ tile::tile(void)
 	temp.road_connected = 0;
 	temp.property_owner = 0;
 	temp.property_type = 0;
+	robber_on_tile = 0;
 	temp.players_connected.push_back(0);
 	resource_type = 0;
 	D = 0;
@@ -56,6 +57,7 @@ tile::tile(int resource_type_init, int dice_roll_val)
 	temp.property_type = 0;
 	temp.players_connected.push_back(0);
 	resource_type = resource_type_init;
+	robber_on_tile = 0;
 	D = 0;
 	E = 0;
 	F = 0;
@@ -323,16 +325,32 @@ int tile::calculate_resources_from_roll_by_player(int playernum, int& res_typee)
 //	res_typee = -1;
 //	if(rollval == roll)
 //	{
-		res_typee = resource_type;
-		for(ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
+		if(!check_robber())		//if the robber is not on this tile, then players get resources
 		{
-			if(ptr->property_owner == playernum)
-				retval += ptr->property_type;		//this will be the number of cards the player gets. if for some reason they 'own' the corner but dont have a settlement, it will just add 0, so its safe!
-		}
+			res_typee = resource_type;
+			for(ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
+			{
+				if(ptr->property_owner == playernum)
+					retval += ptr->property_type;		//this will be the number of cards the player gets. if for some reason they 'own' the corner but dont have a settlement, it will just add 0, so its safe!
+			}
 //	}
 	return(retval);
 }
 
+int tile::check_robber()
+{
+	return(robber_on_tile);
+}
+
+void tile::place_robber()
+{
+	robber_on_tile = 1;
+}
+
+void tile::remove_robber()
+{
+	robber_on_tile = 0;
+}
 
 string tile::get_tile_data_string()
 {
