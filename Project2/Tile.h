@@ -46,6 +46,7 @@ class tile
 private:
 	int A,B,C,D,E,F;			//not used?
 	int resource_type;
+	int robber_on_tile;
 	int roadAB, roadBC, roadCD, roadDE, roadEF, roadFA;		//not used
 	int roll;
 	vector<Corner>::iterator ptr;
@@ -77,6 +78,8 @@ public:
 	int check_corner_building_type(int corner);
 	int set_resource_type(int res_type);
 	int set_dice_roll(int dicerollval);
+	int check_robber(void);
+	int place_robber(void);
 	string get_tile_data_string(void);
 
 	//i really need corners to be a struct, and it needs to contain the following info
