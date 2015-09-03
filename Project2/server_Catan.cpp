@@ -67,22 +67,22 @@ get_time_limit
 #define GET_PLAYER_INFO				32
 #define SEND_DICE_ROLL				33
 #define GET_QTY_ROADS_LEFT			34
-#define GET_QTY_SETTLEMENTS_LEFT	35
+#define GET_QTY_SETTLEMENTS_LEFT		35
 #define GET_QTY_CITIES_LEFT			36
-#define BUILD_ROAD					37
+#define BUILD_ROAD				37
 #define BUILD_SETTLEMENT			38
 #define UPGRADE_SETTLEMENT			39
-#define BUY_DV_CARD					40
+#define BUY_DV_CARD				40
 #define READ_RESOURCES				41
 #define GET_BOARD_INFO				42
 #define GET_TIME_LIMIT				43
-#define START_GAME					44
-#define ACCEPT_GAME					45
-#define JOIN_GAME					46
-#define END_TURN					47
-#define END_GAME					48
-#define CONNECT						50
-#define START_TURN					51
+#define START_GAME				44
+#define ACCEPT_GAME				45
+#define JOIN_GAME				46
+#define END_TURN				47
+#define END_GAME				48
+#define CONNECT					50
+#define START_TURN				51
 
 //Message format:
 /*
