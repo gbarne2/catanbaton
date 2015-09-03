@@ -105,6 +105,12 @@ int get_qty_roads_remaining(int player_number);
 int send_board_info(game session, char *datain, int size_of_datain);
 int join_game(string name);
 
+static int trade_in_progress = 0;
+static int initiating_player_trade = 0;
+static int requested_player_trade = 0;
+
+static int debug_text = 0;
+static trade_cards trade_to_process;
 //functions
 int framehandler(char *datain, int size_of_data)
 {
@@ -126,6 +132,32 @@ int framehandler(char *datain, int size_of_data)
 		switch (datatype)
 		{
 		case PROPOSE_TRADE:
+		if(!trade_in_progress)
+		{
+			trade_in_progress = 1;
+			initiating_player_trade = player_number;
+			if(debug_text)
+				cout << "initiating_player (for trade) = " << initiating_player_trade << endl;
+			requested_player_trade = datain[dataptr++];
+			if(debug_text)
+				cout << "requested_player = " << requested_player_trade << endl;
+			tempstring = "";
+			trade_to_process.qty_wood_to_trade = datain[dataptr];
+			trade_to_process.qty_wood_to_receive = datain[dataptr + 1];
+			trade_to_process.qty_ore_to_trade = datain[dataptr + 2];
+			trade_to_process.qty_ore_to_receive = datain[dataptr + 3];
+			trade_to_process.qty_brick_to_trade = datain[dataptr + 4];
+			trade_to_process.qty_brick_to_receive = datain[dataptr + 5];
+			trade_to_process.qty_wheat_to_trade = datain[dataptr + 6];
+			trade_to_process.qty_wheat_to_receive = datain[dataptr + 7];
+			trade_to_process.qty_sheep_to_trade = datain[dataptr + 8];
+			trade_to_process.qty_sheep_to_receive = datain[dataptr + 9];
+			for(int x = dataptr; x < 10; x++)		//pull all data into a string to send off
+			{
+				tempstring += to_string(datain[x]);
+			}
+			retval = send_packet(requested_player_trade, tempstring, PROPOSE_TRADE);
+		}
 		//data field:
 		//this case should create a new trade_cards object in a place that will keep it in memory while the players review trade.
 		//to avoid issues with going from int to char to possibly unsigned char somewhere back to int, the notion of -2 wood = i want 2 wood isnt used.
@@ -146,6 +178,17 @@ int framehandler(char *datain, int size_of_data)
 			break;
 		case ACCEPT_REJECT_TRADE:
 		//datafield
+		if(requested_player_trade == player_number)		//if this trade packet was sent by the correct player, then proceed
+		{
+			if(datain[dataptr] == initiating_player_trade)	//if the player is requesting to trade with the original player...
+			{
+				dataptr += 1;
+				retval = catan.trade_with_player(trade_to_process, initiating_player_trade, requested_player_trade, datain[dataptr + 10]);
+				//need to add return value handling! tell both users what happened with trade (accepted or denied, why)
+				send_packet(initiating_player_trade, retval, ACCEPT_REJECT_TRADE);
+				send_packet(requested_player_trade, retval, ACCEPT_REJECT_TRADE);	//may need to change these to not return retval, but something else so that the client wont be getting the real reason why (ex: if req player doesnt have enough cards, then retval will tell the initiating player that the other player doesnt have the cards.)
+			}
+		}
 		//playernum should contain the requested player.
 		//the original trade should be used, and then deleted at the end of this case.
 		//this should make sure that a trade was proposed by the player in data[0] and the original trade object should be used, not the one send to the user for approval
