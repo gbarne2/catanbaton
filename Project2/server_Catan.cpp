@@ -71,22 +71,23 @@ get_time_limit
 #define GET_PLAYER_INFO				32
 #define SEND_DICE_ROLL				33
 #define GET_QTY_ROADS_LEFT			34
-#define GET_QTY_SETTLEMENTS_LEFT		35
+#define GET_QTY_SETTLEMENTS_LEFT	35
 #define GET_QTY_CITIES_LEFT			36
-#define BUILD_ROAD				37
+#define BUILD_ROAD					37
 #define BUILD_SETTLEMENT			38
 #define UPGRADE_SETTLEMENT			39
-#define BUY_DV_CARD				40
+#define BUY_DV_CARD					40
 #define READ_RESOURCES				41
 #define GET_BOARD_INFO				42
 #define GET_TIME_LIMIT				43
-#define START_GAME				44
-#define ACCEPT_GAME				45
-#define JOIN_GAME				46
-#define END_TURN				47
-#define END_GAME				48
-#define CONNECT					50
-#define START_TURN				51
+#define START_GAME					44
+#define ACCEPT_GAME					45
+#define JOIN_GAME					46
+#define END_TURN					47
+#define END_GAME					48
+#define STEAL_CARD_ROBBER			49
+#define CONNECT						50
+#define START_TURN					51
 
 //Message format:
 /*
@@ -108,13 +109,16 @@ int get_qty_settlements_left(int player_number);
 int get_qty_roads_remaining(int player_number);
 int send_board_info(game session, char *datain, int size_of_datain);
 int join_game(string name);
+int place_robber();
+int steal_card(int player_taking_card, int player_giving);
 
 static int trade_in_progress = 0;
 static int initiating_player_trade = 0;
 static int requested_player_trade = 0;
+static int last_player = 0;
 
 static int debug_text = 0;
-static trade_cards trade_to_process;
+static trade_cards_offer trade_to_process;
 //functions
 int framehandler(char *datain, int size_of_data)
 {
@@ -136,32 +140,35 @@ int framehandler(char *datain, int size_of_data)
 		switch (datatype)
 		{
 		case PROPOSE_TRADE:
-		if(!trade_in_progress)
-		{
-			trade_in_progress = 1;
-			initiating_player_trade = player_number;
-			if(debug_text)
-				cout << "initiating_player (for trade) = " << initiating_player_trade << endl;
-			requested_player_trade = datain[dataptr++];
-			if(debug_text)
-				cout << "requested_player = " << requested_player_trade << endl;
-			tempstring = "";
-			trade_to_process.qty_wood_to_trade = datain[dataptr];
-			trade_to_process.qty_wood_to_receive = datain[dataptr + 1];
-			trade_to_process.qty_ore_to_trade = datain[dataptr + 2];
-			trade_to_process.qty_ore_to_receive = datain[dataptr + 3];
-			trade_to_process.qty_brick_to_trade = datain[dataptr + 4];
-			trade_to_process.qty_brick_to_receive = datain[dataptr + 5];
-			trade_to_process.qty_wheat_to_trade = datain[dataptr + 6];
-			trade_to_process.qty_wheat_to_receive = datain[dataptr + 7];
-			trade_to_process.qty_sheep_to_trade = datain[dataptr + 8];
-			trade_to_process.qty_sheep_to_receive = datain[dataptr + 9];
-			for(int x = dataptr; x < 10; x++)		//pull all data into a string to send off
+			if (!trade_in_progress)
 			{
-				tempstring += to_string(datain[x]);
+				if (catan.check_current_player() == player_number)
+				{
+					trade_in_progress = 1;
+					initiating_player_trade = player_number;
+					if (debug_text)
+						cout << "initiating_player (for trade) = " << initiating_player_trade << endl;
+					requested_player_trade = datain[dataptr++];
+					if (debug_text)
+						cout << "requested_player = " << requested_player_trade << endl;
+					tempstring = "";
+					trade_to_process.qty_wood_to_trade = datain[dataptr];
+					trade_to_process.qty_wood_to_receive = datain[dataptr + 1];
+					trade_to_process.qty_ore_to_trade = datain[dataptr + 2];
+					trade_to_process.qty_ore_to_receive = datain[dataptr + 3];
+					trade_to_process.qty_brick_to_trade = datain[dataptr + 4];
+					trade_to_process.qty_brick_to_receive = datain[dataptr + 5];
+					trade_to_process.qty_wheat_to_trade = datain[dataptr + 6];
+					trade_to_process.qty_wheat_to_receive = datain[dataptr + 7];
+					trade_to_process.qty_sheep_to_trade = datain[dataptr + 8];
+					trade_to_process.qty_sheep_to_receive = datain[dataptr + 9];
+					for (int x = dataptr; x < 10; x++)		//pull all data into a string to send off
+					{
+						tempstring += to_string(datain[x]);
+					}
+					retval = send_packet(requested_player_trade, tempstring, PROPOSE_TRADE);
+				}
 			}
-			retval = send_packet(requested_player_trade, tempstring, PROPOSE_TRADE);
-		}
 		//data field:
 		//this case should create a new trade_cards object in a place that will keep it in memory while the players review trade.
 		//to avoid issues with going from int to char to possibly unsigned char somewhere back to int, the notion of -2 wood = i want 2 wood isnt used.
@@ -193,6 +200,18 @@ int framehandler(char *datain, int size_of_data)
 				send_packet(requested_player_trade, retval, ACCEPT_REJECT_TRADE);	//may need to change these to not return retval, but something else so that the client wont be getting the real reason why (ex: if req player doesnt have enough cards, then retval will tell the initiating player that the other player doesnt have the cards.)
 			}
 		}
+		initiating_player_trade = 0;
+		requested_player_trade = 0;
+		trade_to_process.qty_wood_to_trade = 0;
+		trade_to_process.qty_wood_to_receive = 0;
+		trade_to_process.qty_ore_to_trade = 0;
+		trade_to_process.qty_ore_to_receive = 0;
+		trade_to_process.qty_brick_to_trade = 0;
+		trade_to_process.qty_brick_to_receive = 0;
+		trade_to_process.qty_wheat_to_trade = 0;
+		trade_to_process.qty_wheat_to_receive = 0;
+		trade_to_process.qty_sheep_to_trade = 0;
+		trade_to_process.qty_sheep_to_receive = 0;
 		//playernum should contain the requested player.
 		//the original trade should be used, and then deleted at the end of this case.
 		//this should make sure that a trade was proposed by the player in data[0] and the original trade object should be used, not the one send to the user for approval
@@ -235,11 +254,14 @@ int framehandler(char *datain, int size_of_data)
 			//data field:
 			//data[0]	=	tile number
 			//data[1]	=	road index?
-			retval = catan.build_roads(datain[dataptr], player_number, datain[dataptr + 1]);
-			if (retval >= 0)		//if a success, then send player new board layout!
-				send_board_info(catan, nulptr, 0);
-			else
-				send_packet(player_number, -31, BUILD_ROAD);
+			if (catan.check_current_player() == player_number)
+			{
+				retval = catan.build_roads(datain[dataptr], player_number, datain[dataptr + 1]);
+				if (retval >= 0)		//if a success, then send player new board layout!
+					send_board_info(catan, nulptr, 0);
+				else
+					send_packet(player_number, -31, BUILD_ROAD);
+			}	
 			//add some error handling if the road was not able to be built! should tell client so they can make another move
 			//if successful, send the board info to all players.
 			break;
@@ -247,21 +269,27 @@ int framehandler(char *datain, int size_of_data)
 			//data field:
 			//data[0]	=	tile number
 			//data[1]	=	corner index
-			retval = catan.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
-			if (retval >= 0)		//if a success, then send player new board layout!
-				send_board_info(catan, nulptr, 0);
-			else
-				send_packet(player_number, -32, BUILD_SETTLEMENT);
+			if (catan.check_current_player() == player_number)
+			{
+				retval = catan.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
+				if (retval >= 0)		//if a success, then send player new board layout!
+					send_board_info(catan, nulptr, 0);
+				else
+					send_packet(player_number, -32, BUILD_SETTLEMENT);
+			}
 			break;
 		case UPGRADE_SETTLEMENT:
 			//data field:
 			//data[0]	=	tile number
 			//data[1]	=	corner index
-			retval = catan.upgrade_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
-			if (retval >= 0)		//if a success, then send player new board layout!
-				send_board_info(catan, nulptr, 0);
-			else
-				send_packet(player_number, -32, UPGRADE_SETTLEMENT);
+			if (catan.check_current_player() == player_number)
+			{
+				retval = catan.upgrade_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
+				if (retval >= 0)		//if a success, then send player new board layout!
+					send_board_info(catan, nulptr, 0);
+				else
+					send_packet(player_number, -32, UPGRADE_SETTLEMENT);
+			}
 			break;
 		case BUY_DV_CARD:		//should allow user to buy more than 1 at once?
 			cout << "Need to add ability to buy dev cards in game.cpp and in server_catan.cpp!" << endl;
@@ -302,16 +330,35 @@ int framehandler(char *datain, int size_of_data)
 			retval = join_game(player_number, tempstring);
 			break;
 		case END_TURN:
-			retval = catan.next_player();
-			send_board_info(catan, nulptr, 0);
-			send_packet(retval, 0, END_TURN);		//make END_TURN be start turn when received from server?
-			//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
+			if (catan.check_current_player() == player_number)
+			{
+				retval = catan.next_player();
+				send_board_info(catan, nulptr, 0);
+				send_packet(retval, 0, END_TURN);		//make END_TURN be start turn when received from server?
+				//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
+			}
+			break;
+		case STEAL_CARD_ROBBER:
+			//datain[0] = player to steal from
+			if ((last_player == player_number) && (read_dice_roll(catan) == 7))
+			{
+				retval = steal_card(player_number, datain[dataptr]);
+			}
+			last_player = 0;
 			break;
 		case END_GAME:
 			break;
 		case START_TURN:
-			retval = catan.start_turn(0);
-			retval = read_dice_roll(catan);
+			if (catan.check_current_player() == player_number)
+			{
+				retval = catan.start_turn(0);
+				retval = read_dice_roll(catan);
+				if (retval == 7)
+				{
+					place_robber();
+					last_player = player_number;
+				}
+			}
 			//Data format:
 			//1:		dice roll
 			//2 - 7:	resource amnts
@@ -324,6 +371,16 @@ int framehandler(char *datain, int size_of_data)
 			break;
 		}
 	}
+}
+
+int steal_card(int player_taking_card, int player_giving)
+{
+	cout << "make steal_card function in server_catan.cpp work!" << endl;
+}
+
+int place_robber()
+{
+	cout << "need to make function place_robber in server_catan send a packet to current player to tell them to place the robber and what player to steal a resource card from" << endl;
 }
 
 unsigned int read_dice_roll(game session)

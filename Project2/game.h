@@ -52,7 +52,7 @@
 #define roadFAy 0
 
 
-struct trade_cards
+struct trade_cards_offer
 {
 	unsigned int qty_wood_to_trade;
 	unsigned int qty_wood_to_receive;
@@ -90,12 +90,16 @@ private:
 	int deduct_resources_settlement(int playernum);
 	int deduct_resources_city(int playernum);
 	int deduct_resources_road(int playernum);
+	int check_resources_road(int playernum);
+	int check_number_roads_left(int);
+	int check_number_settlements_left(int);
+	int check_number_cities_left(int);
 	void get_corners_from_road(int, int&, int&);
 	int deduct_resources_devcard(int playernum);
 	int determine_neighbor_tile_road(int, int, int, int&, int&, int&);
 	int deduct_resources(int, int, int);
-	int deduct_resources_trade(trade_cards, int, int);
-	int check_resources_trade(trade_cards, int, int);
+	int deduct_resources_trade(trade_cards_offer, int, int);
+	int check_resources_trade(trade_cards_offer, int, int);
 public:
 	game(void);
 	int next_player(void);
@@ -121,7 +125,7 @@ public:
 	int start_game(int, vector<string>);
 	int get_dice_roll(int);			//used to get the dice roll of a tile.
 	unsigned int get_current_roll(void);		//used to read what the current dice roll is for the turn.
-	int trade_with_player(trade_cards, int, int, int);
+	int trade_with_player(trade_cards_offer, int, int, int);
 	string get_board_info(void);
 	SOCKET get_player_socket(int);
 	void trade_cards(int player1, int player2, vector<int> offer, vector<int> request);	//player1 offers x to player2 for request.

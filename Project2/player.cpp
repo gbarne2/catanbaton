@@ -6,11 +6,11 @@ using namespace std;
 
 player::player(void)
 {
-	qty_brick = 0;
+	qty_brick = 4;		//start off with enough resources to build two roads and two settlements
 	qty_ore = 0;
-	qty_sheep = 0;
-	qty_wheat = 0;
-	qty_wood = 0;
+	qty_sheep = 2;		//start off with enough resources to build two roads and two settlements
+	qty_wheat = 2;		//start off with enough resources to build two roads and two settlements
+	qty_wood = 4;		//start off with enough resources to build two roads and two settlements
 	roads_to_place = 15;
 	settlements_to_build = 5;
 	cities_to_build = 4;
@@ -25,11 +25,11 @@ player::player(int IDset, string p_name)
 {
 	player_ID = IDset;
 	Player_name = p_name;
-	qty_brick = 0;
+	qty_brick = 4;		//start off with enough resources to build two roads and two settlements
 	qty_ore = 0;
-	qty_sheep = 0;
-	qty_wheat = 0;
-	qty_wood = 0;
+	qty_sheep = 2;		//start off with enough resources to build two roads and two settlements
+	qty_wheat = 2;		//start off with enough resources to build two roads and two settlements
+	qty_wood = 4;		//start off with enough resources to build two roads and two settlements
 	roads_to_place = 15;
 	settlements_to_build = 5;
 	cities_to_build = 4;
@@ -119,6 +119,37 @@ int player::check_resource_amount(int type)
 	}
 	cout << "resource type: " << type << endl << "Amount available: " << temp << endl;
 	return(temp);
+}
+
+int player::update_roads(int roadnum)
+{
+//	if (roadnum > 0)	//if adding a road, increase roads left by one, if less than 1 deduct one
+//		roads_to_place +=- 1;
+//	else if (roadnum < 0)
+	//cant add roads
+	if (roadnum < 0)
+	roads_to_place -= 1;
+	return(roads_to_place);
+}
+
+int player::update_settlements(int settlementnum)
+{
+	if (settlementnum > 0)
+		settlements_to_build += 1;
+	else if (settlementnum < 0)
+		settlements_to_build -= 1;
+	return(settlements_to_build);
+}
+
+int player::update_cities(int citiesnum)
+{
+	//cant add cities
+//	if (citiesnum > 0)
+//		cities_to_build += 1;
+//	else if (citiesnum < 0)
+	if (citiesnum < 0)
+			cities_to_build -= 1;
+	return(cities_to_build);
 }
 
 SOCKET player::get_client_socket(void)

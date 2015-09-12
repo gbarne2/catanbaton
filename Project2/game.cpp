@@ -9,8 +9,6 @@ using namespace std;
 /*
 *to do:
 **see about changing all return errors for functions that dont need to return a value to throws and catch at highest level?
-**implement trading function.
-**make build_road also check player resources
 **add ability to handle a dice roll of 7 to start_turn function!
 add ability to buy dev card
 */
@@ -360,6 +358,12 @@ int game::check_resources_devcard(int playernum)
 
 }
 
+int game::check_resources_road(int playernum)
+{
+	player_ptr = player_list.begin() + playernum;
+	return((player_ptr->check_resource_amount(WOOD) >= 1) && (player_ptr->check_resource_amount(BRICK) >= 1));
+}
+
 int game::check_number_of_players(void)
 {
 	return(players);
@@ -374,6 +378,7 @@ int game::deduct_resources_settlement(int playernum)
 	retval += player_ptr1->update_resources(WOOD,	-1);
 	retval += player_ptr1->update_resources(SHEEP,	-1);
 	retval += player_ptr1->update_resources(BRICK,	-1);
+	player_ptr1->update_settlements(-1);
 	return(retval);
 }
 
@@ -384,6 +389,8 @@ int game::deduct_resources_city(int playernum)
 	player_ptr = player_list.begin() + playernum;
 	retval  = player_ptr->update_resources(WHEAT,	-2);
 	retval += player_ptr->update_resources(ORE,	-3);
+	player_ptr->update_cities(-1);
+	player_ptr->update_settlements(1);
 	return(retval);
 }
 
@@ -394,6 +401,7 @@ int game::deduct_resources_road(int playernum)
 	player_ptr = player_list.begin() + playernum;
 	retval  = player_ptr->update_resources(WOOD,	-1);
 	retval += player_ptr->update_resources(BRICK,	-1);
+	player_ptr-> update_roads(-1);
 	return(retval);
 }
 
@@ -407,12 +415,18 @@ int game::deduct_resources_devcard(int playernum)
 	retval += player_ptr->update_resources(SHEEP,	-1);
 	return(retval);
 }
+int game::check_number_cities_left(int playernum)
+{
+	player_ptr = player_list.begin() + playernum;
+	return(player_ptr->cities_left);
+}
 
 int game::upgrade_settlement(int tilenum, int playernum, int cornernum)
 {
 	int retval = -99;
 	int xcoord = determine_x_index_from_tile(tilenum);
 	int ycoord = determine_y_index_from_tile(tilenum);
+	if (check_resources_city(playernum) && (check_number_cities_left(playernum) >= 1))
 	retval = check_corner_owner(cornernum, tilenum);
 	if (retval == playernum)	//if the player owns the corner in question, proceed!
 	{
@@ -480,6 +494,12 @@ void game::get_corners_from_road(int road_numb, int& corner1, int& corner2)
 		break;
 	}
 }
+int game::check_number_roads_left(int playernum)
+{
+	player_ptr = player_list.begin() + playernum;
+	return(player_ptr->roads_left);
+}
+
 int game::build_roads(int tile_number, int playernum, int road_numb)
 {
 	int road1 = 0;
@@ -498,73 +518,84 @@ int game::build_roads(int tile_number, int playernum, int road_numb)
 	int cornn2 = -1;
 	int tempx = determine_x_index_from_tile(tile_number);
 	int tempy = determine_y_index_from_tile(tile_number);
-	get_corners_from_road(road_numb, cornn1, cornn2);
-	retval = determine_neighbor_tile_road(road_numb, tile_number, playernum, xcoord1, ycoord1, road1);
-
-	//***A road touches 6 corners, not 2! (two of the main hex, two of the parallel hex, 1 of the hex on either end of road). 
-	//must update all four, not just two!
-	//if what im thinking is true, i should be able to build a settlement at 3.0 by building roads 0.4, 0.3, and 3.5
-	if(retval == 0)		//if no road present on neighboring tile...
+	if(check_resources_road(playernum) && (check_number_roads_left(playernum) >= 1))
 	{
-		retval = pieces[tempx][tempy].build_road(cornn1, cornn2, playernum);
-		if (retval > 0)
-		{
-			localptr = pieces[tempx][tempy].cornersz.begin() + cornn1;
-			localptr->road_connected += 1;
-			localptr->players_connected.push_back(playernum);		//update who is connected to each corner
-			localptr = pieces[tempx][tempy].cornersz.begin() + cornn2;
-			localptr->road_connected += 1;
-			localptr->players_connected.push_back(playernum);
-	
-			//update the 2 other touching corners for the end of the road going to cornn1
-			determine_if_neighbor_tile_occupied(cornn1, tile_number,playernum,xcoord2,ycoord2,corner1,xcoord3,ycoord3,corner2);	//use this to get the three corners to update on either side of the road
-			if((xcoord2 != tempx) || (ycoord2 != tempy))
-			{
-				localptr = pieces[xcoord2][ycoord2].cornersz.begin() + corner1;
-				localptr->road_connected += 1;
-				localptr->players_connected.push_back(playernum);
-			}
-			if(((xcoord3 != tempx) || (ycoord3 != tempy)) && ((xcoord2 != xcoord3) || (ycoord2 != ycoord3)))
-			{
-				localptr = pieces[xcoord3][ycoord3].cornersz.begin() + corner2;
-				localptr->road_connected += 1;
-				localptr->players_connected.push_back(playernum);
-			}
+		get_corners_from_road(road_numb, cornn1, cornn2);
+		retval = determine_neighbor_tile_road(road_numb, tile_number, playernum, xcoord1, ycoord1, road1);
 
-			//update the other 2 touching corners for the end of the road going to cornn2
-			//only update if the touching corner is actually for a different tile...
-			determine_if_neighbor_tile_occupied(cornn2, tile_number,playernum,xcoord2,ycoord2,corner1,xcoord3,ycoord3,corner2);	//use this to get the three corners to update on either side of the road
-			if((xcoord2 != tempx) || (ycoord2 != tempy))
+		//***A road touches 6 corners, not 2! (two of the main hex, two of the parallel hex, 1 of the hex on either end of road). 
+		//must update all four, not just two!
+		//if what im thinking is true, i should be able to build a settlement at 3.0 by building roads 0.4, 0.3, and 3.5
+		if (retval == 0)		//if no road present on neighboring tile...
+		{
+			retval = pieces[tempx][tempy].build_road(cornn1, cornn2, playernum);
+			if (retval > 0)
 			{
-				localptr = pieces[xcoord2][ycoord2].cornersz.begin() + corner1;
-				localptr->road_connected += 1;
-				localptr->players_connected.push_back(playernum);
-			}
-			if(((xcoord3 != tempx) || (ycoord3 != tempy)) && ((xcoord2 != xcoord3) || (ycoord2 != ycoord3)))
-			{
-				localptr = pieces[xcoord3][ycoord3].cornersz.begin() + corner2;
-				localptr->road_connected += 1;
-				localptr->players_connected.push_back(playernum);
-			}
-			//build road on parallel tile? (only needed if one exists!)
-			if ((xcoord1 != tempx) || (ycoord1 != tempy))
-			{
-				get_corners_from_road(road1, cornn1, cornn2);
-				retval1 = pieces[xcoord1][ycoord1].build_road(cornn1, cornn2, playernum);		//may need to go after the code below
-				localptr = pieces[xcoord1][ycoord1].cornersz.begin() + cornn1;
+				localptr = pieces[tempx][tempy].cornersz.begin() + cornn1;
 				localptr->road_connected += 1;
 				localptr->players_connected.push_back(playernum);		//update who is connected to each corner
-				localptr = pieces[xcoord1][ycoord1].cornersz.begin() + cornn2;
+				localptr = pieces[tempx][tempy].cornersz.begin() + cornn2;
 				localptr->road_connected += 1;
 				localptr->players_connected.push_back(playernum);
+
+				//update the 2 other touching corners for the end of the road going to cornn1
+				determine_if_neighbor_tile_occupied(cornn1, tile_number, playernum, xcoord2, ycoord2, corner1, xcoord3, ycoord3, corner2);	//use this to get the three corners to update on either side of the road
+				if ((xcoord2 != tempx) || (ycoord2 != tempy))
+				{
+					localptr = pieces[xcoord2][ycoord2].cornersz.begin() + corner1;
+					localptr->road_connected += 1;
+					localptr->players_connected.push_back(playernum);
 				}
+				if (((xcoord3 != tempx) || (ycoord3 != tempy)) && ((xcoord2 != xcoord3) || (ycoord2 != ycoord3)))
+				{
+					localptr = pieces[xcoord3][ycoord3].cornersz.begin() + corner2;
+					localptr->road_connected += 1;
+					localptr->players_connected.push_back(playernum);
+				}
+
+				//update the other 2 touching corners for the end of the road going to cornn2
+				//only update if the touching corner is actually for a different tile...
+				determine_if_neighbor_tile_occupied(cornn2, tile_number, playernum, xcoord2, ycoord2, corner1, xcoord3, ycoord3, corner2);	//use this to get the three corners to update on either side of the road
+				if ((xcoord2 != tempx) || (ycoord2 != tempy))
+				{
+					localptr = pieces[xcoord2][ycoord2].cornersz.begin() + corner1;
+					localptr->road_connected += 1;
+					localptr->players_connected.push_back(playernum);
+				}
+				if (((xcoord3 != tempx) || (ycoord3 != tempy)) && ((xcoord2 != xcoord3) || (ycoord2 != ycoord3)))
+				{
+					localptr = pieces[xcoord3][ycoord3].cornersz.begin() + corner2;
+					localptr->road_connected += 1;
+					localptr->players_connected.push_back(playernum);
+				}
+				//build road on parallel tile? (only needed if one exists!)
+				if ((xcoord1 != tempx) || (ycoord1 != tempy))
+				{
+					get_corners_from_road(road1, cornn1, cornn2);
+					retval1 = pieces[xcoord1][ycoord1].build_road(cornn1, cornn2, playernum);		//may need to go after the code below
+					localptr = pieces[xcoord1][ycoord1].cornersz.begin() + cornn1;
+					localptr->road_connected += 1;
+					localptr->players_connected.push_back(playernum);		//update who is connected to each corner
+					localptr = pieces[xcoord1][ycoord1].cornersz.begin() + cornn2;
+					localptr->road_connected += 1;
+					localptr->players_connected.push_back(playernum);
+				}
+			}
+			if ((retval > 0) || (retval1 > 0))
+				deduct_resources_road(playernum);
 		}
-		if ((retval > 0) || (retval1 > 0))
-			deduct_resources_road(playernum);
+		else
+			cerr << "I cant build a road for you." << endl;
 	}
 	else
 		cerr << "I cant build a road for you." << endl;
 	return(retval);
+}
+
+int game::check_number_settlements_left(int playernum)
+{
+	player_ptr = player_list.begin() + playernum;
+	return(player_ptr->settlements_left());
 }
 
 int game::build_settlement(int tile_number, int playernum, int corner_numbz)
@@ -578,6 +609,7 @@ int game::build_settlement(int tile_number, int playernum, int corner_numbz)
 	int temp1 = -1;	
 	int temp2 = -1;
 	int temp3 = -1;
+	int temp4 = -1;
 	int xcoord1	= 0;
 	int ycoord1	= 0;
 	int corner1	= -1;
@@ -589,11 +621,12 @@ int game::build_settlement(int tile_number, int playernum, int corner_numbz)
 	temp2 = determine_if_neighbor_tile_occupied(corner_numbz, tile_number,playernum,xcoord1,ycoord1,corner1,xcoord2,ycoord2,corner2);
 	temp3 = check_resources_settlement(playernum);
 	temp1 = pieces[xcoord][ycoord].check_build_settlement_tile(corner_numbz, playernum);
+	temp4 = check_number_settlements_left(playernum);
 /*	if(pieces[xcoord][ycoord].check_build_settlement_tile(corner_numbz, playernum) && 
 		determine_if_neighbor_tile_occupied(corner_numbz, tile_number,playernum,xcoord1,ycoord1,corner1,xcoord2,ycoord2,corner2)
 		&& check_resources_settlement(playernum))
 */
-	if((temp1 > 0) && (temp2 > 0) && (temp3 > 0))
+	if ((temp1 > 0) && (temp2 > 0) && (temp3 > 0) && (temp4 > 0))
 	{
 		pieces[xcoord][ycoord].build_settlement(corner_numbz, playernum);
 		if ((xcoord1 != xcoord) || (ycoord1 != ycoord))
@@ -602,6 +635,8 @@ int game::build_settlement(int tile_number, int playernum, int corner_numbz)
 			pieces[xcoord2][ycoord2].build_settlement(corner2, playernum);
 		temp = deduct_resources_settlement(playernum);
 	}
+	else if (temp4 == 0)
+		temp = -37;
 	return(temp);
 }
 //0,3;0,4;1,4;3,0;4,0;4,1
@@ -696,32 +731,32 @@ int game::deduct_resources(int player, int resource, int qty)
 	player_ptr = player_list.begin() + player;
 	if(qty > 0)		//if non-negative number, assume they meant to deduct the amount and multiply by neg1
 		qty = qty*(-1);
-	return(player_ptr.update_resources(resource, qty));
+	return(player_ptr->update_resources(resource, qty));
 }
 
-int game::deduct_resources_trade(trade_cards, int playernum, int req_player)
+int game::deduct_resources_trade(trade_cards_offer trade_card, int playernum, int req_player)
 {
 	int retval = 0;
-	retval = check_resources_trade(trade_cards, playernum, req_player);
+	retval = check_resources_trade(trade_card, playernum, req_player);
 	if(retval >= 0)
 	{
-		retval = deduct_resources(playernum, WOOD, trade_cards.qty_wood_to_trade);
-		retval = deduct_resources(playernum, ORE, trade_cards.qty_ore_to_trade);
-		retval = deduct_resources(playernum, BRICK, trade_cards.qty_brick_to_trade);
-		retval = deduct_resources(playernum, WHEAT, trade_cards.qty_wheat_to_trade);
-		retval = deduct_resources(playernum, SHEEP, trade_cards.qty_sheep_to_trade);
-		retval = deduct_resources(req_player, WOOD, trade_cards.qty_wood_to_receive);
-		retval = deduct_resources(req_player, ORE, trade_cards.qty_ore_to_receive);
-		retval = deduct_resources(req_player, BRICK, trade_cards.qty_brick_to_receive);
-		retval = deduct_resources(req_player, WHEAT, trade_cards.qty_wheat_to_receive);
-		retval = deduct_resources(req_player, SHEEP, trade_cards.qty_sheep_to_receive);
+		retval = deduct_resources(playernum, WOOD, trade_card.qty_wood_to_trade);
+		retval = deduct_resources(playernum, ORE, trade_card.qty_ore_to_trade);
+		retval = deduct_resources(playernum, BRICK, trade_card.qty_brick_to_trade);
+		retval = deduct_resources(playernum, WHEAT, trade_card.qty_wheat_to_trade);
+		retval = deduct_resources(playernum, SHEEP, trade_card.qty_sheep_to_trade);
+		retval = deduct_resources(req_player, WOOD, trade_card.qty_wood_to_receive);
+		retval = deduct_resources(req_player, ORE, trade_card.qty_ore_to_receive);
+		retval = deduct_resources(req_player, BRICK, trade_card.qty_brick_to_receive);
+		retval = deduct_resources(req_player, WHEAT, trade_card.qty_wheat_to_receive);
+		retval = deduct_resources(req_player, SHEEP, trade_card.qty_sheep_to_receive);
 	}
 	return(retval);
 }
 //-40 = current player doesnt have enough resources
 //-41 = requested player doesnt have enough resources
 //-42 = neither player has enough resources
-int game::check_resources_trade(trade_cards trade, int playernum, int req_player)
+int game::check_resources_trade(trade_cards_offer trade, int playernum, int req_player)
 {
 	int tempcheck = 1;
 	int tempcheckreq = 1;
@@ -730,25 +765,25 @@ int game::check_resources_trade(trade_cards trade, int playernum, int req_player
 	req_player_ptr = player_list.begin() + req_player;
 	player_ptr = player_list.begin() + playernum;
 	//for all checks below, if either player does not have enough cards to fulfill trade, then return error that tells which player doesnt have enough cards
-	if(trade_cards.qty_wood_to_trade < player_ptr.check_resource_amount(WOOD))
+	if(trade.qty_wood_to_trade < player_ptr->check_resource_amount(WOOD))
 		tempcheck = -40;
-	if(trade_cards.qty_ore_to_trade < player_ptr.check_resource_amount(ORE))
+	if(trade.qty_ore_to_trade < player_ptr->check_resource_amount(ORE))
 		tempcheck = -40;		
-	if(trade_cards.qty_brick_to_trade < player_ptr.check_resource_amount(BRICK))
+	if(trade.qty_brick_to_trade < player_ptr->check_resource_amount(BRICK))
 		tempcheck = -40;
-	if(trade_cards.qty_wheat_to_trade < player_ptr.check_resource_amount(WHEAT))
+	if(trade.qty_wheat_to_trade < player_ptr->check_resource_amount(WHEAT))
 		tempcheck = -40;
-	if(trade_cards.qty_sheep_to_trade < player_ptr.check_resource_amount(SHEEP))
+	if(trade.qty_sheep_to_trade < player_ptr->check_resource_amount(SHEEP))
 		tempcheck = -40;
-	if(trade_cards.qty_wood_to_receive < req_player_ptr.check_resource_amount(WOOD))
+	if(trade.qty_wood_to_receive < req_player_ptr->check_resource_amount(WOOD))
 		tempcheckreq = -41;
-	if(trade_cards.qty_ore_to_receive < req_player_ptr.check_resource_amount(ORE))
+	if(trade.qty_ore_to_receive < req_player_ptr->check_resource_amount(ORE))
 		tempcheckreq = -41;
-	if(trade_cards.qty_brick_to_receive < req_player_ptr.check_resource_amount(BRICK))
+	if(trade.qty_brick_to_receive < req_player_ptr->check_resource_amount(BRICK))
 		tempcheckreq = -41;
-	if(trade_cards.qty_wheat_to_receive < req_player_ptr.check_resource_amount(WHEAT))
+	if(trade.qty_wheat_to_receive < req_player_ptr->check_resource_amount(WHEAT))
 		tempcheckreq = -41;
-	if(trade_cards.qty_sheep_to_receive < req_player_ptr.check_resource_amount(SHEEP))
+	if(trade.qty_sheep_to_receive < req_player_ptr->check_resource_amount(SHEEP))
 		tempcheckreq = -41;
 	if(tempcheck == 1)
 		if(tempcheckreq == 1)		//if both = 1, then both players had enough resources
@@ -771,7 +806,7 @@ unsigned int game::get_current_roll()
 //player will contain the player number that started the trade request. if this number does not match the current player number, the trade is invalid
 //if the requested player is different than player and current player, then continue
 //this function should be called after checking with the requested player if they accept the trade, which means the calling function should call check_resources_trade before querying user.
-int game::trade_with_player(trade_cards trade, int playernum, int requested_player, int status_of_trade)
+int game::trade_with_player(trade_cards_offer trade, int playernum, int requested_player, int status_of_trade)
 {
 	int retval = 0;
 	if(status_of_trade == APPROVE_TRADE)
@@ -781,7 +816,7 @@ int game::trade_with_player(trade_cards trade, int playernum, int requested_play
 	//	if(retval >= 0)
 		retval = deduct_resources_trade(trade, playernum, requested_player);		//checks if resources are sufficient and then deducts them if they are
 	}
-	else if(status_of_trade == REJECT_TRADE)	//if the trade failed, this function should return an error code. see error_codes.txt?
+	else if(status_of_trade == DENY_TRADE)	//if the trade failed, this function should return an error code. see error_codes.txt?
 		retval = -43;
 	else
 		retval = -49;

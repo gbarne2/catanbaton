@@ -54,6 +54,9 @@ public:
 	int roads_left(void);
 	int settlements_left(void);
 	int cities_left(void);
+	int update_roads(int);
+	int update_settlements(int);
+	int update_cities(int);
 	~player(void);
 };
 

@@ -14,6 +14,9 @@
 -33		unable to upgrade settlement to city, requesting player does not own the settlement
 -34		a settlement is not build on that corner!
 -35		insufficient resources to build city.
+-36		maximum number of roads reached
+-37		maximum number of settlements reached
+-38		maximum number of cities reached
 
 #trade codes
 -40   The current player/player who started the trade does not have sufficient resources for the proposed trade
