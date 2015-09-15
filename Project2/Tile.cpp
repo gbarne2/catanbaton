@@ -156,6 +156,8 @@ int tile::check_dice_roll()
 	return(roll);
 }
 
+
+
 void tile::build_settlement(int corner, int player)
 {	
 	vector<Corner>::iterator ptr3 = cornersz.begin() + (corner)%6;
@@ -317,23 +319,21 @@ int tile::set_dice_roll(int dicerollval)
 	return(retval);
 }
 
+
 //needs to sum up multiplier of # res player gets for this tile and return to user. should also pass resource type by reference to user.
 //int tile::calculate_resources_from_roll_by_player(int rollval, int playernum, int& res_typee)
 int tile::calculate_resources_from_roll_by_player(int playernum, int& res_typee)
 {
 	int retval = 0;
-//	res_typee = -1;
-//	if(rollval == roll)
-//	{
-		if(!check_robber())		//if the robber is not on this tile, then players get resources
+	if (!check_robber())		//if the robber is not on this tile, then players get resources
+	{
+		res_typee = resource_type;
+		for (ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
 		{
-			res_typee = resource_type;
-			for(ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
-			{
-				if(ptr->property_owner == playernum)
-					retval += ptr->property_type;		//this will be the number of cards the player gets. if for some reason they 'own' the corner but dont have a settlement, it will just add 0, so its safe!
-			}
-//	}
+			if (ptr->property_owner == playernum)
+				retval += ptr->property_type;		//this will be the number of cards the player gets. if for some reason they 'own' the corner but dont have a settlement, it will just add 0, so its safe!
+		}
+	}
 	return(retval);
 }
 

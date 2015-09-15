@@ -797,6 +797,34 @@ int game::check_resources_trade(trade_cards_offer trade, int playernum, int req_
 	return(retval);
 }
 
+int game::update_robber_position(int new_tile)
+{
+	int xcoord = 0;
+	int ycoord = 0;
+	int retval = -60;
+	int temp = 0;
+	if (current_robber_tile != new_tile)
+	{
+		xcoord = determine_x_index_from_tile(new_tile);
+		ycoord = determine_y_index_from_tile(new_tile);
+		temp = pieces[xcoord][ycoord].check_robber();
+		//2nd check because why not?
+		if (!temp)		//if no robber, then we can place the robber on this tile.
+		{
+			pieces[xcoord][ycoord].place_robber();
+			retval = 1;
+			current_robber_tile = new_tile;
+		}
+		else
+		{
+			cout << "Robber already placed on this tile!" << endl;
+			retval = -61;
+
+		}
+	}
+	return(retval);
+}
+
 unsigned int game::get_current_roll()
 {
 	return(current_roll);
@@ -820,6 +848,34 @@ int game::trade_with_player(trade_cards_offer trade, int playernum, int requeste
 		retval = -43;
 	else
 		retval = -49;
+	return(retval);
+}
+
+int game::calculate_card_to_steal(int playernum)
+{
+	int numcards = 0;
+	int card_to_steal = -1;
+	int numwheat, numore, numwood, numsheep, numbrick;
+	numwheat = check_resources(playernum, WHEAT);
+	numore = check_resources(playernum, ORE);
+	numwood = check_resources(playernum, WOOD);
+	numsheep = check_resources(playernum, SHEEP);
+	numbrick = check_resources(playernum, BRICK);
+	numcards = numwheat + numore + numwood + numsheep + numbrick;
+	card_to_steal = rand() % numcards;
+	//do a case statement or something to generate the card to steal. have it teired so if its < numwheat, the steal a wheat, less than numwheat+numore but > numwheat, steal an ore, etc.
+	return(numcards);
+}
+
+//private steal function should be used by internal functions (need to add DV card play and add this to robber)
+int game::steal_random_card(int playernum, int player_to_steal_from)
+{
+	int retval = 0;
+	int number_of_cards = 0;
+	//need to check how many cards the player to steal from has, generate a random # % #cards, and then take that card.	
+	//retval = deduct_resources_trade(trade, playernum, requested_player);		//checks if resources are sufficient and then deducts them if they are
+	number_of_cards = calculate_card_to_steal(playernum);
+	
 	return(retval);
 }
 /*

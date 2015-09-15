@@ -72,6 +72,7 @@ private:
 	tile pieces[X_tiles][Y_tiles]; //data[x][y], invalid indexes will need to be checked against! ((0,3),(0,4),(1,3),(3,1),(4,0),(4,1) dont exist)
 //	vector<tile> pieces;
 	int players;
+	int current_robber_tile;
 	unsigned int current_roll;
 	vector<player>::iterator player_ptr;
 	int assign_resources();
@@ -100,6 +101,8 @@ private:
 	int deduct_resources(int, int, int);
 	int deduct_resources_trade(trade_cards_offer, int, int);
 	int check_resources_trade(trade_cards_offer, int, int);
+	int steal_random_card(int playernum, int player_to_steal_from);
+	int calculate_card_to_steal(int playernum);
 public:
 	game(void);
 	int next_player(void);
@@ -128,7 +131,8 @@ public:
 	int trade_with_player(trade_cards_offer, int, int, int);
 	string get_board_info(void);
 	SOCKET get_player_socket(int);
-	void trade_cards(int player1, int player2, vector<int> offer, vector<int> request);	//player1 offers x to player2 for request.
+	int update_robber_position(int new_pos);
+//	void trade_cards(int player1, int player2, vector<int> offer, vector<int> request);	//player1 offers x to player2 for request.
 			//trade_cards function needs to check if each player has the request. it should also let player1 offer something and not
 			//request something. if request is empty, then player2 can make an offer and then player1 can accept. dont allow free trades.
 			//also should let player2 make counteroffer
@@ -154,7 +158,7 @@ public:
 			pieces[xcoord1][ycoord1].build_settlement(corner1, playernum);
 		if (((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1)))
 			pieces[xcoord2][ycoord2].build_settlement(corner2, playernum);
-//		temp = deduct_resources_settlement(playernum);
+		temp = deduct_resources_settlement(playernum);
 		return(temp);
 
 	}
