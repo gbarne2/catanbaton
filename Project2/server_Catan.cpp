@@ -111,7 +111,6 @@ int send_board_info(game session, char *datain, int size_of_datain);
 int join_game(string name);
 int place_robber();
 int steal_card(int player_taking_card, int player_giving);
-
 static int trade_in_progress = 0;
 static int initiating_player_trade = 0;
 static int requested_player_trade = 0;
@@ -373,9 +372,9 @@ int framehandler(char *datain, int size_of_data)
 	}
 }
 
-int steal_card(int player_taking_card, int player_giving)
+int steal_card(game session, int player_taking_card, int player_giving)
 {
-	cout << "make steal_card function in server_catan.cpp work!" << endl;
+	return(session.steal_random_card(player_taking_card, player_giving));
 }
 
 int place_robber()
@@ -387,6 +386,8 @@ unsigned int read_dice_roll(game session)
 {
 	return(session.get_current_roll());
 }
+
+
 int send_dice_roll(game session)
 {
 	int temp = read_dice_roll(session);
@@ -431,6 +432,7 @@ int send_resources(int playernum)
 	temp2 = send_packet(playernum, tempc, READ_RESOURCES);
 	return(temp2);
 }
+
 int get_qty_roads_remaining(int player_number)
 {
 	return(catan.get_num_roads(player_number));

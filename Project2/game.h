@@ -101,7 +101,6 @@ private:
 	int deduct_resources(int, int, int);
 	int deduct_resources_trade(trade_cards_offer, int, int);
 	int check_resources_trade(trade_cards_offer, int, int);
-	int steal_random_card(int playernum, int player_to_steal_from);
 	int calculate_card_to_steal(int playernum);
 	int deduct_resources_trade_low(int, int, int);
 public:
@@ -125,6 +124,7 @@ public:
 	int build_settlement(int tile_number, int playernum, int corner_numbz);
 	int add_player(int player_num, string player_name);
 	int check_resources(int player, int type);
+	int steal_random_card(int playernum, int player_to_steal_from);
 	int start_turn(int);
 	int start_game(int, vector<string>);
 	int get_dice_roll(int);			//used to get the dice roll of a tile.
