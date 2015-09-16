@@ -23,6 +23,8 @@
 -41   The requested player does not have sufficient resources
 -42   Neither player has sufficient resources to complete trade
 -43   The trade has been rejected by the requested player
+-44   the selected player has no cards to be stolen
+-45   unknown card steal error, no cards will be stolen
 -49   Invalid trade status
 
 #game play codes

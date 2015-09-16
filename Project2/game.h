@@ -103,6 +103,7 @@ private:
 	int check_resources_trade(trade_cards_offer, int, int);
 	int steal_random_card(int playernum, int player_to_steal_from);
 	int calculate_card_to_steal(int playernum);
+	int deduct_resources_trade_low(int, int, int);
 public:
 	game(void);
 	int next_player(void);

@@ -648,6 +648,8 @@ int game::add_player(int player_num, string player_name)
 	players += 1;
 	return(players);
 }
+
+/*
 void game::trade_cards(int player1, int player2, vector<int> offer, vector<int> request)	//player1 offers x to player2 for request.
 			//trade_cards function needs to check if each player has the request. it should also let player1 offer something and not
 			//request something. if request is empty, then player2 can make an offer and then player1 can accept. dont allow free trades.
@@ -656,6 +658,7 @@ void game::trade_cards(int player1, int player2, vector<int> offer, vector<int> 
 	cout << "Trading is prohibited you dirty girl" << endl;
 	throw("Trading has not been implemented yet");
 }
+*/
 
 int game::get_dice_roll(int tilenum)
 {
@@ -729,8 +732,14 @@ int game::start_game(int size, vector<string> player_names)
 int game::deduct_resources(int player, int resource, int qty)
 {
 	player_ptr = player_list.begin() + player;
-	if(qty > 0)		//if non-negative number, assume they meant to deduct the amount and multiply by neg1
+	if (qty > 0)		//if non-negative number, assume they meant to deduct the amount and multiply by neg1
 		qty = qty*(-1);
+	return(player_ptr->update_resources(resource, qty));
+}
+
+int game::deduct_resources_trade_low(int player, int resource, int qty)
+{
+	player_ptr = player_list.begin() + player;
 	return(player_ptr->update_resources(resource, qty));
 }
 
@@ -740,16 +749,16 @@ int game::deduct_resources_trade(trade_cards_offer trade_card, int playernum, in
 	retval = check_resources_trade(trade_card, playernum, req_player);
 	if(retval >= 0)
 	{
-		retval = deduct_resources(playernum, WOOD, trade_card.qty_wood_to_trade);
-		retval = deduct_resources(playernum, ORE, trade_card.qty_ore_to_trade);
-		retval = deduct_resources(playernum, BRICK, trade_card.qty_brick_to_trade);
-		retval = deduct_resources(playernum, WHEAT, trade_card.qty_wheat_to_trade);
-		retval = deduct_resources(playernum, SHEEP, trade_card.qty_sheep_to_trade);
-		retval = deduct_resources(req_player, WOOD, trade_card.qty_wood_to_receive);
-		retval = deduct_resources(req_player, ORE, trade_card.qty_ore_to_receive);
-		retval = deduct_resources(req_player, BRICK, trade_card.qty_brick_to_receive);
-		retval = deduct_resources(req_player, WHEAT, trade_card.qty_wheat_to_receive);
-		retval = deduct_resources(req_player, SHEEP, trade_card.qty_sheep_to_receive);
+		retval = deduct_resources_trade_low(playernum, WOOD, trade_card.qty_wood_to_trade);
+		retval = deduct_resources_trade_low(playernum, ORE, trade_card.qty_ore_to_trade);
+		retval = deduct_resources_trade_low(playernum, BRICK, trade_card.qty_brick_to_trade);
+		retval = deduct_resources_trade_low(playernum, WHEAT, trade_card.qty_wheat_to_trade);
+		retval = deduct_resources_trade_low(playernum, SHEEP, trade_card.qty_sheep_to_trade);
+		retval = deduct_resources_trade_low(req_player, WOOD, trade_card.qty_wood_to_receive);
+		retval = deduct_resources_trade_low(req_player, ORE, trade_card.qty_ore_to_receive);
+		retval = deduct_resources_trade_low(req_player, BRICK, trade_card.qty_brick_to_receive);
+		retval = deduct_resources_trade_low(req_player, WHEAT, trade_card.qty_wheat_to_receive);
+		retval = deduct_resources_trade_low(req_player, SHEEP, trade_card.qty_sheep_to_receive);
 	}
 	return(retval);
 }
@@ -855,14 +864,33 @@ int game::calculate_card_to_steal(int playernum)
 {
 	int numcards = 0;
 	int card_to_steal = -1;
+	int card = -1;
 	int numwheat, numore, numwood, numsheep, numbrick;
+	//all numbers should be between 
 	numwheat = check_resources(playernum, WHEAT);
 	numore = check_resources(playernum, ORE);
 	numwood = check_resources(playernum, WOOD);
 	numsheep = check_resources(playernum, SHEEP);
 	numbrick = check_resources(playernum, BRICK);
 	numcards = numwheat + numore + numwood + numsheep + numbrick;
-	card_to_steal = rand() % numcards;
+	card_to_steal = (rand()*100) % numcards + 1;
+	if (numcards > 0)
+	{
+		if (card_to_steal <= numwheat)
+			card = WHEAT;
+		else if (card_to_steal <= (numwheat + numore))
+			card = ORE;
+		else if (card_to_steal <= (numwheat + numore + numwood))
+			card = WOOD;
+		else if (card_to_steal <= (numwheat + numore + numwood + numsheep))
+			card = SHEEP;
+		else if ((numbrick > 0) && (card_to_steal > (numwheat + numore + numwood + numsheep)))
+			card = BRICK;
+		else
+			card = -45;			//unknown card steal error, no card will be stolen.
+	}
+	else
+		card = -44;		//error code to indicate that the player doesnt have enough cards to steal
 	//do a case statement or something to generate the card to steal. have it teired so if its < numwheat, the steal a wheat, less than numwheat+numore but > numwheat, steal an ore, etc.
 	return(numcards);
 }
@@ -871,11 +899,19 @@ int game::calculate_card_to_steal(int playernum)
 int game::steal_random_card(int playernum, int player_to_steal_from)
 {
 	int retval = 0;
-	int number_of_cards = 0;
+	int card_to_steal = 0;
 	//need to check how many cards the player to steal from has, generate a random # % #cards, and then take that card.	
 	//retval = deduct_resources_trade(trade, playernum, requested_player);		//checks if resources are sufficient and then deducts them if they are
-	number_of_cards = calculate_card_to_steal(playernum);
-	
+	card_to_steal = calculate_card_to_steal(playernum);
+	retval = deduct_resources_trade_low(player_to_steal_from, card_to_steal, -1);
+	if (retval < 0)
+	{
+		cout << "oh no! fatal error! shit fuck titty cock! the player stolen from has negative cards. adding one card back." << endl;
+		deduct_resources_trade_low(player_to_steal_from, card_to_steal, 1);
+		return(retval);
+	}
+	else
+		retval = deduct_resources_trade_low(playernum, card_to_steal, 1);	
 	return(retval);
 }
 /*
