@@ -132,7 +132,7 @@ int framehandler(char *datain, int size_of_data)
 	string tempstring;
 	int datasize = datain[6];
 	char *nulptr;
-	int retval = 0;
+	int retval = 0;	
 	if ((datain[0] == 'S') && (datain[1] == 8) && (datain[2] == 53) && (datain[3] == 'p'))
 	{
 		cout << "Valid packet received.... Processing" << endl;
@@ -462,6 +462,17 @@ int join_game(int player_number, string name)
 	//needs to figure out what the next player number is, save the clientsocket off to player data, tell the client that, and keep waiting for more players until game is started
 }
 
+int packetHandler(SOCKET tempsock, char& buffer, int size)
+{
+	char *temp = new char [4+size];
+	temp[0] = 'S';
+	temp[1] = 8;
+	temp[2] = 53;
+	temp[3] = 'p';
+	strcat(temp, buffer);
+	serv.sendPacket(tempsock, temp);
+}
+
 int send_packet(int player_num, int data_to_send, int packet_type)
 {
 	string datastr;
@@ -474,7 +485,8 @@ int send_packet(int player_num, int data_to_send, int packet_type)
 	char *temp = new char [datastr.length() + 2];
 	strcpy(temp, datastr.c_str());
 	tempsock = catan.get_player_socket(player_num);
-	retval = serv.sendPacket(tempsock, temp);
+	retval = packetHandler(tempsock, temp, datastr.length() + 2);
+//	retval = serv.sendPacket(tempsock, temp);
 	delete[] temp;
 	return(retval);
 	//return(sendPacket())
@@ -490,7 +502,8 @@ int send_packet(int player_num, string data_to_send, int packet_type)
 	strcpy(temp, tempchar);
 	strcat(temp, data_to_send.c_str());
 	tempsock = catan.get_player_socket(player_num);
-	retval = serv.sendPacket(tempsock, temp);
+	retval = packetHandler(tempsock, temp, datastr.length() + 2);
+//	retval = serv.sendPacket(tempsock, temp);
 	delete[] temp;
 	return(retval);
 }
@@ -505,7 +518,8 @@ int send_packet(int player_num, char *data_to_send, int packet_type)
 	temp[0] = packet_type;
 	strcat(temp, data_to_send);
 	tempsock = catan.get_player_socket(player_num);
-	retval = serv.sendPacket(tempsock, temp);
+	retval = packetHandler(tempsock, temp, datastr.length() + 2);
+//	retval = serv.sendPacket(tempsock, temp);
 	return(retval);
 }
 //Notes
