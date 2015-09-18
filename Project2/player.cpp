@@ -44,7 +44,7 @@ player::~player(void)
 {
 }
 
-int player::set_client_address(sockaddr Client_addr, SOCKET clientsock)
+void player::set_client_address(sockaddr Client_addr, SOCKET clientsock)
 {
 	client_address = Client_addr;
 }

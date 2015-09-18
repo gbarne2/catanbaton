@@ -377,8 +377,31 @@ int steal_card(game session, int player_taking_card, int player_giving)
 	return(session.steal_random_card(player_taking_card, player_giving));
 }
 
-int place_robber()
+int place_robber(game session, int tilenum, int playernum)
 {
+	int retval = 0;
+	int count = 0;
+	int temp = 0;
+	int temp2 = 0;
+	int players_on_tile[3] = { 0,0,0 };
+	retval = session.update_robber_position(tilenum);
+	for (int i = 0; i < 6; i++)
+	{
+		count = count % 3;
+		temp = session.check_corner_owner(i, tilenum);
+		temp2 = temp;
+		for (int x = 0; x < count; x++)
+			if (temp == players_on_tile[count])
+				temp2 = 0;
+		if (temp2 != 0)
+		{
+			players_on_tile[count] = temp2;
+			count += 1;
+			temp = 0;
+			temp2 = 0;
+		}
+	}
+	return(count);
 	cout << "need to make function place_robber in server_catan send a packet to current player to tell them to place the robber and what player to steal a resource card from" << endl;
 }
 
@@ -469,7 +492,7 @@ int packetHandler(SOCKET tempsock, char& buffer, int size)
 	temp[1] = 8;
 	temp[2] = 53;
 	temp[3] = 'p';
-	strcat(temp, buffer);
+	strcat(temp, &buffer);
 	serv.sendPacket(tempsock, temp);
 }
 
@@ -485,7 +508,7 @@ int send_packet(int player_num, int data_to_send, int packet_type)
 	char *temp = new char [datastr.length() + 2];
 	strcpy(temp, datastr.c_str());
 	tempsock = catan.get_player_socket(player_num);
-	retval = packetHandler(tempsock, temp, datastr.length() + 2);
+	retval = packetHandler(tempsock, *temp, datastr.length() + 2);
 //	retval = serv.sendPacket(tempsock, temp);
 	delete[] temp;
 	return(retval);
@@ -502,7 +525,7 @@ int send_packet(int player_num, string data_to_send, int packet_type)
 	strcpy(temp, tempchar);
 	strcat(temp, data_to_send.c_str());
 	tempsock = catan.get_player_socket(player_num);
-	retval = packetHandler(tempsock, temp, datastr.length() + 2);
+	retval = packetHandler(tempsock, *temp, datastr.length() + 2);
 //	retval = serv.sendPacket(tempsock, temp);
 	delete[] temp;
 	return(retval);
@@ -518,7 +541,7 @@ int send_packet(int player_num, char *data_to_send, int packet_type)
 	temp[0] = packet_type;
 	strcat(temp, data_to_send);
 	tempsock = catan.get_player_socket(player_num);
-	retval = packetHandler(tempsock, temp, datastr.length() + 2);
+	retval = packetHandler(tempsock, *temp, datastr.length() + 2);
 //	retval = serv.sendPacket(tempsock, temp);
 	return(retval);
 }

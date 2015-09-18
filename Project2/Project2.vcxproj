@@ -82,7 +82,6 @@
     <ClCompile Include="catanBaton.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="game.cpp" />
-    <ClCompile Include="server_Catan.cpp" />
     <ClCompile Include="tcpclient.cpp" />
     <ClCompile Include="tcpserver.cpp" />
     <ClCompile Include="Tile.cpp" />
@@ -101,6 +100,7 @@
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd" />
+    <None Include="RibbonFile.mfcribbon-ms" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CatanBaton.rc" />

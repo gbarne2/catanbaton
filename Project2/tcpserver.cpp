@@ -113,9 +113,10 @@ int tcpserver::sendPacket(SOCKET ClientSocket, char *data)
 	if (iSendResult == SOCKET_ERROR) {
 		printf("send failed with error: %d\n", WSAGetLastError());
 		cleanup(ClientSocket);
-		return 1;
+		return -1;
 	}
 	printf("Bytes sent: %d\n", iSendResult);
+	return(0);
 }
 
 

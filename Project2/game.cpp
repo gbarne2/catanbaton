@@ -418,7 +418,7 @@ int game::deduct_resources_devcard(int playernum)
 int game::check_number_cities_left(int playernum)
 {
 	player_ptr = player_list.begin() + playernum;
-	return(player_ptr->cities_left);
+	return(player_ptr->cities_left());
 }
 
 int game::upgrade_settlement(int tilenum, int playernum, int cornernum)
@@ -497,7 +497,7 @@ void game::get_corners_from_road(int road_numb, int& corner1, int& corner2)
 int game::check_number_roads_left(int playernum)
 {
 	player_ptr = player_list.begin() + playernum;
-	return(player_ptr->roads_left);
+	return(player_ptr->roads_left());
 }
 
 int game::build_roads(int tile_number, int playernum, int road_numb)
@@ -667,7 +667,7 @@ int game::get_dice_roll(int tilenum)
 }
 
 //this function needs to roll the dice, compute the resources awarded to each player, give those resources to player, and handle the case of 7!
-int game::start_turn(int rollnumvalam)
+int game::start_turn(int rollnumva)
 {
 	int temppppp = 0;
 //	int rollnumvalamt = 0;
@@ -812,6 +812,7 @@ int game::update_robber_position(int new_tile)
 	int ycoord = 0;
 	int retval = -60;
 	int temp = 0;
+	int players_on_tile[3] = { 0,0,0 };
 	if (current_robber_tile != new_tile)
 	{
 		xcoord = determine_x_index_from_tile(new_tile);

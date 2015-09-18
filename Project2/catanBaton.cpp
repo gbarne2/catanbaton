@@ -123,14 +123,15 @@ BOOL WINAPI ConsoleHandler(DWORD ctrl_type)
 char* tempaddr = "127.0.0.1";
 
 
-void srvinit(tcpserver tcpserv)
+void srvinit(game session, tcpserver tcpserv)
 {
 	//will need to spawn a new thread for each players connection. the connection shouldnt be closed until either the end of the game or the player leaves the game
 	cout << "Starting server server" << endl;
-	tcpserv.initializeServer();
-	tcpserv.receiveUntilDoneWithEcho();
-	tcpserv.shutDownClientSocket();
-	tcpserv.cleanup();
+	SOCKET tempsocket = INVALID_SOCKET;
+	tempsocket = tcpserv.initializeServer(tempsocket);
+	tcpserv.receiveUntilDoneWithEcho(tempsocket);
+	tcpserv.shutDownClientSocket(tempsocket);
+	tcpserv.cleanup(tempsocket);
 }
 
 void clinit(tcpclient tcpcli)
@@ -150,6 +151,7 @@ int main()
 	int current_player = 0;
 	int	rollnumvalamt = 0;
 	int number_of_players = 0;
+	char tempp = 0;
 	HANDLE console_handle;
 	COORD dwSize;
 	COORD dwPosition;
@@ -164,12 +166,16 @@ int main()
 	CONSOLE_CURSOR_INFO cursor_info;
 	tcpclient client(tempaddr);
 	tcpserver server(tempaddr);
-	thread uno(srvinit, server);
+	thread uno(srvinit, catan, server);
 	thread dos(clinit, client);
 	cout << endl << "threads are running! this is from the main thread" << endl;
-	Sleep(10000);
+	Sleep(3000);
 	uno.join();
 	dos.join();
+	cout << "type a number" << endl;
+	cin >> user_input;
+	cout << "you entered " << user_input << endl;
+	cout << "Test";
 	console_handle = CreateConsoleScreenBuffer(GENERIC_READ|GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 	SetConsoleActiveScreenBuffer(console_handle);
 	SetConsoleCtrlHandler(ConsoleHandler, TRUE);
@@ -177,7 +183,7 @@ int main()
 	dwSize.Y = 50;
 	SetConsoleScreenBufferSize(console_handle, dwSize);
 	cursor_info.dwSize = 1;
-	cursor_info.bVisible = FALSE;
+	cursor_info.bVisible = TRUE;
 	SetConsoleCursorInfo(console_handle, &cursor_info);
 //	SetConsoleTitle("Catan Baton!");
 	SetConsoleTextAttribute(console_handle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
@@ -212,9 +218,11 @@ int main()
 	//catan.temp_build_settlement(9,  2, cornE);
 	SetConsoleCursorPosition(console_handle, dwPosition);
 	WriteFile(console_handle, "\n\n\n", 3, &written, NULL);
+	cin.clear();
+	cin.ignore(INT_MAX, 0);
 	while(x != 69)		//loop and wait for user input then do what they want.
 	{
-		Sleep(50);
+		Sleep(5000);
 		SetConsoleTextAttribute(console_handle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 		SetConsoleCursorPosition(console_handle, dwPosition);	
 		if(current_player == 1)
@@ -247,8 +255,12 @@ int main()
 		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
 		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
 		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
+		cin.clear();
 		SetConsoleCursorPosition(console_handle, dwPosition2);	
+		cin.clear();
+		cin.ignore(0);
 		cin >> user_input;
+
 		switch(user_input)
 		{
 		case 1: 			
@@ -338,6 +350,7 @@ int main()
 				tempstrtowrite = std::stringstream();
 			}			
 			WriteFile(console_handle, "Press enter when finished\n", 26, &written, NULL);
+			cin.ignore();
 			cin >> user_input3;
 			cin.clear();
 			cin.ignore(INT_MAX, '\n');
@@ -345,11 +358,27 @@ int main()
 		case 5:
 			SetConsoleCursorPosition(console_handle, dwPosition2);
 			rollnumvalamt = (rand()*rand()) % 11 + 2;
-			tempstrtowrite << "Dice roll: " << rollnumvalamt << "   " << endl;
 			temp = catan.start_turn(rollnumvalamt);
+			tempstrtowrite << "Dice roll: " << temp << "   " << endl;
 			tempstrtowrite << "Return value: " << temp << "   " << endl;
 			WriteFile(console_handle, tempstrtowrite.str().c_str(), 32, &written, NULL);
 			tempstrtowrite = std::stringstream();
+			if (temp == 7)
+			{
+				tempstrtowrite << "A 7 has been rolled, what tile do you want to place the robber on?" << endl;
+				WriteFile(console_handle, tempstrtowrite.str().c_str(), 67, &written, NULL);
+				cin >> user_input3;
+				temp = catan.update_robber_position(user_input3 % active_num_tiles);
+				tempstrtowrite = std::stringstream();
+				if (temp > 0)
+					tempstrtowrite << "Robber placed on tile " << temp << endl;
+				else
+					tempstrtowrite << "Robber was not placed!!" << endl;
+				WriteFile(console_handle, tempstrtowrite.str().c_str(), 24, &written, NULL);
+				tempstrtowrite = std::stringstream();
+			}
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
 //			tempstrtowrite.clear();
 			break;
 		case 6:
@@ -359,10 +388,14 @@ int main()
 			exit(1);
 			break;
 		default:
+			cin.clear();
 			break;
 		}
+		user_input = NULL;
 		SetConsoleCursorPosition(console_handle, dwPosition);	
 		tempstrtowrite = std::stringstream();
+		cin.clear();
+		cin.ignore(INT_MAX, '\n');
 	}
 		
 	//	Sleep(30000);
