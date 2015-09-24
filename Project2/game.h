@@ -5,7 +5,7 @@
 #include "Tile.h"
 
 #define APPROVE_TRADE 	1
-#define DENY_TRADE	0
+#define DENY_TRADE	-43
 
 #define X_tiles 5
 #define Y_tiles 5

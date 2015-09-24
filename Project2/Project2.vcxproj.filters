@@ -53,13 +53,13 @@
     <ClCompile Include="tcpserver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="server_Catan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
     <None Include="ClassDiagram1.cd">
-      <Filter>Source Files</Filter>
-    </None>
-    <None Include="RibbonFile.mfcribbon-ms">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>

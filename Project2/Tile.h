@@ -81,7 +81,7 @@ public:
 	int check_robber(void);
 	void place_robber(void);
 	void remove_robber(void);
-	string get_tile_data_string(void);
+	string get_tile_data_string(int);
 
 	//i really need corners to be a struct, and it needs to contain the following info
 	//if road is connectect to it from another tile (really just if a road is connected to that point)

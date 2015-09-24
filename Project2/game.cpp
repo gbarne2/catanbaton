@@ -853,9 +853,10 @@ int game::trade_with_player(trade_cards_offer trade, int playernum, int requeste
 	//	retval = check_resources_trade(trade, playernum, requested_player);	
 	//	if(retval >= 0)
 		retval = deduct_resources_trade(trade, playernum, requested_player);		//checks if resources are sufficient and then deducts them if they are
+		retval = APPROVE_TRADE;
 	}
 	else if(status_of_trade == DENY_TRADE)	//if the trade failed, this function should return an error code. see error_codes.txt?
-		retval = -43;
+		retval = DENY_TRADE;
 	else
 		retval = -49;
 	return(retval);
@@ -946,7 +947,7 @@ string game::get_board_info()
 	{
 		tempy = determine_y_index_from_tile(x);
 		tempx = determine_x_index_from_tile(x);
-		data_out += pieces[tempx][tempy].get_tile_data_string();
+		data_out += pieces[tempx][tempy].get_tile_data_string(x);
 	}
 	return(data_out);
 }

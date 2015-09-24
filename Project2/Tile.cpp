@@ -1,5 +1,7 @@
 ﻿#include "Tile.h"
 #include <iomanip>
+#include <cstdint>
+#include <cassert>
 #include <iostream>
 
 using namespace std;
@@ -352,9 +354,9 @@ void tile::remove_robber()
 	robber_on_tile = 0;
 }
 
-string tile::get_tile_data_string()
+string tile::get_tile_data_string(int tilenum)
 {
-	string temp_string;
+	string temp_string = "";
 	int count = 0;
 	//need to send the following data 
 	//roll
@@ -364,6 +366,7 @@ string tile::get_tile_data_string()
 
 	//Data format
 	//"S"		-> beginning of each tile object.
+	//datasize
 	//resource type
 	//roll
 	//roads[0]
@@ -382,12 +385,15 @@ string tile::get_tile_data_string()
 			//2nd player connected
 			//.... 
 			//(number of players connected) player connected
-	string data_out = "S" + resource_type + roll;
+	string data_out = "" + tilenum + resource_type + roll;
+	string data_out_final = "S";
+	int tempnum = 0;
 	for (int x = 0; x < 6; x++)
 		data_out += roads[x];
 	for (ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
 	{
-		data_out += ptr->corner_index + ptr->road_connected + ptr->property_owner + ptr->property_type;
+		data_out += ptr->corner_index + ptr->road_connected + ptr->property_owner 
+			+ ptr->property_type;
 		count = 0;
 		for (vector<int>::iterator tempptr = ptr->players_connected.begin(); tempptr < ptr->players_connected.end(); tempptr++)
 		{
@@ -397,7 +403,9 @@ string tile::get_tile_data_string()
 		data_out += count;
 		data_out += temp_string;
 	}
-	return(data_out);
+	tempnum = data_out.c_str.size();
+	data_out_final += tempnum + data_out.c_str();
+	return(data_out_final);
 }
 /*
 						coordinates are (x,y)

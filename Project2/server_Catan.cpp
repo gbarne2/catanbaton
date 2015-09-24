@@ -287,7 +287,7 @@ int framehandler(char *datain, int size_of_data)
 				if (retval >= 0)		//if a success, then send player new board layout!
 					send_board_info(catan, nulptr, 0);
 				else
-					send_packet(player_number, -32, UPGRADE_SETTLEMENT);
+					send_packet(player_number, -33, UPGRADE_SETTLEMENT);
 			}
 			break;
 		case BUY_DV_CARD:		//should allow user to buy more than 1 at once?
@@ -304,6 +304,7 @@ int framehandler(char *datain, int size_of_data)
 			//data field:
 			break;
 		case GET_TIME_LIMIT:
+			send_packet(player_number, 1000, GET_TIME_LIMIT);
 			break;
 		case START_GAME:
 			//data field:
