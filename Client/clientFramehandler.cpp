@@ -129,7 +129,7 @@ int clientFrameHandler(char* datain)
 			//should send data about this player to the server, like their name and stuff?
 			break;
 		case SEND_DICE_ROLL:
-			retval = dice_roll(datain[dataptr]);
+			retval = dice_roll(datain[dataptr++]);
 			flag_rx_packet_needs_processing = 1;
 			break;
 		case GET_QTY_ROADS_LEFT:
@@ -223,6 +223,16 @@ int clientFrameHandler(char* datain)
 				cout << "You just stole a card, u thug masta G, card stolen: "  << retval << endl;
 			flag_rx_packet_needs_processing = 1;
 			break;
+		case START_TURN:
+		//datastructure:
+		//datain[0] = current_player -> whose turn it is
+		//datain[1] = is current_player you? if 1, yes and go. if 0, not your turn.
+			current_players_turn = datain[dataptr++];
+			if(datain[dataptr] == 1)
+				cout << "It is my turn! End turn should actually handle starting turn. client needs to send this packet to 'roll' the dice" << endl;
+			//this should maybe just update whose turn it is.
+			break;
+			
 		default:
 			retval = INVALID_PACKET_TYPE;
 		}
