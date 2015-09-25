@@ -31,7 +31,7 @@ What does the client need to define / do
 #include <vector>
 #include <iomanip>
 #include <string>
-#include "clientCatan.h"
+#include "clientFramehandler.h"
 #include "Tile_client.h"
 
 using namespace std;
