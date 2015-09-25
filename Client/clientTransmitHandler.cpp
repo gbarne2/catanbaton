@@ -65,7 +65,7 @@ int sendPacketTX(int player, int data, int packet_type)
 	return(retval);
 }
 
-int proposeTrade(int player_to_trade, trade_cards_offer trade)
+int tx_proposeTrade(int player_to_trade, trade_cards_offer trade)
 {
 	string data = "";
 	data += player_to_trade;
@@ -82,7 +82,7 @@ int proposeTrade(int player_to_trade, trade_cards_offer trade)
 	return(sendPacketTX(player_to_trade, data, PROPOSE_TRADE));
 }
 
-int accept_or_reject_trade(int player_to_trade, int status)
+int tx_accept_or_reject_trade(int player_to_trade, int status)
 {
 	string data = "";
 	data += player_to_trade;
@@ -91,9 +91,14 @@ int accept_or_reject_trade(int player_to_trade, int status)
 	return(sendPacketTX(player_to_trade, data, ACCEPT_REJECT_TRADE));
 }
 
-int start_turn()
+int tx_start_turn()
 {
 	string data = "";
 	data += START_TURN;
 	return(packetAssembler(data.c_str(), data.length()));
+}
+
+int tx_end_turn()
+{
+	return(sendPacketTX(0, 1, END_TURN));
 }
