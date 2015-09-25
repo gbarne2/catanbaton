@@ -1,19 +1,155 @@
-﻿Build started 9/17/2015 9:26:14 PM.
+﻿Build started 9/25/2015 1:16:56 AM.
      1>Project "C:\Users\gtb\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt catanBaton.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ..\Client\clientFramehandler.cpp ..\Client\playerClient.cpp catanBaton.cpp clientTransmitHandler.cpp
+         clientTransmitHandler.cpp
+     1>c:\users\gtb\documents\github\catanbaton\project2\clienttransmithandler.cpp(1): fatal error C1083: Cannot open include file: 'clientTransmitHandler.h': No such file or directory
          catanBaton.cpp
-       Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.exe" /INCREMENTAL /NOLOGO /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.lib" /MACHINE:X86 Debug\CatanBaton.res
-         Debug\catanBaton.obj
-         Debug\player.obj
-         Debug\game.obj
-         Debug\tcpclient.obj
-         Debug\tcpserver.obj
-         Debug\Tile.obj
-         Project2.vcxproj -> C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.exe
-     1>Done Building Project "C:\Users\gtb\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" (Build target(s)).
+     1>c:\users\gtb\documents\github\catanbaton\project2\catanbaton.cpp(45): fatal error C1083: Cannot open include file: 'clientTransmitHandler.h': No such file or directory
+         playerClient.cpp
+     1>c:\users\gtb\documents\github\catanbaton\client\playerclient.cpp(168): error C2556: 'void playerClient::set_player_num(int)': overloaded function differs only by return type from 'int playerClient::set_player_num(int)'
+         c:\users\gtb\documents\github\catanbaton\client\playerclient.h(60): note: see declaration of 'playerClient::set_player_num'
+     1>c:\users\gtb\documents\github\catanbaton\client\playerclient.cpp(168): error C2371: 'playerClient::set_player_num': redefinition; different basic types
+         c:\users\gtb\documents\github\catanbaton\client\playerclient.h(60): note: see declaration of 'playerClient::set_player_num'
+         clientFramehandler.cpp
+     1>c:\users\gtb\documents\github\catanbaton\client\clientframehandler.h(21): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\users\gtb\documents\github\catanbaton\client\clientframehandler.h(21): error C2146: syntax error: missing ';' before identifier 'board'
+     1>c:\users\gtb\documents\github\catanbaton\client\clientframehandler.h(26): error C3646: 'vector': unknown override specifier
+     1>c:\users\gtb\documents\github\catanbaton\client\clientframehandler.h(26): error C2059: syntax error: '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(17): error C2870: 'std': a namespace definition must appear either at file scope or immediately within another namespace definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(26): error C2065: 'tuple': undeclared identifier
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(26): error C2059: syntax error: '>'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(26): error C2976: 'std::_Tuple_enable': too few template arguments
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(22): note: see declaration of 'std::_Tuple_enable'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(26): error C2988: unrecognizable template declaration/definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(26): error C2143: syntax error: missing ';' before ','
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(26): error C2913: explicit specialization; 'std::_Tuple_enable' is not a specialization of a class template
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(26): error C2059: syntax error: ','
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(27): error C2143: syntax error: missing ';' before '{'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(27): error C2447: '{': missing function header (old-style formal list?)
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(42): error C3855: 'std::_Tuple_enable': template parameter '_Dest' is incompatible with the declaration
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(42): error C2977: 'std::_Tuple_enable': too many template arguments
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(35): note: see declaration of 'std::_Tuple_enable'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(87): error C2988: unrecognizable template declaration/definition
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(118): note: see reference to class template instantiation 'std::_Tuple_val<_Ty>' being compiled
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(88): error C2143: syntax error: missing ',' before '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(87): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(96): error C2988: unrecognizable template declaration/definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(97): error C2143: syntax error: missing ',' before '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(96): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(96): error C2535: 'std::_Tuple_val<_Ty>::_Tuple_val(const _Alloc &,int)': member function already defined or declared
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(87): note: see declaration of 'std::_Tuple_val<_Ty>::_Tuple_val'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(107): error C2988: unrecognizable template declaration/definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(108): error C2143: syntax error: missing ',' before '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(107): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(107): error C2535: 'std::_Tuple_val<_Ty>::_Tuple_val(const _Alloc &,int)': member function already defined or declared
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(87): note: see declaration of 'std::_Tuple_val<_Ty>::_Tuple_val'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(135): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(144): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(144): error C2535: 'std::tuple<>::tuple(void) noexcept': member function already defined or declared
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(135): note: see declaration of 'std::tuple<>::tuple'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(203): error C2061: syntax error: identifier 'allocator_arg_t'
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(463): note: see reference to class template instantiation 'std::tuple<_This,_Rest...>' being compiled
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(219): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(241): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(264): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(264): error C2535: 'std::tuple<_This,_Rest...>::tuple(void)': member function already defined or declared
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(203): note: see declaration of 'std::tuple<_This,_Rest...>::tuple'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(313): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(313): error C2535: 'std::tuple<_This,_Rest...>::tuple(void)': member function already defined or declared
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(219): note: see declaration of 'std::tuple<_This,_Rest...>::tuple'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(320): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(320): error C2535: 'std::tuple<_This,_Rest...>::tuple(void)': member function already defined or declared
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(219): note: see declaration of 'std::tuple<_This,_Rest...>::tuple'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(344): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(344): error C2988: unrecognizable template declaration/definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(344): error C2143: syntax error: missing ',' before '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(357): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(376): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(376): error C2988: unrecognizable template declaration/definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(376): error C2143: syntax error: missing ',' before '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(386): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(386): error C2535: 'std::tuple<_This,_Rest...>::tuple(void)': member function already defined or declared
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(219): note: see declaration of 'std::tuple<_This,_Rest...>::tuple'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(399): error C2061: syntax error: identifier 'pair'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(412): error C2061: syntax error: identifier 'allocator_arg_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(412): error C2535: 'std::tuple<_This,_Rest...>::tuple(void)': member function already defined or declared
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(357): note: see declaration of 'std::tuple<_This,_Rest...>::tuple'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(434): error C2061: syntax error: identifier 'pair'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(441): error C2805: binary 'operator =' has too few parameters
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(535): error C2065: 'is_void': undeclared identifier
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(541): note: see reference to class template instantiation 'std::_Tuple_element<_This,std::tuple<_This,_Rest...>>' being compiled
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(536): error C2226: syntax error: unexpected type 'std::_Tuple_element<_This,std::tuple<_Rest...>>::_Check_type'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(537): error C2238: unexpected token(s) preceding ';'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(563): error C2143: syntax error: missing ';' before '<'
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(564): note: see reference to class template instantiation 'std::_Tuple_element<_Ty,const _Tuple>' being compiled
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(563): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(563): error C2238: unexpected token(s) preceding ';'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(572): error C2143: syntax error: missing ';' before '<'
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(573): note: see reference to class template instantiation 'std::_Tuple_element<_Ty,volatile _Tuple>' being compiled
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(572): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(572): error C2238: unexpected token(s) preceding ';'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(581): error C2143: syntax error: missing ';' before '<'
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(582): note: see reference to class template instantiation 'std::_Tuple_element<_Ty,volatile const _Tuple>' being compiled
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(581): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(581): error C2238: unexpected token(s) preceding ';'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(587): error C2988: unrecognizable template declaration/definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(587): error C2143: syntax error: missing ';' before '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(587): error C2433: 'tuple_element': 'inline' not permitted on data declarations
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(587): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(587): error C2059: syntax error: '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(597): error C2065: '_Types': undeclared identifier
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(597): error C3544: '_Types': parameter pack expects a type template argument
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(598): error C2065: '_Types': undeclared identifier
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(598): error C3544: '_Types': parameter pack expects a type template argument
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(599): error C2143: syntax error: missing ';' before '{'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(599): error C2447: '{': missing function header (old-style formal list?)
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(607): error C2988: unrecognizable template declaration/definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(607): error C2143: syntax error: missing ';' before '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(607): error C2433: 'tuple_element': 'inline' not permitted on data declarations
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(607): error C4430: missing type specifier - int assumed. Note: C++ does not support default-int
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(607): error C2374: 'std::tuple_element': redefinition; multiple initialization
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(587): note: see declaration of 'std::tuple_element'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(607): error C2059: syntax error: '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(620): error C2065: '_Types': undeclared identifier
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(620): error C3544: '_Types': parameter pack expects a type template argument
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(621): error C2143: syntax error: missing ';' before '{'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(621): error C2447: '{': missing function header (old-style formal list?)
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(644): error C2146: syntax error: missing '>' before identifier '_Unrefwrap'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(644): error C2947: expecting '>' to terminate template-argument-list, found '<'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(644): error C2433: '_Types': 'inline' not permitted on data declarations
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(644): error C2365: '_Types': redefinition; previous definition was 'template parameter'
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(643): note: see declaration of '_Types'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(644): error C2988: unrecognizable template declaration/definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(644): error C2059: syntax error: '>'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(653): error C2065: '_Types': undeclared identifier
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(653): error C2059: syntax error: '...'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(655): error C2143: syntax error: missing ';' before '{'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(655): error C2447: '{': missing function header (old-style formal list?)
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(678): error C2065: 'integer_sequence': undeclared identifier
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(678): error C2275: 'size_t': illegal use of this type as an expression
+         c:\users\gtb\documents\github\catanbaton\project2\predefined c++ types (compiler internal)(16): note: see declaration of 'size_t'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(678): error C2974: 'std::_Cat_sequences': invalid template argument for '_Seq_type1', type expected
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(674): note: see declaration of 'std::_Cat_sequences'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(678): error C2974: 'std::_Cat_sequences': invalid template argument for '_Seq_type2', type expected
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(674): note: see declaration of 'std::_Cat_sequences'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(678): error C2988: unrecognizable template declaration/definition
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(678): error C2143: syntax error: missing ';' before ','
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(678): error C3855: 'std::_Cat_sequences': template parameter '_Seq_type1' is incompatible with the declaration
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(678): error C3855: 'std::_Cat_sequences': template parameter '_Seq_type2' is incompatible with the declaration
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(678): error C2059: syntax error: ','
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(680): error C2143: syntax error: missing ';' before '{'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(680): error C2447: '{': missing function header (old-style formal list?)
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(709): error C2065: '_Always_false': undeclared identifier
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(711): note: see reference to class template instantiation 'std::_View_as_tuple<_Ty,_For_array...>' being compiled
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(709): error C2065: 'value': undeclared identifier
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(721): error C2065: 'pair': undeclared identifier
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(721): error C2974: 'std::_View_as_tuple': invalid template argument for '_Ty', type expected
+         c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(708): note: see declaration of 'std::_View_as_tuple'
+     1>c:\program files (x86)\microsoft visual studio 14.0\vc\include\tuple(721): fatal error C1003: error count exceeds 100; stopping compilation
+         Generating Code...
+     1>Done Building Project "C:\Users\gtb\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" (Build target(s)) -- FAILED.
 
-Build succeeded.
+Build FAILED.
 
-Time Elapsed 00:00:02.77
+Time Elapsed 00:00:02.97

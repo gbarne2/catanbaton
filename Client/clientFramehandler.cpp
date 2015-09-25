@@ -33,6 +33,7 @@ What does the client need to define / do
 #include <string>
 #include "clientFramehandler.h"
 #include "Tile_client.h"
+#include "playerClient.h"
 
 using namespace std;
 
@@ -72,8 +73,9 @@ using namespace std;
 #define DENY_TRADE						-43
 
 static trade_cards_offer trade_to_process;
+static playerClient playerdata;
 
-int frameHandler(char* datain)
+int clientFrameHandler(char* datain)
 {
 	int dataptr = 7;		//use this to grab data from datain buffer.
 	int tempdata = 0;
@@ -180,10 +182,17 @@ int frameHandler(char* datain)
 			}
 			else
 				retval = FAILED_TO_UPGRADE_SETTLEMENT;
+//			flag_rx_packet_needs_processing = 1;
 			break;
 		case BUY_DV_CARD:
 			break;
 		case READ_RESOURCES:
+			playerdata.update_resources(1, datain[dataptr++]);
+			playerdata.update_resources(2, datain[dataptr++]);
+			playerdata.update_resources(3, datain[dataptr++]);
+			playerdata.update_resources(4, datain[dataptr++]);
+			playerdata.update_resources(5, datain[dataptr++]);
+			flag_rx_packet_needs_processing = 1;
 			break;
 		case GET_BOARD_INFO:
 			nulptr = new char[datasize];
@@ -202,6 +211,17 @@ int frameHandler(char* datain)
 			break;
 		case JOIN_GAME:
 			//maybe this wont ever be called?
+			break;
+		case STEAL_CARD_ROBBER:
+			//data[0] = card that was stolen!
+			//	-> if data[0] > 0, it was obtained, < 0 it was stolen
+			retval = playerdata.check_resource_amount(abs(data[dataptr]));
+			playerdata.update_resources(abs(retval), (1 * (retval / abs(retval))));
+			if (retval < 0)	//if card stolen, tell use!
+				cout << "replace this text, but yo bitch ass just got robbed" << endl;
+			else
+				cout << "You just stole a card, u thug masta G, card stolen: "  << retval << endl;
+			flag_rx_packet_needs_processing = 1;
 			break;
 		default:
 			retval = INVALID_PACKET_TYPE;

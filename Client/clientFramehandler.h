@@ -22,6 +22,7 @@ static tileclient board[ACTIVE_NUM_TILES_CLIENT];
 static int debug_text = 1;
 
 
+int clientFrameHandler(char* datain)
 vector<int> get_num_active_tiles(int data);
 int update_board_info(char* data, int datasize);
 int dice_roll(int data);

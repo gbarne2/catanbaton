@@ -403,7 +403,7 @@ string tile::get_tile_data_string(int tilenum)
 		data_out += count;
 		data_out += temp_string;
 	}
-	tempnum = data_out.c_str.size();
+	tempnum = data_out.length();
 	data_out_final += tempnum + data_out.c_str();
 	return(data_out_final);
 }

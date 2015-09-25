@@ -99,27 +99,33 @@ index 6 - (size_of_data - 1) = data
 */
 using namespace std;
 
-game catan;
+//game catan;
 map<int, player> playermap;
 static int game_status = 0;
 tcpserver serv(" ");
 //function prototypes
-int get_qty_cities_left(int player_number);
-int get_qty_settlements_left(int player_number);
-int get_qty_roads_remaining(int player_number);
+int get_qty_cities_left(game session, int player_number);
+int get_qty_settlements_left(game session, int player_number);
+int get_qty_roads_remaining(game session, int player_number);
 int send_board_info(game session, char *datain, int size_of_datain);
-int join_game(string name);
-int place_robber();
-int steal_card(int player_taking_card, int player_giving);
+int steal_card(game session, int player_taking_card, int player_giving);
 static int trade_in_progress = 0;
 static int initiating_player_trade = 0;
 static int requested_player_trade = 0;
 static int last_player = 0;
+int send_packet(game session, int player_num, string data_to_send, int packet_type);
+int send_packet(game session, int player_num, int data_to_send, int packet_type);
+int send_packet(game session, int player_num, char *data_to_send, int packet_type, int length);
+int send_dice_roll(game session);
+int send_resources(game session, int playernum);
+int join_game(game session, int player_number, string name);
+unsigned int read_dice_roll(game session);
+int place_robber(game session, int tilenum, int playernum);
 
 static int debug_text = 0;
 static trade_cards_offer trade_to_process;
 //functions
-int framehandler(char *datain, int size_of_data)
+int framehandler(game session, char *datain, int size_of_data)
 {
 
 	//the datain field will need to be pulled in from tcpserver->receivebuffer or whateevr its called. 
@@ -127,10 +133,11 @@ int framehandler(char *datain, int size_of_data)
 	//there is data to be read. when that indicator goes off, the frame handler function should be called
 	int dataptr = 7;		//use this to grab data from datain buffer.
 	int tempdata = 0;
-	char datatype = datain[4];
-	int player_number = datain[5];
+	char datatype = datain[6];
+	int player_number = datain[4];
 	string tempstring;
-	int datasize = datain[6];
+	int datasize = datain[5];
+	int temp = 0;
 	char *nulptr;
 	int retval = 0;	
 	if ((datain[0] == 'S') && (datain[1] == 8) && (datain[2] == 53) && (datain[3] == 'p'))
@@ -141,7 +148,7 @@ int framehandler(char *datain, int size_of_data)
 		case PROPOSE_TRADE:
 			if (!trade_in_progress)
 			{
-				if (catan.check_current_player() == player_number)
+				if (session.check_current_player() == player_number)
 				{
 					trade_in_progress = 1;
 					initiating_player_trade = player_number;
@@ -163,9 +170,9 @@ int framehandler(char *datain, int size_of_data)
 					trade_to_process.qty_sheep_to_receive = datain[dataptr + 9];
 					for (int x = dataptr; x < 10; x++)		//pull all data into a string to send off
 					{
-						tempstring += to_string(datain[x]);
+						tempstring += datain[x];
 					}
-					retval = send_packet(requested_player_trade, tempstring, PROPOSE_TRADE);
+					retval = send_packet(session, requested_player_trade, tempstring, PROPOSE_TRADE);
 				}
 			}
 		//data field:
@@ -193,10 +200,10 @@ int framehandler(char *datain, int size_of_data)
 			if(datain[dataptr] == initiating_player_trade)	//if the player is requesting to trade with the original player...
 			{
 				dataptr += 1;
-				retval = catan.trade_with_player(trade_to_process, initiating_player_trade, requested_player_trade, datain[dataptr + 10]);
+				retval = session.trade_with_player(trade_to_process, initiating_player_trade, requested_player_trade, datain[dataptr]);
 				//need to add return value handling! tell both users what happened with trade (accepted or denied, why)
-				send_packet(initiating_player_trade, retval, ACCEPT_REJECT_TRADE);
-				send_packet(requested_player_trade, retval, ACCEPT_REJECT_TRADE);	//may need to change these to not return retval, but something else so that the client wont be getting the real reason why (ex: if req player doesnt have enough cards, then retval will tell the initiating player that the other player doesnt have the cards.)
+				send_packet(session, initiating_player_trade, retval, ACCEPT_REJECT_TRADE);
+				send_packet(session, requested_player_trade, retval, ACCEPT_REJECT_TRADE);	//may need to change these to not return retval, but something else so that the client wont be getting the real reason why (ex: if req player doesnt have enough cards, then retval will tell the initiating player that the other player doesnt have the cards.)
 			}
 		}
 		initiating_player_trade = 0;
@@ -216,50 +223,50 @@ int framehandler(char *datain, int size_of_data)
 		//this should make sure that a trade was proposed by the player in data[0] and the original trade object should be used, not the one send to the user for approval
 		//if approved, call trade_with_player(...) function to execute trade. send a message to both parties to tell them the resulting stauts of the trade after (success or fail, and the reason why?)
 		//data[0] = player who requested trade
-		//data[1] = qty wood to trade
-		//data[2] = qty wood to receive
-		//data[3] = qty ore to trade
-		//data[4] = qty ore to receive
-		//data[5] = qty brick to trade
-		//data[6] = qty brick to receive
-		//data[7] = qty wheat to trade
-		//data[8] = qty wheat to receive
-		//data[9] = qty sheep to trade
-		//data[10] = qty sheep to receive
-		//data[11] = trade status
+		//data[1] = trade status
+		//data[2] = qty wood to trade
+		//data[3] = qty wood to receive
+		//data[4] = qty ore to trade
+		//data[5] = qty ore to receive
+		//data[6] = qty brick to trade
+		//data[7] = qty brick to receive
+		//data[8] = qty wheat to trade
+		//data[9] = qty wheat to receive
+		//data[10] = qty sheep to trade
+		//data[11] = qty sheep to receive
 			break;
 		case GET_PLAYER_INFO:
 			break;
 		case SEND_DICE_ROLL:
-			retval = send_dice_roll(catan);
+			retval = send_dice_roll(session);
 			//maybe just send dice roll to every client?
 			break;
 		case GET_QTY_ROADS_LEFT:
-			retval = get_qty_roads_remaining(player_number);
-			send_packet(player_number, retval, GET_QTY_ROADS_LEFT);
+			retval = get_qty_roads_remaining(session, player_number);
+			send_packet(session, player_number, retval, GET_QTY_ROADS_LEFT);
 			//data field:
 			break;
 		case GET_QTY_SETTLEMENTS_LEFT:
-			retval = get_qty_settlements_left(player_number); 
-			send_packet(player_number, retval, GET_QTY_SETTLEMENTS_LEFT);
+			retval = get_qty_settlements_left(session, player_number); 
+			send_packet(session, player_number, retval, GET_QTY_SETTLEMENTS_LEFT);
 			//data field:
 			break;
 		case GET_QTY_CITIES_LEFT:
-			retval = get_qty_cities_left(player_number);
-			send_packet(player_number, retval, GET_QTY_CITIES_LEFT);
+			retval = get_qty_cities_left(session, player_number);
+			send_packet(session, player_number, retval, GET_QTY_CITIES_LEFT);
 			//data field:
 			break;
 		case BUILD_ROAD:
 			//data field:
 			//data[0]	=	tile number
 			//data[1]	=	road index?
-			if (catan.check_current_player() == player_number)
+			if (session.check_current_player() == player_number)
 			{
-				retval = catan.build_roads(datain[dataptr], player_number, datain[dataptr + 1]);
+				retval = session.build_roads(datain[dataptr], player_number, datain[dataptr + 1]);
 				if (retval >= 0)		//if a success, then send player new board layout!
-					send_board_info(catan, nulptr, 0);
+					send_board_info(session, nulptr, 0);
 				else
-					send_packet(player_number, -31, BUILD_ROAD);
+					send_packet(session, player_number, -31, BUILD_ROAD);
 			}	
 			//add some error handling if the road was not able to be built! should tell client so they can make another move
 			//if successful, send the board info to all players.
@@ -268,26 +275,26 @@ int framehandler(char *datain, int size_of_data)
 			//data field:
 			//data[0]	=	tile number
 			//data[1]	=	corner index
-			if (catan.check_current_player() == player_number)
+			if (session.check_current_player() == player_number)
 			{
-				retval = catan.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
+				retval = session.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
 				if (retval >= 0)		//if a success, then send player new board layout!
-					send_board_info(catan, nulptr, 0);
+					send_board_info(session, nulptr, 0);
 				else
-					send_packet(player_number, -32, BUILD_SETTLEMENT);
+					send_packet(session, player_number, -32, BUILD_SETTLEMENT);
 			}
 			break;
 		case UPGRADE_SETTLEMENT:
 			//data field:
 			//data[0]	=	tile number
 			//data[1]	=	corner index
-			if (catan.check_current_player() == player_number)
+			if (session.check_current_player() == player_number)
 			{
-				retval = catan.upgrade_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
+				retval = session.upgrade_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
 				if (retval >= 0)		//if a success, then send player new board layout!
-					send_board_info(catan, nulptr, 0);
+					send_board_info(session, nulptr, 0);
 				else
-					send_packet(player_number, -33, UPGRADE_SETTLEMENT);
+					send_packet(session, player_number, -33, UPGRADE_SETTLEMENT);
 			}
 			break;
 		case BUY_DV_CARD:		//should allow user to buy more than 1 at once?
@@ -296,15 +303,15 @@ int framehandler(char *datain, int size_of_data)
 			//data[0]	=	number of DV cards to buy
 			break;
 		case READ_RESOURCES:
-			send_resources(player_number);
+			send_resources(session, player_number);
 			//data field:
 			break;
 		case GET_BOARD_INFO:
-			send_board_info(catan, nulptr, 0);
+			send_board_info(session, nulptr, 0);
 			//data field:
 			break;
 		case GET_TIME_LIMIT:
-			send_packet(player_number, 1000, GET_TIME_LIMIT);
+			send_packet(session, player_number, 1000, GET_TIME_LIMIT);
 			break;
 		case START_GAME:
 			//data field:
@@ -327,35 +334,40 @@ int framehandler(char *datain, int size_of_data)
 				tempstring += datain[dataptr];
 				dataptr += 1;
 			}
-			retval = join_game(player_number, tempstring);
+			retval = join_game(session, player_number, tempstring);
 			break;
 		case END_TURN:
-			if (catan.check_current_player() == player_number)
+			if (session.check_current_player() == player_number)
 			{
-				retval = catan.next_player();
-				send_board_info(catan, nulptr, 0);
-				send_packet(retval, 0, END_TURN);		//make END_TURN be start turn when received from server?
+				retval = session.next_player();
+				send_board_info(session, nulptr, 0);
+				send_packet(session, retval, 0, END_TURN);		//make END_TURN be start turn when received from server?
 				//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
 			}
 			break;
 		case STEAL_CARD_ROBBER:
 			//datain[0] = player to steal from
-			if ((last_player == player_number) && (read_dice_roll(catan) == 7))
+			//datain[1] = tile to place robber
+			if ((last_player == player_number) && (read_dice_roll(session) == 7))
 			{
-				retval = steal_card(player_number, datain[dataptr]);
+				place_robber(session, datain[dataptr + 1], player_number);
+				retval = steal_card(session, player_number, datain[dataptr]);
+				send_packet(session, player_number, retval, STEAL_CARD_ROBBER);	//tell player they stole a card (and what the card was!)
+				temp = datain[dataptr];
+				send_packet(session, temp, retval*(-1), STEAL_CARD_ROBBER);	//tell player what card was stolen from them. if > 0, it was aquired, if < 0 it was stolen
 			}
 			last_player = 0;
 			break;
 		case END_GAME:
 			break;
 		case START_TURN:
-			if (catan.check_current_player() == player_number)
+			if (session.check_current_player() == player_number)
 			{
-				retval = catan.start_turn(0);
-				retval = read_dice_roll(catan);
+				retval = session.start_turn(0);
+				retval = read_dice_roll(session);
 				if (retval == 7)
 				{
-					place_robber();
+			//		place_robber(session, );
 					last_player = player_number;
 				}
 			}
@@ -363,7 +375,7 @@ int framehandler(char *datain, int size_of_data)
 			//1:		dice roll
 			//2 - 7:	resource amnts
 			//8:		current players turn
-			//retval = send_dice_roll(catan);
+			//retval = send_dice_roll(session);
 			//need to make this do a bunch more stuff probably. like update each user of their respective resources and what not.
 			break;
 		default:
@@ -371,6 +383,7 @@ int framehandler(char *datain, int size_of_data)
 			break;
 		}
 	}
+	return(0);
 }
 
 int steal_card(game session, int player_taking_card, int player_giving)
@@ -416,7 +429,7 @@ int send_dice_roll(game session)
 {
 	int temp = read_dice_roll(session);
 	for (int x = 1; x < session.check_number_of_players() + 1; x++)
-		send_packet(x, temp, SEND_DICE_ROLL);
+		send_packet(session, x, temp, SEND_DICE_ROLL);
 	return(temp);
 }
 
@@ -434,49 +447,50 @@ int send_board_info(game session, char *datain, int size_of_datain)
 	data_out = session.get_board_info();
 	for (int x = 1; x < session.check_number_of_players()+1; x++)
 	{
-		send_packet(x, data_out, GET_BOARD_INFO);		//send board info to all players
+		send_packet(session, x, data_out, GET_BOARD_INFO);		//send board info to all players
 	}
 	//needs to format and send all data associated with the board. need to define the format!
+	return(0);
 }
 
-int send_resources(int playernum)
+int send_resources(game session, int playernum)
 {
 	int temp[5] = { 0,0,0,0,0 };
 	string datastr;
 	int temp2 = 0;
 	ostringstream convert;
-	for (int x = 1; x < 7; x++)
+	for (int x = 1; x < 6; x++)
 	{
-		temp2 = catan.check_resources(playernum, x);
+		temp2 = session.check_resources(playernum, x);
 		convert << temp2;
 	}
 	datastr = convert.str();
 	char *tempc = new char[datastr.length() + 1];
 	strcpy(tempc, datastr.c_str());
-	temp2 = send_packet(playernum, tempc, READ_RESOURCES);
+	temp2 = send_packet(session, playernum, tempc, READ_RESOURCES);
 	return(temp2);
 }
 
-int get_qty_roads_remaining(int player_number)
+int get_qty_roads_remaining(game session, int player_number)
 {
-	return(catan.get_num_roads(player_number));
+	return(session.get_num_roads(player_number));
 }
 
-int get_qty_settlements_left(int player_number)
+int get_qty_settlements_left(game session, int player_number)
 {
-	return(catan.get_num_settlements(player_number));
+	return(session.get_num_settlements(player_number));
 }
 
-int get_qty_cities_left(int player_number)
+int get_qty_cities_left(game session, int player_number)
 {
-	return(catan.get_num_cities(player_number));
+	return(session.get_num_cities(player_number));
 }
 
-int join_game(int player_number, string name)
+int join_game(game session, int player_number, string name)
 {
 	if (game_status == 0)	//if game not started, then allow new players to join
 	{
-		catan.add_player(catan.check_number_of_players() + 1, name);
+		session.add_player(session.check_number_of_players() + 1, name);
 
 //		tempplayer->set_client_address()
 		//needs to figure out what the next player number is, save the clientsocket off to player data, tell the client that, and keep waiting for more players until game is started
@@ -494,10 +508,17 @@ int packetHandler(SOCKET tempsock, char& buffer, int size)
 	temp[2] = 53;
 	temp[3] = 'p';
 	strcat(temp, &buffer);
-	serv.sendPacket(tempsock, temp);
+	if (debug_text)
+	{
+		cout << "Data to send: " << endl;
+		for (int x = 0; x < size + 4; x++)
+			cout << temp[x];
+		cout << endl << endl;
+	}
+	return(serv.sendPacket(tempsock, temp));
 }
 
-int send_packet(int player_num, int data_to_send, int packet_type)
+int send_packet(game session, int player_num, int data_to_send, int packet_type)
 {
 	string datastr;
 	SOCKET tempsock;
@@ -508,7 +529,7 @@ int send_packet(int player_num, int data_to_send, int packet_type)
 	datastr = convert.str();
 	char *temp = new char [datastr.length() + 2];
 	strcpy(temp, datastr.c_str());
-	tempsock = catan.get_player_socket(player_num);
+	tempsock = session.get_player_socket(player_num);
 	retval = packetHandler(tempsock, *temp, datastr.length() + 2);
 //	retval = serv.sendPacket(tempsock, temp);
 	delete[] temp;
@@ -516,33 +537,34 @@ int send_packet(int player_num, int data_to_send, int packet_type)
 	//return(sendPacket())
 }
 
-int send_packet(int player_num, string data_to_send, int packet_type)
+int send_packet(game session, int player_num, string data_to_send, int packet_type)
 {
 	string datastr;
 	SOCKET tempsock;
 	int retval = 0;
-	char tempchar[1] = { packet_type };
-	char *temp = new char[data_to_send.length() + 2];
+	char tempchar[1] = { packet_type };	// , player_num, data_to_send.length()
+
+	char *temp = new char[data_to_send.length() + 1];
 	strcpy(temp, tempchar);
 	strcat(temp, data_to_send.c_str());
-	tempsock = catan.get_player_socket(player_num);
-	retval = packetHandler(tempsock, *temp, datastr.length() + 2);
+	tempsock = session.get_player_socket(player_num);
+	retval = packetHandler(tempsock, *temp, datastr.length() + 1);
 //	retval = serv.sendPacket(tempsock, temp);
 	delete[] temp;
 	return(retval);
 }
 
-int send_packet(int player_num, char *data_to_send, int packet_type)
+int send_packet(game session, int player_num, char *data_to_send, int packet_type, int length)
 {
-	string datastr;
 	SOCKET tempsock;
-	ostringstream convert;
 	int retval = 0;
 	char temp[4096];
 	temp[0] = packet_type;
+	temp[1] = player_num;
+	temp[2] = length;
 	strcat(temp, data_to_send);
-	tempsock = catan.get_player_socket(player_num);
-	retval = packetHandler(tempsock, *temp, datastr.length() + 2);
+	tempsock = session.get_player_socket(player_num);
+	retval = packetHandler(tempsock, *temp, length + 3);
 //	retval = serv.sendPacket(tempsock, temp);
 	return(retval);
 }

@@ -42,6 +42,7 @@
 #include <thread>
 #include "tcpclient.h"
 #include "tcpserver.h"
+#include "clientTransmitHandler.h"
 
 
 #define setwval 1
@@ -166,27 +167,27 @@ int main()
 	CONSOLE_CURSOR_INFO cursor_info;
 	tcpclient client(tempaddr);
 	tcpserver server(tempaddr);
-	thread uno(srvinit, catan, server);
-	thread dos(clinit, client);
+//	thread uno(srvinit, catan, server);
+//	thread dos(clinit, client);
 	cout << endl << "threads are running! this is from the main thread" << endl;
 	Sleep(3000);
-	uno.join();
-	dos.join();
+//	uno.join();
+//	dos.join();
 	cout << "type a number" << endl;
 	cin >> user_input;
 	cout << "you entered " << user_input << endl;
 	cout << "Test";
 	console_handle = CreateConsoleScreenBuffer(GENERIC_READ|GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
-	SetConsoleActiveScreenBuffer(console_handle);
-	SetConsoleCtrlHandler(ConsoleHandler, TRUE);
+//	SetConsoleActiveScreenBuffer(console_handle);
+//	SetConsoleCtrlHandler(ConsoleHandler, TRUE);
 	dwSize.X = 80;
 	dwSize.Y = 50;
-	SetConsoleScreenBufferSize(console_handle, dwSize);
+//	SetConsoleScreenBufferSize(console_handle, dwSize);
 	cursor_info.dwSize = 1;
 	cursor_info.bVisible = TRUE;
-	SetConsoleCursorInfo(console_handle, &cursor_info);
+//	SetConsoleCursorInfo(console_handle, &cursor_info);
 //	SetConsoleTitle("Catan Baton!");
-	SetConsoleTextAttribute(console_handle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+//	SetConsoleTextAttribute(console_handle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
 	dwPosition.X = 0;     
 	dwPosition.Y = 2;
 	dwPosition1.X = 0;
@@ -194,7 +195,7 @@ int main()
 	dwPosition2.X = 0;
 	dwPosition2.Y = 0;
 //	if(flag ^= 1)
-//		WriteFile(console_handle,
+//		cout <<
 
 	//the init and add player functions should all be sucked into the core program, then build GUI in parallel
 	catan.build_std_board(19);		
@@ -211,162 +212,164 @@ int main()
 	catan.temp_build_settlement(12, 1, cornB);
 	catan.temp_build_settlement(6,  2, cornC);
 	catan.temp_build_settlement(13, 1, cornA);
-	SetConsoleCursorPosition(console_handle, dwPosition);
-	SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_INTENSITY);
+//	SetConsoleCursorPosition(console_handle, dwPosition);
+//	SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_INTENSITY);
 	catan.temp_build_settlement(1,  2, cornD);
 	catan.temp_build_settlement(0,  1, cornF);
 	//catan.temp_build_settlement(9,  2, cornE);
-	SetConsoleCursorPosition(console_handle, dwPosition);
-	WriteFile(console_handle, "\n\n\n", 3, &written, NULL);
-	cin.clear();
-	cin.ignore(INT_MAX, 0);
+//	SetConsoleCursorPosition(console_handle, dwPosition);
+//	cout << "\n\n\n", 3, &written, NULL);
+	cout << endl << endl << endl;
+//	cin.clear();
+//	cin.ignore(INT_MAX, 0);
 	while(x != 69)		//loop and wait for user input then do what they want.
 	{
-		Sleep(5000);
-		SetConsoleTextAttribute(console_handle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-		SetConsoleCursorPosition(console_handle, dwPosition);	
+	//	Sleep(5000);
+	//	SetConsoleTextAttribute(console_handle, FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+	//	SetConsoleCursorPosition(console_handle, dwPosition);	
 		if(current_player == 1)
-			WriteFile(console_handle, "Player 1's turn!                                        \n", 57, &written, NULL);
+			cout << "Player 1's turn!                                        " << endl;
 		else if(current_player == 2)
-			WriteFile(console_handle, "Player 2's turn!                                        \n", 57, &written, NULL);
+			cout << "Player 2's turn!                                        " << endl;
 		else if(current_player == 0)
 			current_player += 1;
 		else
-			WriteFile(console_handle, "Player n's turn!                                        \n", 57, &written, NULL);
+			cout << "Player n's turn!                                        " << endl;
 		
 		tempstr = print_board();
 		strtowrite = tempstr.c_str();
-		WriteFile(console_handle, strtowrite, tempstr.size(), &written, NULL);
+		cout << strtowrite << endl;
 
-		SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
-		WriteFile(console_handle, "1) Build Settlement                    \n", 40, &written, NULL);
-		WriteFile(console_handle, "2) Build a roadroad                    \n", 40, &written, NULL);
-		WriteFile(console_handle, "3) Trade cards naow                    \n", 40, &written, NULL);
-		WriteFile(console_handle, "4) Check resources!                    \n", 40, &written, NULL);
-		WriteFile(console_handle, "5) Roll dice dice!!                    \n", 40, &written, NULL);
-		WriteFile(console_handle, "6) Goto next player                    \n", 40, &written, NULL);
-		WriteFile(console_handle, "7) Quit, llama duck                    \n\n ", 42, &written, NULL);
-		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-		WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-		cin.clear();
-		SetConsoleCursorPosition(console_handle, dwPosition2);	
+//		SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+		cout << "1) Build Settlement                    " << endl;
+		cout << "2) Build a roadroad                    " << endl;
+		cout << "3) Trade cards naow                    " << endl;
+		cout << "4) Check resources!                    " << endl;
+		cout << "5) Roll dice dice!!                    " << endl;
+		cout << "6) Goto next player                    " << endl;
+		cout << "7) Quit, llama duck                    " << endl;
+		cout << "                                                                     " << endl;
+		cout << "                                                                     " << endl;
+		cout << "                                                                     " << endl;
+		cout << "                                                                     " << endl;
+		cout << "                                                                     " << endl;
+		cout << "                                                                     " << endl;
+		cout << "                                                                     " << endl;
+		cout << "                                                                     " << endl;
+		cout << "                                                                     " << endl;
+	//	cin.clear();
+	//	SetConsoleCursorPosition(console_handle, dwPosition2);	
 		cin.clear();
 		cin.ignore(0);
+		user_input = -99;
 		cin >> user_input;
 
 		switch(user_input)
 		{
 		case 1: 			
-			SetConsoleCursorPosition(console_handle, dwPosition1);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "Which hex?                                    \n", 47, &written, NULL);
+//			SetConsoleCursorPosition(console_handle, dwPosition1);
+			cout << "                                                                     " << endl;
+			cout << "Which hex?                                    " << endl;
 			cin >> user_input2;
 			user_input2 = user_input2 % 19;		//force a valid number.
-			WriteFile(console_handle, "Which corner?                                 \n", 47, &written, NULL);
-			WriteFile(console_handle, "        1_______2                       \n", 41, &written, NULL);
-			WriteFile(console_handle, "        /       \\                       \n", 41, &written, NULL);
-			WriteFile(console_handle, "     0 /         \\ 3                    \n", 41, &written, NULL);
-			WriteFile(console_handle, "       \\         /                      \n", 41, &written, NULL);
-			WriteFile(console_handle, "      5 \\_______/ 4                     \n\n", 42, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
+			cout << "Which corner?                                 " << endl;
+			cout << "        1_______2                       " << endl;
+			cout << "        /       \\                       " << endl;
+			cout << "     0 /         \\ 3                    " << endl;
+			cout << "       \\         /                      " << endl;
+			cout << "      5 \\_______/ 4                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
 			cin >> user_input3;
 			user_input3 = user_input3 % 6;		//force a valid number
 			temp = catan.build_settlement(user_input2, current_player, user_input3);
 			if(temp < 0)	//if error, print message!
-				WriteFile(console_handle, "ERROR: unable to build settlement!\n", 35, &written, NULL);
+				cout << "ERROR: unable to build settlement!" << endl;
 			break;
 		case 2:			
-			SetConsoleCursorPosition(console_handle, dwPosition1);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "Which hex?                                    \n", 47, &written, NULL);
+//			SetConsoleCursorPosition(console_handle, dwPosition1);
+			cout << "                                                                     " << endl;
+			cout << "Which hex?                                    " << endl;
 			cin >> user_input2;
 			user_input2 = user_input2 % 19;		//force a valid number.
-			WriteFile(console_handle, "Which road?                                   \n", 47, &written, NULL);
-			WriteFile(console_handle, "         ___1____   \n", 21, &written, NULL);
-			WriteFile(console_handle, "        /       \\   \n", 21, &written, NULL);
-			WriteFile(console_handle, "     0 /         \\ 2\n", 21, &written, NULL);
-			WriteFile(console_handle, "      /           \\ \n", 21, &written, NULL);
-			WriteFile(console_handle, "      \\           / \n", 21, &written, NULL);
-			WriteFile(console_handle, "     5 \\         / 3\n", 21, &written, NULL);
-			WriteFile(console_handle, "        \\___4___/   \n\n\n\n\n\n", 26, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
-			WriteFile(console_handle, "                                                                     \n", 70, &written, NULL);
+			cout << "Which road?                                   " << endl;
+			cout << "         ___1____   " << endl;
+			cout << "        /       \\   " << endl;
+			cout << "     0 /         \\ 2" << endl;
+			cout << "      /           \\ " << endl;
+			cout << "      \\           / " << endl;
+			cout << "     5 \\         / 3" << endl;
+			cout << "        \\___4___/   \n\n\n\n\n\n" << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
+			cout << "                                                                     " << endl;
 			cin >> user_input3;
 			user_input3 = user_input3 % 6;		//force a valid number
 			temp = catan.build_roads(user_input2, current_player, user_input3);
 			if(temp < 0)	//if error, print message!
-				WriteFile(console_handle, "ERROR: unable to build road!\n", 35, &written, NULL);
+				cout << "ERROR: unable to build road!" << endl;
 			else if (user_input3 == (temp - 1))
 			{
 				tempstrtowrite = std::stringstream();
 				tempstrtowrite << "Road " << user_input3 << "successfully built on tile " << setw(2) << user_input2 << endl;
-				WriteFile(console_handle, tempstrtowrite.str().c_str(), 36, &written, NULL);
+				cout << tempstrtowrite.str() << endl;
 			}
 			break;
 
 		case 3:
-			WriteFile(console_handle, "Trading has not been implemented yet!\n", 38, &written, NULL);
+			cout << "Trading has not been implemented yet!" << endl;
 			break;
 		case 4:
-			SetConsoleCursorPosition(console_handle, dwPosition1);	
-			SetConsoleTextAttribute(console_handle, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+//			SetConsoleCursorPosition(console_handle, dwPosition1);	
+//			SetConsoleTextAttribute(console_handle, FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 			for(int i = 1; i < 6; i++)
 			{
 				if(i == 1)
-					WriteFile(console_handle, "Resource type: Wheat\n    ", 25, &written, NULL);
+					cout << "Resource type: Wheat" << endl;
 				else if(i == 2)
-					WriteFile(console_handle, "Resource type: Ore  \n    ", 25, &written, NULL);
+					cout << "Resource type: Ore" << endl;
 				else if(i == 3)
-					WriteFile(console_handle, "Resource type: Wood \n    ", 25, &written, NULL);
+					cout << "Resource type: Wood" << endl;
 				else if(i == 4)
-					WriteFile(console_handle, "Resource type: Sheep\n    ", 25, &written, NULL);
+					cout << "Resource type: Sheep" << endl;
 				else
-					WriteFile(console_handle, "Resource type: Brick\n    ", 25, &written, NULL);
+					cout << "Resource type: Brick" << endl;
 //				temp = catan.check_resources(current_player, i);
 //				tempstrtowrite << "Resource Amount: " << temp << endl;
 				tempstrtowrite << "Resource Amount: " << setw(2) << catan.check_resources(current_player, i) << endl;
 				tempstrtowrite2 = tempstrtowrite.str().c_str();
-				WriteFile(console_handle, tempstrtowrite.str().c_str(), 20, &written, NULL);
+				cout << tempstrtowrite.str() << endl;
 				tempstrtowrite = std::stringstream();
 			}			
-			WriteFile(console_handle, "Press enter when finished\n", 26, &written, NULL);
+			cout << "Press enter when finished" << endl;
 			cin.ignore();
 			cin >> user_input3;
 			cin.clear();
 			cin.ignore(INT_MAX, '\n');
 			break;
 		case 5:
-			SetConsoleCursorPosition(console_handle, dwPosition2);
+//			SetConsoleCursorPosition(console_handle, dwPosition2);
 			rollnumvalamt = (rand()*rand()) % 11 + 2;
 			temp = catan.start_turn(rollnumvalamt);
 			tempstrtowrite << "Dice roll: " << temp << "   " << endl;
 			tempstrtowrite << "Return value: " << temp << "   " << endl;
-			WriteFile(console_handle, tempstrtowrite.str().c_str(), 32, &written, NULL);
+			cout << tempstrtowrite.str() << endl;
 			tempstrtowrite = std::stringstream();
 			if (temp == 7)
 			{
 				tempstrtowrite << "A 7 has been rolled, what tile do you want to place the robber on?" << endl;
-				WriteFile(console_handle, tempstrtowrite.str().c_str(), 67, &written, NULL);
+				cout << tempstrtowrite.str() << endl;
 				cin >> user_input3;
 				temp = catan.update_robber_position(user_input3 % active_num_tiles);
 				tempstrtowrite = std::stringstream();
@@ -374,7 +377,7 @@ int main()
 					tempstrtowrite << "Robber placed on tile " << temp << endl;
 				else
 					tempstrtowrite << "Robber was not placed!!" << endl;
-				WriteFile(console_handle, tempstrtowrite.str().c_str(), 24, &written, NULL);
+				cout << tempstrtowrite.str() << endl;
 				tempstrtowrite = std::stringstream();
 			}
 			cin.clear();
@@ -383,6 +386,7 @@ int main()
 			break;
 		case 6:
 			current_player = (current_player + 1)%(number_of_players + 1);
+			start_turn();
 			break;
 		case 7:
 			exit(1);
@@ -392,7 +396,7 @@ int main()
 			break;
 		}
 		user_input = NULL;
-		SetConsoleCursorPosition(console_handle, dwPosition);	
+//		SetConsoleCursorPosition(console_handle, dwPosition);	
 		tempstrtowrite = std::stringstream();
 		cin.clear();
 		cin.ignore(INT_MAX, '\n');
