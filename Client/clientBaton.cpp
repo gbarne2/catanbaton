@@ -1,4 +1,6 @@
-//this will be the main game file for the client side, other than for the GUI. for now, this will be the text user interface.
+//this will be the main game file for the client side, other than for the GUI. 
+//All functionality on the client side will go through this function! the GUI will point to these functions do execute tasks
+
 
 //need to be able to do the following
 /*
@@ -40,7 +42,21 @@
 #include <thread>
 #include "tcpclient.h"
 #include "tcpserver.h"
+#include "clientTransmitHandler.h"
 
-using namespace stf;
+using namespace std;
 
-#define setwval 1
+int refresh_cards();
+
+
+//need to define the structure containing info about the player! (player name, number, etc.)
+int get_player_num()
+{
+  cout << "make 'get_player_num()' actually work, in clientBaton.cpp" << endl;
+  return(1);
+}
+int refresh_cards()
+{
+  sendPacketTX(get_player_num(), 0, READ_RESOURCES);
+  return(0);
+}
