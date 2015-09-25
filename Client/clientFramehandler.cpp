@@ -72,8 +72,8 @@ using namespace std;
 #define APPROVE_TRADE 					1
 #define DENY_TRADE						-43
 
-static trade_cards_offer trade_to_process;
-static playerClient playerdata;
+//static trade_cards_offer trade_to_process;
+//static playerClient playerdata;
 
 int clientFrameHandler(char* datain)
 {
