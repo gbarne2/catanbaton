@@ -21,6 +21,9 @@ static int flag_rx_packet_needs_processing = 0;		//when set to 1, this will indi
 static tileclient board[ACTIVE_NUM_TILES_CLIENT];
 static int debug_text = 1;
 
+/* Globals	*/
+static trade_cards_offer trade_to_process;
+static playerClient playerdata;
 
 int clientFrameHandler(char* datain)
 vector<int> get_num_active_tiles(int data);
