@@ -121,6 +121,7 @@ int send_resources(game session, int playernum);
 int join_game(game session, int player_number, string name);
 unsigned int read_dice_roll(game session);
 int place_robber(game session, int tilenum, int playernum);
+int send_resources_all_players(game session);
 
 static int debug_text = 0;
 static trade_cards_offer trade_to_process;
@@ -364,11 +365,27 @@ int framehandler(game session, char *datain, int size_of_data)
 			if (session.check_current_player() == player_number)
 			{
 				retval = session.start_turn(0);
+				retval = send_dice_roll(session);		//send out dice roll to every player
+				for (int x = 1; x < session.check_number_of_players() + 1; x++)
+				{
+					tempstring = "";
+					tempstring += player_number;		//first databyte = current players turn
+					if(player_number == x)
+						tempstring += 1;		//if it is this players turn, then tell them (2nd byte is indicator)
+					else
+						tempstring += 0;
+						
+					send_packet(session, x, tempstring, START_TURN);
+				}
 				retval = read_dice_roll(session);
 				if (retval == 7)
 				{
 			//		place_robber(session, );
 					last_player = player_number;
+				}
+				else		//if not a 7, then send out all players resources
+				{
+					send_resources_all_players(session);
 				}
 			}
 			//Data format:
@@ -469,6 +486,14 @@ int send_resources(game session, int playernum)
 	strcpy(tempc, datastr.c_str());
 	temp2 = send_packet(session, playernum, tempc, READ_RESOURCES);
 	return(temp2);
+}
+
+int send_resources_all_players(game session)
+{
+	int num = session.check_number_of_players();
+	for(int x = 1; x <= num; x++)
+		send_resources(session, x);
+	return(1);	
 }
 
 int get_qty_roads_remaining(game session, int player_number)
