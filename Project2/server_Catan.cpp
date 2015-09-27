@@ -41,6 +41,7 @@ Launch this operation in another thread, and once the start game command is rece
 #include <WS2tcpip.h>
 #include <Windows.h>
 #include <stdlib.h>
+//#include "globaldata.h"
 
 using namespace std;
 
@@ -122,6 +123,8 @@ int join_game(game session, int player_number, string name);
 unsigned int read_dice_roll(game session);
 int place_robber(game session, int tilenum, int playernum);
 int send_resources_all_players(game session);
+
+//extern char txdatabuff[4096];
 
 static int debug_text = 0;
 static trade_cards_offer trade_to_process;
@@ -371,9 +374,9 @@ int framehandler(game session, char *datain, int size_of_data)
 					tempstring = "";
 					tempstring += player_number;		//first databyte = current players turn
 					if(player_number == x)
-						tempstring += 1;		//if it is this players turn, then tell them (2nd byte is indicator)
+						tempstring += '1';		//if it is this players turn, then tell them (2nd byte is indicator)
 					else
-						tempstring += 0;
+						tempstring += '0';
 						
 					send_packet(session, x, tempstring, START_TURN);
 				}
@@ -522,6 +525,7 @@ int join_game(game session, int player_number, string name)
 	}
 	else
 		return(-99);
+	return(game_status);
 	//needs to figure out what the next player number is, save the clientsocket off to player data, tell the client that, and keep waiting for more players until game is started
 }
 
@@ -540,7 +544,10 @@ int packetHandler(SOCKET tempsock, char& buffer, int size)
 			cout << temp[x];
 		cout << endl << endl;
 	}
-	return(serv.sendPacket(tempsock, temp));
+//	for (int x = 0; x < size+4; x++)
+//		txdatabuff[x] = temp[x];
+//	return(serv.sendPacket(tempsock, temp));
+	return(0);
 }
 
 int send_packet(game session, int player_num, int data_to_send, int packet_type)

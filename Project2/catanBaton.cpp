@@ -38,11 +38,13 @@
 #include <WS2tcpip.h>
 #include <Windows.h>
 #include <stdlib.h>
+#include "clientBaton.h"
 #include <stdio.h>
 #include <thread>
 #include "tcpclient.h"
 #include "tcpserver.h"
 #include "clientTransmitHandler.h"
+#include "server_Catan.h"
 
 
 #define setwval 1
@@ -141,6 +143,11 @@ void clinit(tcpclient tcpcli)
 	tcpcli.initWinsock(tempaddr);
 }
 
+extern char txdatabuff[4096] = { 0, };
+extern char rxdatabuff[4096] = { 0, };
+extern int sizerxbuff = 0;
+extern int sizetxbuff = 0;
+
 int main()
 {
 	int x = 0;
@@ -158,7 +165,7 @@ int main()
 	COORD dwPosition;
 	COORD dwPosition1;
 	COORD dwPosition2;
-	DWORD written;
+//	DWORD written;
 	DWORD flag = 0;
 	const char* strtowrite;
 	stringstream tempstrtowrite;
@@ -288,7 +295,10 @@ int main()
 			cout << "                                                                     " << endl;
 			cin >> user_input3;
 			user_input3 = user_input3 % 6;		//force a valid number
-			temp = catan.build_settlement(user_input2, current_player, user_input3);
+			temp = client_build_settlement(user_input2, user_input3);
+			temp = framehandler(catan, rxdatabuff, sizerxbuff);
+			temp = clientFrameHandler(txdatabuff);
+			//			temp = catan.build_settlement(user_input2, current_player, user_input3);
 			if(temp < 0)	//if error, print message!
 				cout << "ERROR: unable to build settlement!" << endl;
 			break;
@@ -316,7 +326,10 @@ int main()
 			cout << "                                                                     " << endl;
 			cin >> user_input3;
 			user_input3 = user_input3 % 6;		//force a valid number
-			temp = catan.build_roads(user_input2, current_player, user_input3);
+			temp = client_build_road(user_input2, user_input3);
+			temp = framehandler(catan, rxdatabuff, sizerxbuff);
+			temp = clientFrameHandler(txdatabuff);
+			//temp = catan.build_roads(user_input2, current_player, user_input3);
 			if(temp < 0)	//if error, print message!
 				cout << "ERROR: unable to build road!" << endl;
 			else if (user_input3 == (temp - 1))

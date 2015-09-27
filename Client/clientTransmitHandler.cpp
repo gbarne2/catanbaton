@@ -25,7 +25,11 @@ int packetAssembler(char& buffer, int size)
 	temp[5] = size;
 	strcat(temp, buffer);
 	for (int x = 0; x < size + 6; x++)
+	{
 		cout << temp[x];
+		rxdatabuff[x] = temp[x];
+	}
+	sizerxbuff = size + 6;
 	cout << endl << endl;
 	//use playerClient class to get server address and socket (server_address and ServerSocket)
 	return 0;
@@ -102,3 +106,30 @@ int tx_end_turn()
 {
 	return(sendPacketTX(0, 1, END_TURN));
 }
+
+int tx_build_road(int player, int tile, int road)
+{
+	//data[0] = tile number
+	//data[1] = road index
+	string tempdata = "";
+	tempdata += tile;
+	tempdata += road;
+	return(sendPacketTX(player, tempdata, BUILD_ROAD));
+}
+
+int tx_build_settlement(int player, int tile, int corner)
+{
+	string tempdata = "";
+	tempdata += tile;
+	tempdata += corner;
+	return(sendPacketTX(player, tempdata, BUILD_SETTLEMENT));
+}
+
+int tx_build_city(int player, int tile, int corner)
+{
+	string tempdata = "";
+	tempdata += tile;
+	tempdata += corner;
+	return(sendPacketTX(player, tempdata, UPGRADE_SETTLEMENT));
+}
+

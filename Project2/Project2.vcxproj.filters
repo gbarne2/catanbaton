@@ -33,6 +33,24 @@
     <ClInclude Include="tcpserver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="clientBaton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clientTransmitHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="playerClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="clientFramehandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile_client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="server_Catan.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -54,6 +72,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="server_Catan.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clientBaton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clientFramehandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="clientTransmitHandler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="playerClient.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

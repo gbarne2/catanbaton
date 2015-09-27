@@ -16,7 +16,6 @@
     <Keyword>ManagedCProj</Keyword>
     <RootNamespace>Project2</RootNamespace>
     <ProjectName>CatanBaton</ProjectName>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -58,6 +57,8 @@
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies />
+      <ShowProgress>LinkVerbose</ShowProgress>
+      <LinkStatus>true</LinkStatus>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -71,21 +72,32 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="clientBaton.h" />
+    <ClInclude Include="clientFramehandler.h" />
+    <ClInclude Include="clientTransmitHandler.h" />
     <ClInclude Include="game.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="playerClient.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="server_Catan.h" />
     <ClInclude Include="tcpclient.h" />
     <ClInclude Include="tcpserver.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="Tile_client.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="catanBaton.cpp" />
+    <ClCompile Include="clientBaton.cpp" />
+    <ClCompile Include="clientFramehandler.cpp" />
+    <ClCompile Include="clientTransmitHandler.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="playerClient.cpp" />
     <ClCompile Include="server_Catan.cpp" />
     <ClCompile Include="tcpclient.cpp" />
     <ClCompile Include="tcpserver.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="Tile_client.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.VisualBasic" />

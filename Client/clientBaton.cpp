@@ -43,11 +43,10 @@
 #include "tcpclient.h"
 #include "tcpserver.h"
 #include "clientTransmitHandler.h"
+#include "clientFramehandler.h"
+#include "clientBaton.h"
 
 using namespace std;
-
-int refresh_cards();
-
 
 //need to define the structure containing info about the player! (player name, number, etc.)
 int get_player_num()
@@ -55,8 +54,55 @@ int get_player_num()
   cout << "make 'get_player_num()' actually work, in clientBaton.cpp" << endl;
   return(1);
 }
+
 int refresh_cards()
 {
   sendPacketTX(get_player_num(), 0, READ_RESOURCES);
   return(0);
 }
+
+int start_turn()
+{
+	int retval = 0;
+	retval = tx_start_turn();
+	FLAG_TURN_START = 1;	//set flag to one so that when we get info back we can display it to user?
+}
+
+int end_turn()
+{
+	FLAG_MY_TURN = 0;
+	return(tx_end_turn());
+}
+
+//flag_rx_packet_needs_processing = 1;
+
+int build_road(int tile, int corner)
+{
+	FLAG_BUILD_ROAD = 1;
+	return(tx_build_road(get_player_num(), tile, corner));
+}
+
+int build_settlement(int tile, int corner)
+{
+	FLAG_BUILD_SETTLEMENT = 1;
+	return(tx_build_settlement(get_player_num, tile, corner));
+}
+
+int build_city(int tile, int corner)
+{
+	FLAG_BUILD_CITY = 1;
+	return(tx_build_city(get_player_num(), tile, corner));
+}
+
+//this function should be the one that is called whenever flag_rx_packet_needs_processing goes high
+int rx_packet_checker(int packet_type)
+{
+	return(1);
+}
+
+/*
+int place_robber(int tile, int corner)
+{
+
+}
+*/

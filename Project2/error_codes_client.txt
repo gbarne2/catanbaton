@@ -1,0 +1,40 @@
+**Error codes:
+
+#general resource query codes
+-20		Invalid resource type selected
+-21		Insufficient wheat for transaction
+-22		Insufficient ore for transaction
+-23		Insufficient wood for transaction
+-24		Insufficient sheep for transaction
+-25		Insufficient brick for transaction
+
+#building codes
+-31		unable to build road
+-32		unable to build settlement
+-33		unable to upgrade settlement to city, requesting player does not own the settlement
+-34		a settlement is not build on that corner!
+-35		insufficient resources to build city.
+-36		maximum number of roads reached
+-37		maximum number of settlements reached
+-38		maximum number of cities reached
+
+#trade codes
+-40   The current player/player who started the trade does not have sufficient resources for the proposed trade
+-41   The requested player does not have sufficient resources
+-42   Neither player has sufficient resources to complete trade
+-43   The trade has been rejected by the requested player
+-44   the selected player has no cards to be stolen
+-45   unknown card steal error, no cards will be stolen
+-49   Invalid trade status
+
+#game play codes
+-60	Unable to place robber, new_tile = current tile
+-61	2nd check failed to place robber because a robber is already on this tile
+
+
+#general error codes/wtf happened codes?
+
+#server game manager level codes
+-99		Game already started, unable to add new player
+-1001	invalid packet type
+-1002	invalid packet header
