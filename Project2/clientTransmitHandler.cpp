@@ -7,33 +7,39 @@
 #include <stdlib.h>
 #include <vector>
 #include "game.h"
+#include <new>
 #include <string>
 #include "tcpclient.h"
-//#include "globaldata.h"
+#include "catanBaton.h"
 
 using namespace std;
 #define playernum1	1
 
-//extern char rxdatabuff[4096];
+//extern char rxdatabuff [4096];
 
-int packetAssembler(char* buffer, int size)
+int packetAssembler(char buffer[], int size)
 {
 	cout << "make packetAssembler format all packets to be sent how they should be!" << endl;
 	cout << "Data to send: ";
-	char *temp = new char[size + 5];
+//	char tempbuf[1];
+//	itoa(size, tempbuf, 10);
+	char temp[4096];
 	temp[0] = 'S';
-	temp[1] = 8;
+	temp[1] = '8';
 	temp[2] = 53;
 	temp[3] = 'p';
 	temp[4] = playernum1;
 	temp[5] = size;
-	strcat(temp, buffer);
+	for (int x = 0; x < size; x++)
+		temp[x + 6] = buffer[x];
+//	strcat(temp, buffer);
 	for (int x = 0; x < size + 6; x++)
 	{
 		cout << temp[x];
-//		rxdatabuff[x] = temp[x];
+		rxdatabuff[x] = temp[x];
 	}
 	cout << endl << endl;
+//	delete[] temp;
 	//use playerClient class to get server address and socket (server_address and ServerSocket)
 	return 0;
 }
@@ -42,19 +48,24 @@ int sendPacketTX(int player, char* data, int length, int packet_type)
 {
 	char temp[4096];
 	temp[0] = packet_type;
-	strcat(temp, data);
+	for (int x = 1; x < length + 1; x++)
+		temp[x] = data[x - 1];
+//	strcat(temp, data);
 	return(packetAssembler(temp, length + 1));
 }
 
 int sendPacketTX(int player, string data, int packet_type)
 {
 	int retval = 0;
-	char tempchar[1] = { packet_type };
-	char *temp = new char[data.length() + 1];
-	strcpy(temp, tempchar);
-	strcat(temp, data.c_str());
+//	char tempchar[1] = { packet_type };
+	char temp[4096];
+	temp[0] = packet_type;
+	for (int x = 1; x < data.length() + 1; x++)
+		temp[x] = data[x - 1];
+//	strcpy(temp, tempchar);
+//	strcat(temp, data.c_str());
 	retval = packetAssembler(temp, data.length()+1);
-	delete[] temp;
+//	delete[] temp;
 	return(retval);
 }
 
@@ -109,7 +120,7 @@ int tx_end_turn()
 	return(sendPacketTX(0, 1, END_TURN));
 }
 
-int build_road(int player, int tile, int road)
+int txhandler_build_road(int player, int tile, int road)
 {
 	//data[0] = tile number
 	//data[1] = road index
@@ -119,7 +130,7 @@ int build_road(int player, int tile, int road)
 	return(sendPacketTX(player, tempdata, BUILD_ROAD));
 }
 
-int build_settlement(int player, int tile, int corner)
+int txhandler_build_settlement(int player, int tile, int corner)
 {
 	string tempdata = "";
 	tempdata += tile;
@@ -127,7 +138,7 @@ int build_settlement(int player, int tile, int corner)
 	return(sendPacketTX(player, tempdata, BUILD_SETTLEMENT));
 }
 
-int build_city(int player, int tile, int corner)
+int txhandler_build_city(int player, int tile, int corner)
 {
 	string tempdata = "";
 	tempdata += tile;

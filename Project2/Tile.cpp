@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cassert>
 #include <iostream>
+#include <sstream>
 
 using namespace std;
 
@@ -385,26 +386,35 @@ string tile::get_tile_data_string(int tilenum)
 			//2nd player connected
 			//.... 
 			//(number of players connected) player connected
-	string data_out = "" + tilenum + resource_type + roll;
+//	string data_outtemp = "";
+	std::stringstream strStream;
+	strStream = std::stringstream();	//flush string stream...
+	strStream << tilenum << resource_type << roll;
+//	data_outtemp += tilenum + resource_type + roll;
 	string data_out_final = "S";
 	int tempnum = 0;
 	for (int x = 0; x < 6; x++)
-		data_out += roads[x];
+		strStream << roads[x];
+		//		data_outtemp += roads[x];
 	for (ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
 	{
-		data_out += ptr->corner_index + ptr->road_connected + ptr->property_owner 
-			+ ptr->property_type;
+		strStream << ptr->corner_index << ptr->road_connected << ptr->property_owner << ptr->property_type;
+		//data_outtemp += ptr->corner_index + ptr->road_connected + ptr->property_owner
+//			+ptr->property_type;
 		count = 0;
 		for (vector<int>::iterator tempptr = ptr->players_connected.begin(); tempptr < ptr->players_connected.end(); tempptr++)
 		{
 			temp_string += *tempptr;
 			count++;
 		}
-		data_out += count;
-		data_out += temp_string;
+		strStream << count << temp_string;
+//		data_outtemp += count;
+//		data_outtemp += temp_string;
 	}
-	tempnum = data_out.length();
-	data_out_final += tempnum + data_out.c_str();
+	tempnum = strStream.str().length();
+	data_out_final.push_back(tempnum);
+	data_out_final.append(strStream.str().c_str());
+//	data_out_final += tempnum + strStream.str().c_str();
 	return(data_out_final);
 }
 /*

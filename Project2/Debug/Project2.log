@@ -1,26 +1,7 @@
-﻿Build started 9/26/2015 11:47:51 PM.
+﻿Build started 9/28/2015 10:31:29 PM.
      1>Project "C:\Users\gtb\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt catanBaton.cpp clientBaton.cpp clientFramehandler.cpp clientTransmitHandler.cpp player.cpp game.cpp playerClient.cpp server_Catan.cpp tcpclient.cpp tcpserver.cpp Tile.cpp Tile_client.cpp
-         Tile_client.cpp
-         Tile.cpp
-         tcpserver.cpp
-         tcpclient.cpp
-         server_Catan.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(489): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(119): note: see declaration of 'strcpy'
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(539): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(90): note: see declaration of 'strcat'
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(563): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(119): note: see declaration of 'strcpy'
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(577): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(580): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(119): note: see declaration of 'strcpy'
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(581): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(90): note: see declaration of 'strcat'
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(597): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(90): note: see declaration of 'strcat'
-         playerClient.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt game.cpp
          game.cpp
      1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(116): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
      1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(705): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
@@ -34,26 +15,6 @@
      1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(791): warning C4018: '<': signed/unsigned mismatch
      1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(793): warning C4018: '<': signed/unsigned mismatch
      1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(795): warning C4018: '<': signed/unsigned mismatch
-         player.cpp
-         clientTransmitHandler.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\clienttransmithandler.cpp(30): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(90): note: see declaration of 'strcat'
-     1>c:\users\gtb\documents\github\catanbaton\project2\clienttransmithandler.cpp(45): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(90): note: see declaration of 'strcat'
-     1>c:\users\gtb\documents\github\catanbaton\project2\clienttransmithandler.cpp(52): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
-     1>c:\users\gtb\documents\github\catanbaton\project2\clienttransmithandler.cpp(54): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(119): note: see declaration of 'strcpy'
-     1>c:\users\gtb\documents\github\catanbaton\project2\clienttransmithandler.cpp(55): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(90): note: see declaration of 'strcat'
-     1>c:\users\gtb\documents\github\catanbaton\project2\clienttransmithandler.cpp(69): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(119): note: see declaration of 'strcpy'
-         clientFramehandler.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\clientframehandler.cpp(271): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-     1>c:\users\gtb\documents\github\catanbaton\project2\clientframehandler.cpp(272): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-         clientBaton.cpp
-         catanBaton.cpp
-         Generating Code...
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(271): warning C4700: uninitialized local variable 'nulptr' used
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.exe" /VERBOSE /INCREMENTAL /NOLOGO /LTCG:STATUS /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.lib" /MACHINE:X86 Debug\CatanBaton.res
          Debug\catanBaton.obj
@@ -106,6 +67,7 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) bool __cdecl std::uncaught_exception(void)" (__imp_?uncaught_exception@std@@YA_NXZ)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -181,6 +143,7 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: bool __thiscall std::ios_base::good(void)const " (__imp_?good@ios_base@std@@QBE_NXZ)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -192,6 +155,7 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: int __thiscall std::ios_base::flags(void)const " (__imp_?flags@ios_base@std@@QBEHXZ)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -203,6 +167,7 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: __int64 __thiscall std::ios_base::width(void)const " (__imp_?width@ios_base@std@@QBE_JXZ)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -214,6 +179,7 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: __int64 __thiscall std::ios_base::width(__int64)" (__imp_?width@ios_base@std@@QAE_J_J@Z)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -227,17 +193,21 @@
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: void __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::swap(class std::basic_streambuf<char,struct std::char_traits<char> > &)" (__imp_?swap@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IAEXAAV12@@Z)
                  Referenced in catanBaton.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: virtual __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::~basic_streambuf<char,struct std::char_traits<char> >(void)" (__imp_??1?$basic_streambuf@DU?$char_traits@D@std@@@std@@UAE@XZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: int __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::sputc(char)" (__imp_?sputc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QAEHD@Z)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -249,6 +219,7 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: __int64 __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::sputn(char const *,__int64)" (__imp_?sputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QAE_JPBD_J@Z)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -262,41 +233,49 @@
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: char * __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::gptr(void)const " (__imp_?gptr@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IBEPADXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: char * __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::pbase(void)const " (__imp_?pbase@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IBEPADXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: char * __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::pptr(void)const " (__imp_?pptr@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IBEPADXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: char * __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::egptr(void)const " (__imp_?egptr@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IBEPADXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: void __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::gbump(int)" (__imp_?gbump@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IAEXH@Z)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: void __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::setg(char *,char *,char *)" (__imp_?setg@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IAEXPAD00@Z)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: char * __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::epptr(void)const " (__imp_?epptr@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IBEPADXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: char * __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::_Gndec(void)" (__imp_?_Gndec@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IAEPADXZ)
                  Referenced in catanBaton.obj
@@ -308,21 +287,25 @@
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: void __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::setp(char *,char *)" (__imp_?setp@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IAEXPAD0@Z)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: void __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::setp(char *,char *,char *)" (__imp_?setp@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IAEXPAD00@Z)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: char * __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::_Pninc(void)" (__imp_?_Pninc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IAEPADXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: void __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::_Init(void)" (__imp_?_Init@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IAEXXZ)
                  Referenced in catanBaton.obj
@@ -334,12 +317,14 @@
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: void __thiscall std::basic_ios<char,struct std::char_traits<char> >::clear(int,bool)" (__imp_?clear@?$basic_ios@DU?$char_traits@D@std@@@std@@QAEXH_N@Z)
                  Referenced in catanBaton.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: void __thiscall std::basic_ios<char,struct std::char_traits<char> >::setstate(int,bool)" (__imp_?setstate@?$basic_ios@DU?$char_traits@D@std@@@std@@QAEXH_N@Z)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -351,6 +336,7 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: class std::basic_ostream<char,struct std::char_traits<char> > * __thiscall std::basic_ios<char,struct std::char_traits<char> >::tie(void)const " (__imp_?tie@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEPAV?$basic_ostream@DU?$char_traits@D@std@@@2@XZ)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -362,6 +348,7 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: class std::basic_streambuf<char,struct std::char_traits<char> > * __thiscall std::basic_ios<char,struct std::char_traits<char> >::rdbuf(void)const " (__imp_?rdbuf@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEPAV?$basic_streambuf@DU?$char_traits@D@std@@@2@XZ)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -373,6 +360,7 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: char __thiscall std::basic_ios<char,struct std::char_traits<char> >::fill(void)const " (__imp_?fill@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEDXZ)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -399,9 +387,11 @@
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: void __thiscall std::basic_ostream<char,struct std::char_traits<char> >::_Osfx(void)" (__imp_?_Osfx@?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEXXZ)
                  Referenced in tcpclient.obj
+                 Referenced in Tile.obj
                  Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
@@ -474,12 +464,15 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: __thiscall std::basic_iostream<char,struct std::char_traits<char> >::basic_iostream<char,struct std::char_traits<char> >(class std::basic_streambuf<char,struct std::char_traits<char> > *)" (__imp_??0?$basic_iostream@DU?$char_traits@D@std@@@std@@QAE@PAV?$basic_streambuf@DU?$char_traits@D@std@@@1@@Z)
                  Referenced in catanBaton.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: void __thiscall std::basic_iostream<char,struct std::char_traits<char> >::swap(class std::basic_iostream<char,struct std::char_traits<char> > &)" (__imp_?swap@?$basic_iostream@DU?$char_traits@D@std@@@std@@IAEXAAV12@@Z)
                  Referenced in catanBaton.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: virtual __thiscall std::basic_iostream<char,struct std::char_traits<char> >::~basic_iostream<char,struct std::char_traits<char> >(void)" (__imp_??1?$basic_iostream@DU?$char_traits@D@std@@@std@@UAE@XZ)
                  Referenced in catanBaton.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) struct std::_Smanip<__int64> __cdecl std::setw(__int64)" (__imp_?setw@std@@YA?AU?$_Smanip@_J@1@_J@Z)
                  Referenced in catanBaton.obj
@@ -488,51 +481,61 @@
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "public: virtual void __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::_Unlock(void)" (?_Unlock@?$basic_streambuf@DU?$char_traits@D@std@@@std@@UAEXXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "protected: virtual void __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::imbue(class std::locale const &)" (?imbue@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MAEXABVlocale@2@@Z)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "protected: virtual class std::basic_streambuf<char,struct std::char_traits<char> > * __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::setbuf(char *,__int64)" (?setbuf@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MAEPAV12@PAD_J@Z)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "protected: virtual __int64 __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::showmanyc(void)" (?showmanyc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MAE_JXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "protected: virtual int __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::sync(void)" (?sync@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MAEHXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "protected: virtual int __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::uflow(void)" (?uflow@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MAEHXZ)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "protected: virtual __int64 __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::xsgetn(char *,__int64)" (?xsgetn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MAE_JPAD_J@Z)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "protected: virtual __int64 __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::xsputn(char const *,__int64)" (?xsputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MAE_JPBD_J@Z)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) __int64 const std::_BADOFF" (__imp_?_BADOFF@std@@3_JB)
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: static class std::locale::id std::codecvt<char,char,struct _Mbstatet>::id" (__imp_?id@?$codecvt@DDU_Mbstatet@@@std@@2V0locale@2@A)
                  Referenced in catanBaton.obj
@@ -561,10 +564,14 @@
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
+               Found "__declspec(dllimport) public: class std::basic_ostream<char,struct std::char_traits<char> > & __thiscall std::basic_ostream<char,struct std::char_traits<char> >::operator<<(unsigned int)" (__imp_??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV01@I@Z)
+                 Referenced in game.obj
+                 Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) class std::basic_ostream<char,struct std::char_traits<char> > std::cerr" (__imp_?cerr@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A)
                  Referenced in game.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found __IMPORT_DESCRIPTOR_MSVCP140D
+                 Referenced in msvcprtd.lib(MSVCP140D.dll)
                  Referenced in msvcprtd.lib(MSVCP140D.dll)
                  Referenced in msvcprtd.lib(MSVCP140D.dll)
                  Referenced in msvcprtd.lib(MSVCP140D.dll)
@@ -758,6 +765,7 @@
                  Referenced in catanBaton.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Loaded MSVCRTD.lib(std_type_info_static.obj)
                Found ___security_cookie
                  Referenced in MSVCRTD.lib(utility.obj)
@@ -795,14 +803,10 @@
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
                  Loaded MSVCRTD.lib(delete_array.obj)
-               Found __RTC_UninitUse
-                 Referenced in server_Catan.obj
-                 Loaded MSVCRTD.lib(_error_.obj)
                Found _mainCRTStartup
                  Loaded MSVCRTD.lib(exe_main.obj)
                Found @_guard_check_icall@4
                  Referenced in MSVCRTD.lib(utility.obj)
-                 Referenced in MSVCRTD.lib(_error_.obj)
                  Referenced in MSVCRTD.lib(exe_main.obj)
                  Referenced in msvcprtd.lib(locale0_implib.obj)
                  Referenced in MSVCRTD.lib(ehvecctr.obj)
@@ -810,7 +814,6 @@
                  Referenced in MSVCRTD.lib(ehvecdtr.obj)
                  Loaded MSVCRTD.lib(checkcfg.obj)
                Found __except_handler4
-                 Referenced in MSVCRTD.lib(_error_.obj)
                  Referenced in MSVCRTD.lib(exe_main.obj)
                  Referenced in MSVCRTD.lib(ehvecctr.obj)
                  Referenced in MSVCRTD.lib(ehvccctr.obj)
@@ -830,15 +833,15 @@
                  Referenced in MSVCRTD.lib(utility.obj)
                  Referenced in MSVCRTD.lib(exe_main.obj)
                  Loaded MSVCRTD.lib(utility_desktop.obj)
+               Found "void __cdecl _RTC_Failure(void *,int)" (?_RTC_Failure@@YAXPAXH@Z)
+                 Referenced in MSVCRTD.lib(_stack_.obj)
+                 Loaded MSVCRTD.lib(_error_.obj)
                Found ___report_gsfailure
                  Referenced in MSVCRTD.lib(_secchk_.obj)
                  Loaded MSVCRTD.lib(gs_report.obj)
                Found __RTC_SetErrorFuncW
                  Referenced in MSVCRTD.lib(_init_.obj)
                  Loaded MSVCRTD.lib(_userapi_.obj)
-               Found "int __cdecl _RTC_GetSrcLine(unsigned char *,wchar_t *,unsigned long,int *,wchar_t *,unsigned long)" (?_RTC_GetSrcLine@@YAHPAEPA_WKPAH1K@Z)
-                 Referenced in MSVCRTD.lib(_error_.obj)
-                 Loaded MSVCRTD.lib(_pdblkup_.obj)
                Found ___security_init_cookie
                  Referenced in MSVCRTD.lib(exe_main.obj)
                  Loaded MSVCRTD.lib(gs_support.obj)
@@ -905,6 +908,9 @@
                Found ___guard_check_icall_fptr
                  Referenced in MSVCRTD.lib(checkcfg.obj)
                  Loaded MSVCRTD.lib(guard_support.obj)
+               Found "int __cdecl _RTC_GetSrcLine(unsigned char *,wchar_t *,unsigned long,int *,wchar_t *,unsigned long)" (?_RTC_GetSrcLine@@YAHPAEPA_WKPAH1K@Z)
+                 Referenced in MSVCRTD.lib(_error_.obj)
+                 Loaded MSVCRTD.lib(_pdblkup_.obj)
              Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\OLDNAMES.lib:
              Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\Ws2_32.lib:
                Found __imp__closesocket@4
@@ -990,23 +996,14 @@
                Found __imp__CreateConsoleScreenBuffer@20
                  Referenced in catanBaton.obj
                  Loaded kernel32.lib(KERNEL32.dll)
-               Found __imp__IsDebuggerPresent@0
-                 Referenced in MSVCRTD.lib(_error_.obj)
-                 Referenced in MSVCRTD.lib(utility_desktop.obj)
-                 Loaded kernel32.lib(KERNEL32.dll)
-               Found __imp__RaiseException@16
-                 Referenced in MSVCRTD.lib(_error_.obj)
-                 Loaded kernel32.lib(KERNEL32.dll)
-               Found __imp__MultiByteToWideChar@24
-                 Referenced in MSVCRTD.lib(_error_.obj)
-                 Loaded kernel32.lib(KERNEL32.dll)
-               Found __imp__WideCharToMultiByte@32
-                 Referenced in MSVCRTD.lib(_error_.obj)
-                 Loaded kernel32.lib(KERNEL32.dll)
                Found _IsProcessorFeaturePresent@4
                  Referenced in MSVCRTD.lib(_cpu_disp_.obj)
                  Referenced in MSVCRTD.lib(utility_desktop.obj)
                  Referenced in MSVCRTD.lib(gs_report.obj)
+                 Loaded kernel32.lib(KERNEL32.dll)
+               Found __imp__IsDebuggerPresent@0
+                 Referenced in MSVCRTD.lib(utility_desktop.obj)
+                 Referenced in MSVCRTD.lib(_error_.obj)
                  Loaded kernel32.lib(KERNEL32.dll)
                Found __imp__UnhandledExceptionFilter@4
                  Referenced in MSVCRTD.lib(utility_desktop.obj)
@@ -1022,11 +1019,35 @@
                Found __imp__GetModuleHandleW@4
                  Referenced in MSVCRTD.lib(utility_desktop.obj)
                  Loaded kernel32.lib(KERNEL32.dll)
+               Found __imp__RaiseException@16
+                 Referenced in MSVCRTD.lib(_error_.obj)
+                 Loaded kernel32.lib(KERNEL32.dll)
+               Found __imp__MultiByteToWideChar@24
+                 Referenced in MSVCRTD.lib(_error_.obj)
+                 Loaded kernel32.lib(KERNEL32.dll)
+               Found __imp__WideCharToMultiByte@32
+                 Referenced in MSVCRTD.lib(_error_.obj)
+                 Loaded kernel32.lib(KERNEL32.dll)
                Found __imp__GetCurrentProcess@0
                  Referenced in MSVCRTD.lib(gs_report.obj)
                  Loaded kernel32.lib(KERNEL32.dll)
                Found __imp__TerminateProcess@8
                  Referenced in MSVCRTD.lib(gs_report.obj)
+                 Loaded kernel32.lib(KERNEL32.dll)
+               Found __imp__QueryPerformanceCounter@4
+                 Referenced in MSVCRTD.lib(gs_support.obj)
+                 Loaded kernel32.lib(KERNEL32.dll)
+               Found __imp__GetCurrentProcessId@0
+                 Referenced in MSVCRTD.lib(gs_support.obj)
+                 Loaded kernel32.lib(KERNEL32.dll)
+               Found __imp__GetCurrentThreadId@0
+                 Referenced in MSVCRTD.lib(gs_support.obj)
+                 Loaded kernel32.lib(KERNEL32.dll)
+               Found __imp__GetSystemTimeAsFileTime@4
+                 Referenced in MSVCRTD.lib(gs_support.obj)
+                 Loaded kernel32.lib(KERNEL32.dll)
+               Found __imp__InitializeSListHead@4
+                 Referenced in MSVCRTD.lib(tncleanup.obj)
                  Loaded kernel32.lib(KERNEL32.dll)
                Found __imp__GetLastError@0
                  Referenced in MSVCRTD.lib(_pdblkup_.obj)
@@ -1048,21 +1069,6 @@
                  Loaded kernel32.lib(KERNEL32.dll)
                Found __imp__GetProcAddress@8
                  Referenced in MSVCRTD.lib(_pdblkup_.obj)
-                 Loaded kernel32.lib(KERNEL32.dll)
-               Found __imp__QueryPerformanceCounter@4
-                 Referenced in MSVCRTD.lib(gs_support.obj)
-                 Loaded kernel32.lib(KERNEL32.dll)
-               Found __imp__GetCurrentProcessId@0
-                 Referenced in MSVCRTD.lib(gs_support.obj)
-                 Loaded kernel32.lib(KERNEL32.dll)
-               Found __imp__GetCurrentThreadId@0
-                 Referenced in MSVCRTD.lib(gs_support.obj)
-                 Loaded kernel32.lib(KERNEL32.dll)
-               Found __imp__GetSystemTimeAsFileTime@4
-                 Referenced in MSVCRTD.lib(gs_support.obj)
-                 Loaded kernel32.lib(KERNEL32.dll)
-               Found __imp__InitializeSListHead@4
-                 Referenced in MSVCRTD.lib(tncleanup.obj)
                  Loaded kernel32.lib(KERNEL32.dll)
                Found __IMPORT_DESCRIPTOR_KERNEL32
                  Referenced in kernel32.lib(KERNEL32.dll)
@@ -1169,6 +1175,9 @@
                Found __except_handler4_common
                  Referenced in MSVCRTD.lib(_chandler4gs_.obj)
                  Loaded vcruntimed.lib(VCRUNTIME140D.dll)
+               Found ___std_type_info_destroy_list
+                 Referenced in MSVCRTD.lib(tncleanup.obj)
+                 Loaded vcruntimed.lib(VCRUNTIME140D.dll)
                Found ___vcrt_GetModuleFileNameW
                  Referenced in MSVCRTD.lib(_pdblkup_.obj)
                  Loaded vcruntimed.lib(VCRUNTIME140D.dll)
@@ -1177,9 +1186,6 @@
                  Loaded vcruntimed.lib(VCRUNTIME140D.dll)
                Found ___vcrt_LoadLibraryExW
                  Referenced in MSVCRTD.lib(_pdblkup_.obj)
-                 Loaded vcruntimed.lib(VCRUNTIME140D.dll)
-               Found ___std_type_info_destroy_list
-                 Referenced in MSVCRTD.lib(tncleanup.obj)
                  Loaded vcruntimed.lib(VCRUNTIME140D.dll)
                Found __IMPORT_DESCRIPTOR_VCRUNTIME140D
                  Referenced in vcruntimed.lib(VCRUNTIME140D.dll)
@@ -1298,10 +1304,6 @@
                Found __imp__ceil
                  Referenced in clientFramehandler.obj
                  Loaded ucrtd.lib(ucrtbased.dll)
-               Found _strcat
-                 Referenced in clientTransmitHandler.obj
-                 Referenced in server_Catan.obj
-                 Loaded ucrtd.lib(ucrtbased.dll)
                Found _strcpy
                  Referenced in clientTransmitHandler.obj
                  Referenced in server_Catan.obj
@@ -1311,6 +1313,9 @@
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found __imp___time64
                  Referenced in game.obj
+                 Loaded ucrtd.lib(ucrtbased.dll)
+               Found _strcat
+                 Referenced in server_Catan.obj
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found __imp____acrt_iob_func
                  Referenced in tcpclient.obj
@@ -1365,9 +1370,6 @@
                Found __CrtDbgReport
                  Referenced in MSVCRTD.lib(_init_.obj)
                  Loaded ucrtd.lib(ucrtbased.dll)
-               Found ___stdio_common_vsprintf_s
-                 Referenced in MSVCRTD.lib(_error_.obj)
-                 Loaded ucrtd.lib(ucrtbased.dll)
                Found __seh_filter_exe
                  Referenced in MSVCRTD.lib(exe_main.obj)
                  Loaded ucrtd.lib(ucrtbased.dll)
@@ -1416,6 +1418,12 @@
                Found ___p__commode
                  Referenced in MSVCRTD.lib(exe_main.obj)
                  Loaded ucrtd.lib(ucrtbased.dll)
+               Found ___stdio_common_vsprintf_s
+                 Referenced in MSVCRTD.lib(_error_.obj)
+                 Loaded ucrtd.lib(ucrtbased.dll)
+               Found __controlfp_s
+                 Referenced in MSVCRTD.lib(default_precision.obj)
+                 Loaded ucrtd.lib(ucrtbased.dll)
                Found __wmakepath_s
                  Referenced in MSVCRTD.lib(_pdblkup_.obj)
                  Loaded ucrtd.lib(ucrtbased.dll)
@@ -1424,9 +1432,6 @@
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found _wcscpy_s
                  Referenced in MSVCRTD.lib(_pdblkup_.obj)
-                 Loaded ucrtd.lib(ucrtbased.dll)
-               Found __controlfp_s
-                 Referenced in MSVCRTD.lib(default_precision.obj)
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found __IMPORT_DESCRIPTOR_ucrtbased
                  Referenced in ucrtd.lib(ucrtbased.dll)
@@ -1527,12 +1532,349 @@
              Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.10150.0\ucrt\x86\ucrtd.lib:
          
          Finished searching libraries
-     1>clientBaton.obj : error LNK2001: unresolved external symbol "int __cdecl tx_build_road(int,int,int)" (?tx_build_road@@YAHHHH@Z)
-     1>clientBaton.obj : error LNK2001: unresolved external symbol "int __cdecl tx_build_settlement(int,int,int)" (?tx_build_settlement@@YAHHHH@Z)
-     1>clientBaton.obj : error LNK2001: unresolved external symbol "int __cdecl tx_build_city(int,int,int)" (?tx_build_city@@YAHHHH@Z)
-     1>C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.exe : fatal error LNK1120: 3 unresolved externals
-     1>Done Building Project "C:\Users\gtb\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" (Build target(s)) -- FAILED.
+         LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
+         
+         Searching libraries
+             Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\msvcprtd.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\uuid.lib:
+             Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\MSVCRTD.lib:
+             Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\OLDNAMES.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\Ws2_32.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\Mswsock.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\AdvApi32.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\kernel32.lib:
+             Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\vcruntimed.lib:
+             Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.10150.0\ucrt\x86\ucrtd.lib:
+         
+         Finished searching libraries
+         
+         Searching libraries
+             Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\msvcprtd.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\uuid.lib:
+             Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\MSVCRTD.lib:
+               Found __load_config_used
+                 Loaded MSVCRTD.lib(loadcfg.obj)
+             Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\OLDNAMES.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\Ws2_32.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\Mswsock.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\AdvApi32.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\kernel32.lib:
+             Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\vcruntimed.lib:
+             Searching C:\Program Files (x86)\Windows Kits\10\lib\10.0.10150.0\ucrt\x86\ucrtd.lib:
+             Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\msvcprtd.lib:
+             Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\uuid.lib:
+         
+         Finished searching libraries
+         
+         Invoking rc.exe:
+          /v
+          /x
+          /fo
+          "C:\Users\gtb\AppData\Local\Temp\lnk{F10EEDE7-3BDD-4688-9984-836E427BA125}.tmp"
+          "C:\Users\gtb\AppData\Local\Temp\lnk{CB7B67C8-EAD2-4F7A-A1EC-8BDB7830C6BC}.tmp"
+         Microsoft (R) Windows (R) Resource Compiler Version 6.3.9600.17336
+         
+         Copyright (C) Microsoft Corporation.  All rights reserved.
+         
+         
+         Creating C:\Users\gtb\AppData\Local\Temp\lnk{F10EEDE7-3BDD-4688-9984-836E427BA125}.tmp
+         
+         Using codepage 1252 as default
+         
+         C:\Users\gtb\AppData\Local\Temp\lnk{CB7B67C8-EAD2-4F7A-A1EC-8BDB7830C6BC}.tmp.
+         Writing 24:1,	lang:0x409,	size 381
+         
+         Invoking cvtres.exe:
+          /machine:x86
+          /verbose
+          /out:"C:\Users\gtb\AppData\Local\Temp\lnk{97BF40A6-D70C-4A4D-A719-E218E1B8A84A}.tmp"
+          /readonly
+          "Debug\CatanBaton.res"
+          "C:\Users\gtb\AppData\Local\Temp\lnk{F10EEDE7-3BDD-4688-9984-836E427BA125}.tmp"
+         Microsoft (R) Windows Resource To Object Converter Version 14.00.23026.0
+         Copyright (C) Microsoft Corporation.  All rights reserved.
+         
+         adding resource. type:MANIFEST, name:1, language:0x0409, flags:0x30, size:381
+         
+         Unused libraries:
+           C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\uuid.lib
+           C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\OLDNAMES.lib
+           C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\Mswsock.lib
+           C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\AdvApi32.lib
+         
+         Starting pass 2
+              CatanBaton.res
+              Tile_client.obj
+              Tile.obj
+              tcpserver.obj
+              tcpclient.obj
+              server_Catan.obj
+              playerClient.obj
+              game.obj
+              player.obj
+              clientTransmitHandler.obj
+              clientFramehandler.obj
+              clientBaton.obj
+              catanBaton.obj
+              msvcprtd.lib(locale0_implib.obj)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              msvcprtd.lib(MSVCP140D.dll)
+              MSVCRTD.lib(_cpu_disp_.obj)
+              MSVCRTD.lib(_error_.obj)
+              MSVCRTD.lib(_init_.obj)
+              MSVCRTD.lib(_initsect_.obj)
+              MSVCRTD.lib(_pdblkup_.obj)
+              MSVCRTD.lib(_stack_.obj)
+              MSVCRTD.lib(_userapi_.obj)
+              MSVCRTD.lib(_ftol2_.obj)
+              MSVCRTD.lib(_chandler4gs_.obj)
+              MSVCRTD.lib(_secchk_.obj)
+              MSVCRTD.lib(chkstk.obj)
+              MSVCRTD.lib(gs_cookie.obj)
+              MSVCRTD.lib(gs_report.obj)
+              MSVCRTD.lib(gs_support.obj)
+              MSVCRTD.lib(checkcfg.obj)
+              MSVCRTD.lib(guard_support.obj)
+              MSVCRTD.lib(loadcfg.obj)
+              MSVCRTD.lib(dyn_tls_dtor.obj)
+              MSVCRTD.lib(dyn_tls_init.obj)
+              MSVCRTD.lib(matherr_detection.obj)
+              MSVCRTD.lib(ucrt_detection.obj)
+              MSVCRTD.lib(argv_mode.obj)
+              MSVCRTD.lib(commit_mode.obj)
+              MSVCRTD.lib(default_local_stdio_options.obj)
+              MSVCRTD.lib(denormal_control.obj)
+              MSVCRTD.lib(file_mode.obj)
+              MSVCRTD.lib(fltused.obj)
+              MSVCRTD.lib(invalid_parameter_handler.obj)
+              MSVCRTD.lib(matherr.obj)
+              MSVCRTD.lib(new_mode.obj)
+              MSVCRTD.lib(thread_locale.obj)
+              MSVCRTD.lib(ehvccctr.obj)
+              MSVCRTD.lib(ehvecctr.obj)
+              MSVCRTD.lib(ehvecdtr.obj)
+              MSVCRTD.lib(std_type_info_static.obj)
+              MSVCRTD.lib(tncleanup.obj)
+              MSVCRTD.lib(delete_array.obj)
+              MSVCRTD.lib(delete_scalar.obj)
+              MSVCRTD.lib(delete_scalar_size.obj)
+              MSVCRTD.lib(new_array.obj)
+              MSVCRTD.lib(new_scalar.obj)
+              MSVCRTD.lib(throw_bad_alloc.obj)
+              MSVCRTD.lib(exe_main.obj)
+              MSVCRTD.lib(initializers.obj)
+              MSVCRTD.lib(utility.obj)
+              MSVCRTD.lib(ucrt_stubs.obj)
+              MSVCRTD.lib(utility_desktop.obj)
+              MSVCRTD.lib(default_precision.obj)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              Ws2_32.lib(WS2_32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              kernel32.lib(KERNEL32.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              vcruntimed.lib(VCRUNTIME140D.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+              ucrtd.lib(ucrtbased.dll)
+         Finished pass 2
+         Project2.vcxproj -> C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.exe
+     1>Done Building Project "C:\Users\gtb\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" (Build target(s)).
 
-Build FAILED.
+Build succeeded.
 
-Time Elapsed 00:00:15.70
+Time Elapsed 00:00:02.53

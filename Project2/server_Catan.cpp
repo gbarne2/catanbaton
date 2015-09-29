@@ -41,7 +41,7 @@ Launch this operation in another thread, and once the start game command is rece
 #include <WS2tcpip.h>
 #include <Windows.h>
 #include <stdlib.h>
-//#include "globaldata.h"
+#include "catanBaton.h"
 
 using namespace std;
 
@@ -108,7 +108,7 @@ tcpserver serv(" ");
 int get_qty_cities_left(game session, int player_number);
 int get_qty_settlements_left(game session, int player_number);
 int get_qty_roads_remaining(game session, int player_number);
-int send_board_info(game session, char *datain, int size_of_datain);
+int send_board_info(game session);
 int steal_card(game session, int player_taking_card, int player_giving);
 static int trade_in_progress = 0;
 static int initiating_player_trade = 0;
@@ -124,7 +124,7 @@ unsigned int read_dice_roll(game session);
 int place_robber(game session, int tilenum, int playernum);
 int send_resources_all_players(game session);
 
-//extern char txdatabuff[4096];
+extern char txdatabuff[4096];
 
 static int debug_text = 0;
 static trade_cards_offer trade_to_process;
@@ -144,7 +144,7 @@ int framehandler(game session, char *datain, int size_of_data)
 	int temp = 0;
 	char *nulptr;
 	int retval = 0;	
-	if ((datain[0] == 'S') && (datain[1] == 8) && (datain[2] == 53) && (datain[3] == 'p'))
+	if ((datain[0] == 'S') && (datain[1] == '8') && (datain[2] == 53) && (datain[3] == 'p'))
 	{
 		cout << "Valid packet received.... Processing" << endl;
 		switch (datatype)
@@ -268,7 +268,7 @@ int framehandler(game session, char *datain, int size_of_data)
 			{
 				retval = session.build_roads(datain[dataptr], player_number, datain[dataptr + 1]);
 				if (retval >= 0)		//if a success, then send player new board layout!
-					send_board_info(session, nulptr, 0);
+					send_board_info(session);
 				else
 					send_packet(session, player_number, -31, BUILD_ROAD);
 			}	
@@ -283,7 +283,7 @@ int framehandler(game session, char *datain, int size_of_data)
 			{
 				retval = session.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
 				if (retval >= 0)		//if a success, then send player new board layout!
-					send_board_info(session, nulptr, 0);
+					send_board_info(session);
 				else
 					send_packet(session, player_number, -32, BUILD_SETTLEMENT);
 			}
@@ -296,7 +296,7 @@ int framehandler(game session, char *datain, int size_of_data)
 			{
 				retval = session.upgrade_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
 				if (retval >= 0)		//if a success, then send player new board layout!
-					send_board_info(session, nulptr, 0);
+					send_board_info(session);
 				else
 					send_packet(session, player_number, -33, UPGRADE_SETTLEMENT);
 			}
@@ -311,7 +311,7 @@ int framehandler(game session, char *datain, int size_of_data)
 			//data field:
 			break;
 		case GET_BOARD_INFO:
-			send_board_info(session, nulptr, 0);
+			send_board_info(session);
 			//data field:
 			break;
 		case GET_TIME_LIMIT:
@@ -344,7 +344,7 @@ int framehandler(game session, char *datain, int size_of_data)
 			if (session.check_current_player() == player_number)
 			{
 				retval = session.next_player();
-				send_board_info(session, nulptr, 0);
+				send_board_info(session);
 				send_packet(session, retval, 0, END_TURN);		//make END_TURN be start turn when received from server?
 				//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
 			}
@@ -448,7 +448,7 @@ unsigned int read_dice_roll(game session)
 int send_dice_roll(game session)
 {
 	int temp = read_dice_roll(session);
-	for (int x = 1; x < session.check_number_of_players() + 1; x++)
+	for (int x = 1; x < session.check_number_of_players(); x++)
 		send_packet(session, x, temp, SEND_DICE_ROLL);
 	return(temp);
 }
@@ -461,11 +461,11 @@ int roll_dice()
 }
 */
 
-int send_board_info(game session, char *datain, int size_of_datain)
+int send_board_info(game session)
 {
 	string data_out;
 	data_out = session.get_board_info();
-	for (int x = 1; x < session.check_number_of_players()+1; x++)
+	for (int x = 1; x < session.check_number_of_players(); x++)
 	{
 		send_packet(session, x, data_out, GET_BOARD_INFO);		//send board info to all players
 	}
@@ -518,7 +518,7 @@ int join_game(game session, int player_number, string name)
 {
 	if (game_status == 0)	//if game not started, then allow new players to join
 	{
-		session.add_player(session.check_number_of_players() + 1, name);
+		session.add_player(session.check_number_of_players(), name);
 
 //		tempplayer->set_client_address()
 		//needs to figure out what the next player number is, save the clientsocket off to player data, tell the client that, and keep waiting for more players until game is started
@@ -544,8 +544,8 @@ int packetHandler(SOCKET tempsock, char& buffer, int size)
 			cout << temp[x];
 		cout << endl << endl;
 	}
-//	for (int x = 0; x < size+4; x++)
-//		txdatabuff[x] = temp[x];
+	for (int x = 0; x < size+4; x++)
+		txdatabuff[x] = temp[x];
 //	return(serv.sendPacket(tempsock, temp));
 	return(0);
 }
@@ -574,15 +574,18 @@ int send_packet(game session, int player_num, string data_to_send, int packet_ty
 	string datastr;
 	SOCKET tempsock;
 	int retval = 0;
-	char tempchar[1] = { packet_type };	// , player_num, data_to_send.length()
-
-	char *temp = new char[data_to_send.length() + 1];
-	strcpy(temp, tempchar);
-	strcat(temp, data_to_send.c_str());
+	//char tempchar[1] = { packet_type };	// , player_num, data_to_send.length()
+	char temp[4096];
+	temp[0] = packet_type;
+	for (int x = 0; x < data_to_send.length() % 4096; x++)
+		temp[x + 1] = data_to_send[x];
+//	char *temp = new char[data_to_send.length() + 1];
+//	strcpy(temp, tempchar);
+//	strcat(temp, data_to_send.c_str());
 	tempsock = session.get_player_socket(player_num);
 	retval = packetHandler(tempsock, *temp, datastr.length() + 1);
 //	retval = serv.sendPacket(tempsock, temp);
-	delete[] temp;
+//	delete[] temp;
 	return(retval);
 }
 

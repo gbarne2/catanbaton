@@ -72,6 +72,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="catanBaton.h" />
     <ClInclude Include="clientBaton.h" />
     <ClInclude Include="clientFramehandler.h" />
     <ClInclude Include="clientTransmitHandler.h" />

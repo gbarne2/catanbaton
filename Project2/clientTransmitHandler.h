@@ -1,9 +1,9 @@
 #pragma once
 #include "clientFramehandler.h"
 
-int tx_build_road(int player, int tile, int road);
-int tx_build_settlement(int player, int tile, int corner);
-int tx_build_city(int player, int tile, int corner);
+int txhandler_build_road(int player, int tile, int road);
+int txhandler_build_settlement(int player, int tile, int corner);
+int txhandler_build_city(int player, int tile, int corner);
 int sendPacketTX(int player, char* data, int length, int packet_type);
 int sendPacketTX(int player, string data, int packet_type);
 int sendPacketTX(int player, int data, int packet_type);

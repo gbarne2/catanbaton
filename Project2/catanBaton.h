@@ -1,7 +1,6 @@
 #pragma once
-/*
-char txdatabuff[4096];
-char rxdatabuff[4096];
-int sizerxbuff;
-int sizetxbuff;
-*/
+
+extern char txdatabuff[4096];
+extern char rxdatabuff[4096];
+extern int sizerxbuff;
+extern int sizetxbuff;

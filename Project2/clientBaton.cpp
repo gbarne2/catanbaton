@@ -81,7 +81,7 @@ int client_build_road(int tile, int corner)
 {
 	int retval = 0;
 	FLAG_BUILD_ROAD = 1;
-	retval = tx_build_road(get_player_num(), tile, corner);
+	retval = txhandler_build_road(get_player_num(), tile, corner);
 	return(retval);
 }
 
@@ -89,7 +89,7 @@ int client_build_settlement(int tile, int corner)
 {
 	int retval = 0;
 	FLAG_BUILD_SETTLEMENT = 1;
-	retval = tx_build_settlement(get_player_num(), tile, corner);
+	retval = txhandler_build_settlement(get_player_num(), tile, corner);
 	return(retval);
 }
 
@@ -97,7 +97,7 @@ int client_build_city(int tile, int corner)
 {
 	int retval = 0;
 	FLAG_BUILD_CITY = 1;
-	retval = tx_build_city(get_player_num(), tile, corner);
+	retval = txhandler_build_city(get_player_num(), tile, corner);
 	return(retval);
 }
 

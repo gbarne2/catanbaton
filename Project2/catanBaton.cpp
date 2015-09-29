@@ -45,7 +45,7 @@
 #include "tcpserver.h"
 #include "clientTransmitHandler.h"
 #include "server_Catan.h"
-
+#include "catanBaton.h"
 
 #define setwval 1
 using namespace std;
@@ -143,10 +143,11 @@ void clinit(tcpclient tcpcli)
 	tcpcli.initWinsock(tempaddr);
 }
 
-extern char txdatabuff[4096] = { 0, };
-extern char rxdatabuff[4096] = { 0, };
-extern int sizerxbuff = 0;
-extern int sizetxbuff = 0;
+
+char txdatabuff[4096] = { 0, };
+char rxdatabuff[4096] = { 0, };
+int sizerxbuff = 0;
+int sizetxbuff = 0;
 
 int main()
 {
@@ -229,6 +230,8 @@ int main()
 	cout << endl << endl << endl;
 //	cin.clear();
 //	cin.ignore(INT_MAX, 0);
+	current_player = 1;
+	catan.next_player();
 	while(x != 69)		//loop and wait for user input then do what they want.
 	{
 	//	Sleep(5000);

@@ -949,6 +949,7 @@ string game::get_board_info()
 		tempx = determine_x_index_from_tile(x);
 		data_out += pieces[tempx][tempy].get_tile_data_string(x);
 	}
+	cout << "Size of board data is: " << data_out.length() << endl;
 	return(data_out);
 }
 game::game(void)
