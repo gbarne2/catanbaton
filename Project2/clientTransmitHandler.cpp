@@ -24,12 +24,13 @@ int packetAssembler(char buffer[], int size)
 //	char tempbuf[1];
 //	itoa(size, tempbuf, 10);
 	char temp[4096];
+	int tempsize = ((size & 0x0FF00) >> 8);
 	temp[0] = 'S';
 	temp[1] = '8';
 	temp[2] = 53;
 	temp[3] = 'p';
-	temp[4] = playernum1;
-	temp[5] = size;
+	temp[4] = tempsize;
+	temp[5] = size % 256;
 	for (int x = 0; x < size; x++)
 		temp[x + 6] = buffer[x];
 //	strcat(temp, buffer);
@@ -48,10 +49,11 @@ int sendPacketTX(int player, char* data, int length, int packet_type)
 {
 	char temp[4096];
 	temp[0] = packet_type;
-	for (int x = 1; x < length + 1; x++)
-		temp[x] = data[x - 1];
+	temp[1] = player;
+	for (int x = 0; x < length; x++)
+		temp[x+2] = data[x];
 //	strcat(temp, data);
-	return(packetAssembler(temp, length + 1));
+	return(packetAssembler(temp, length + 2));
 }
 
 int sendPacketTX(int player, string data, int packet_type)
@@ -60,26 +62,34 @@ int sendPacketTX(int player, string data, int packet_type)
 //	char tempchar[1] = { packet_type };
 	char temp[4096];
 	temp[0] = packet_type;
-	for (int x = 1; x < data.length() + 1; x++)
-		temp[x] = data[x - 1];
+	temp[1] = player;
+	for (int x = 0; x < data.length(); x++)
+		temp[x+2] = data[x];
 //	strcpy(temp, tempchar);
 //	strcat(temp, data.c_str());
-	retval = packetAssembler(temp, data.length()+1);
+	retval = packetAssembler(temp, data.length()+2);
 //	delete[] temp;
 	return(retval);
 }
 
 int sendPacketTX(int player, int data, int packet_type)
 {
-	string datastr;
-	ostringstream convert;
+	char temp[3] = { 0,0,0 };
 	int retval = 0;
-	convert << packet_type << data;
+	temp[0] = packet_type;
+	temp[1] = player;
+	temp[2] = data;
+	retval = packetAssembler(temp, 3);
+/*
+	convert << packet_type << player << data;
 	datastr = convert.str();
-	char *temp = new char[datastr.length()];
-	strcpy(temp, datastr.c_str());
+	char *temp = new char[datastr.length()+2];
+	for (int x = 0; x < datastr.length(); x++)
+		temp[x] = datastr.c_str()[x];
+//	strcpy(temp, datastr.c_str());
 	retval = packetAssembler(temp, datastr.length());
 	delete[] temp;
+*/
 	return(retval);
 }
 

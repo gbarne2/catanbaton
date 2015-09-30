@@ -178,13 +178,13 @@ int main()
 //	thread uno(srvinit, catan, server);
 //	thread dos(clinit, client);
 	cout << endl << "threads are running! this is from the main thread" << endl;
-	Sleep(3000);
+//	Sleep(3000);
 //	uno.join();
 //	dos.join();
-	cout << "type a number" << endl;
-	cin >> user_input;
-	cout << "you entered " << user_input << endl;
-	cout << "Test";
+//	cout << "type a number" << endl;
+//	cin >> user_input;
+//	cout << "you entered " << user_input << endl;
+//	cout << "Test";
 	console_handle = CreateConsoleScreenBuffer(GENERIC_READ|GENERIC_WRITE, 0, NULL, CONSOLE_TEXTMODE_BUFFER, NULL);
 //	SetConsoleActiveScreenBuffer(console_handle);
 //	SetConsoleCtrlHandler(ConsoleHandler, TRUE);
@@ -224,6 +224,7 @@ int main()
 //	SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_INTENSITY);
 	catan.temp_build_settlement(1,  2, cornD);
 	catan.temp_build_settlement(0,  1, cornF);
+	init_game();
 	//catan.temp_build_settlement(9,  2, cornE);
 //	SetConsoleCursorPosition(console_handle, dwPosition);
 //	cout << "\n\n\n", 3, &written, NULL);

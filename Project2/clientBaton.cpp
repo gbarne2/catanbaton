@@ -113,3 +113,92 @@ int place_robber(int tile, int corner)
 
 }
 */
+
+const int max_x = ACTIVE_NUM_TILES_CLIENT;
+playerClient playerdata;
+tileclient board[ACTIVE_NUM_TILES_CLIENT];
+
+void init_game()
+{
+	ClientCorner temps;
+	vector<int> tempvec;
+
+	//	corner_index = xy;
+	for (int x = 0; x <= max_x; x++)
+	{
+		for (int xy = 0; xy < 6; xy++)
+		{
+			temps.corner_index = xy;
+			temps.players_connected = tempvec;
+			temps.property_owner = 0;
+			temps.property_type = 0;
+			temps.road_connected = 0;
+			board[x].init_corners(temps);
+		}
+	}
+	build_board();
+}
+
+int rolldice()
+{
+	static int dice_rolls[active_num_tiles] = { 2,3,3,4,4,5,5,6,6,8,8,9,9,10,10,11,11,12 };
+	int temp = 0;
+startagainrolldice:
+	temp = (rand()*rand()) % 11 + 2;
+	for (int x = 0; x < active_num_tiles; x++)
+	{
+		if (temp == dice_rolls[x])		//if random number = one in dice_rolls, then assign it to tile
+		{
+			dice_rolls[x] = 0;
+			goto exit_diceroll;
+		}
+	}
+	goto startagainrolldice;
+	//	__nop();
+exit_diceroll:
+	return(temp);
+}
+
+//calling function must check if resource == desert. if it does,m then it needs to assign a dice roll of 0. or 1. whatever
+//generates pseudo random resources based on what resources have not been allocated yet
+static int rand_resources[active_num_tiles] = { WHEAT, WHEAT, WHEAT, WHEAT, ORE, ORE, ORE, WOOD,
+WOOD, WOOD, WOOD, SHEEP, SHEEP, SHEEP, SHEEP,
+BRICK, BRICK, BRICK, DESERT };
+
+int assign_resources()
+{
+	int temp = 0;
+startagain_assign_resources:
+	temp = (rand()*rand()) % 6 + 1;
+	for (int x = 0; x < active_num_tiles; x++)
+	{
+		if (temp == rand_resources[x])		//if random number = one in dice_rolls, then assign it to tile
+		{
+			rand_resources[x] = 0;
+			goto exit_assign_resources;
+		}
+	}
+	goto startagain_assign_resources;
+	//	__nop();
+exit_assign_resources:
+	return(temp);
+}
+
+int build_board()
+{
+	int resource = 0;
+	int dice = 0;
+	srand(time(0));
+	//must create tile, put it into pieces array, and update tile number in other array
+	for (int x = 0; x < active_num_tiles; x++)
+	{
+		resource = assign_resources();
+		if (resource == DESERT)
+			dice = 1;
+		else
+			dice = rolldice();
+		board[x].set_resource_type(resource);
+		board[x].set_dice_roll(dice);
+	}
+	return(1);
+}

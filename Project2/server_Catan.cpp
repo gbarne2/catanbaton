@@ -126,7 +126,7 @@ int send_resources_all_players(game session);
 
 extern char txdatabuff[4096];
 
-static int debug_text = 0;
+static int debug_text = 1;
 static trade_cards_offer trade_to_process;
 //functions
 int framehandler(game session, char *datain, int size_of_data)
@@ -135,13 +135,16 @@ int framehandler(game session, char *datain, int size_of_data)
 	//the datain field will need to be pulled in from tcpserver->receivebuffer or whateevr its called. 
 	//some higer level function will need to manage this and allow it to receive data and indicate when
 	//there is data to be read. when that indicator goes off, the frame handler function should be called
-	int dataptr = 7;		//use this to grab data from datain buffer.
+	int dataptr = 8;		//use this to grab data from datain buffer.
 	int tempdata = 0;
-	char datatype = datain[6];
-	int player_number = datain[4];
-	string tempstring;
-	int datasize = datain[5];
 	int temp = 0;
+	char datatype = datain[6];
+	int player_number = datain[7];
+	string tempstring;
+	int datasize = datain[4];
+	datasize = datasize << 8;
+	datasize += datain[5];
+
 	char *nulptr;
 	int retval = 0;	
 	if ((datain[0] == 'S') && (datain[1] == '8') && (datain[2] == 53) && (datain[3] == 'p'))
@@ -529,14 +532,19 @@ int join_game(game session, int player_number, string name)
 	//needs to figure out what the next player number is, save the clientsocket off to player data, tell the client that, and keep waiting for more players until game is started
 }
 
-int packetHandler(SOCKET tempsock, char& buffer, int size)
+int packetHandler(SOCKET tempsock, char buffer[], int size)
 {
-	char *temp = new char [4+size];
+	char *temp = new char [4096];
+	int tempsize = ((size & 0x0FF00) >> 8);
 	temp[0] = 'S';
 	temp[1] = 8;
 	temp[2] = 53;
 	temp[3] = 'p';
-	strcat(temp, &buffer);
+	temp[4] = tempsize;
+	temp[5] = size % 256;
+	for (int x = 0; x < size; x++)
+		temp[x + 6] = buffer[x];
+//	strcat(temp, buffer);
 	if (debug_text)
 	{
 		cout << "Data to send: " << endl;
@@ -547,6 +555,7 @@ int packetHandler(SOCKET tempsock, char& buffer, int size)
 	for (int x = 0; x < size+4; x++)
 		txdatabuff[x] = temp[x];
 //	return(serv.sendPacket(tempsock, temp));
+	delete[] temp;
 	return(0);
 }
 
@@ -557,12 +566,15 @@ int send_packet(game session, int player_num, int data_to_send, int packet_type)
 	ostringstream convert;
 	int retval = 0;
 	convert << packet_type;
+	convert << player_num;
 	convert << data_to_send;
 	datastr = convert.str();
 	char *temp = new char [datastr.length() + 2];
-	strcpy(temp, datastr.c_str());
+	for (int x = 0; x < 3; x++)
+		temp[x] = datastr.c_str()[x];
+//	strcpy(temp, datastr.c_str());
 	tempsock = session.get_player_socket(player_num);
-	retval = packetHandler(tempsock, *temp, datastr.length() + 2);
+	retval = packetHandler(tempsock, temp, 3);
 //	retval = serv.sendPacket(tempsock, temp);
 	delete[] temp;
 	return(retval);
@@ -577,13 +589,14 @@ int send_packet(game session, int player_num, string data_to_send, int packet_ty
 	//char tempchar[1] = { packet_type };	// , player_num, data_to_send.length()
 	char temp[4096];
 	temp[0] = packet_type;
+	temp[1] = player_num;
 	for (int x = 0; x < data_to_send.length() % 4096; x++)
-		temp[x + 1] = data_to_send[x];
+		temp[x + 2] = data_to_send[x];
 //	char *temp = new char[data_to_send.length() + 1];
 //	strcpy(temp, tempchar);
 //	strcat(temp, data_to_send.c_str());
 	tempsock = session.get_player_socket(player_num);
-	retval = packetHandler(tempsock, *temp, datastr.length() + 1);
+	retval = packetHandler(tempsock, temp, (data_to_send.length()%4096) + 2);
 //	retval = serv.sendPacket(tempsock, temp);
 //	delete[] temp;
 	return(retval);
@@ -596,10 +609,11 @@ int send_packet(game session, int player_num, char *data_to_send, int packet_typ
 	char temp[4096];
 	temp[0] = packet_type;
 	temp[1] = player_num;
-	temp[2] = length;
-	strcat(temp, data_to_send);
+	for (int x = 0; x < length; x++)
+		temp[2 + x] = data_to_send[x];
+//	strcat(temp, data_to_send);
 	tempsock = session.get_player_socket(player_num);
-	retval = packetHandler(tempsock, *temp, length + 3);
+	retval = packetHandler(tempsock, temp, length + 2);
 //	retval = serv.sendPacket(tempsock, temp);
 	return(retval);
 }

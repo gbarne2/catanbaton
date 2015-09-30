@@ -69,21 +69,24 @@ using namespace std;
 #define MAX_PACKET_VAL					51
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
 
-
 #define APPROVE_TRADE 					1
 #define DENY_TRADE						-43
 
 //static client_trade_cards_offer trade_to_process;
 //static playerClient playerdata;
+static client_trade_cards_offer trade_to_process;
+
 
 int clientFrameHandler(char* datain)
 {
-	int dataptr = 7;		//use this to grab data from datain buffer.
+	int dataptr = 8;		//use this to grab data from datain buffer.
 	int tempdata = 0;
-	char datatype = datain[4];
-	int player_number = datain[5];
+	char datatype = datain[6];
+	int player_number = datain[7];
 	string tempstring;
-	int datasize = datain[6];
+	int datasize = datain[4];
+	datasize = datasize << 8;
+	datasize += datain[5];
 	static int requested_player = 0;
 	static int current_players_turn = 0;
 	char *nulptr;
@@ -287,6 +290,8 @@ int update_board_info(char* data, int datasize)
 	int x_ind = 0;
 	int y_ind = 0;
 	int tilenum = 0;
+	char ptrchar[1] = { 0 };
+	char tempchar = 0;
 	vector<int> numtiles = get_num_active_tiles(0);
 //	int numtiles = 0;
 	vector<int>::iterator p = numtiles.begin();
@@ -295,7 +300,8 @@ int update_board_info(char* data, int datasize)
 	{
 		if (data[startindex] == 'S')
 		{
-			size_corner = data[startindex + 1];
+			ptrchar[0] = data[startindex + 1];
+			size_corner = atoi(ptrchar);
 			if (startindex + size_corner < datasize)
 			{
 				tilenum = data[startindex + 2];

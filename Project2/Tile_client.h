@@ -56,7 +56,7 @@ private:
 	int roads[6];		//this will contain the status of all 6 possible roads around a tile, and which player owns them.
 	//	int corners[6];		//this will contain all of the corners, and their value will be used to determine which player owns them
 										//for now, lets make it be the function that checks if a corner is available (check neighboring corners and desired corner)
-	vector<ClientCorner> cornersz;		//move this into the private part!!!! build_roads, ,  all depend on this being public. make update them as well
+	vector<ClientCorner> Clientcornersz;		//move this into the private part!!!! build_roads, ,  all depend on this being public. make update them as well
 	int check_roads_settlement(int corner, int player);
 	int check_roads(int corner1, int corner2, int player);
 public:
@@ -71,12 +71,14 @@ public:
 	int read_corner_owner(int corner);
 	int read_corner_type(int corner);
 	int read_road(int road);
-	void init_corners(ClientCorner temp) {cornersz.push_back(temp);}
+	void init_corners(ClientCorner temp) {Clientcornersz.push_back(temp);}
 	int check_tile_resource_type();
 	int check_corner_owner(int corner);
 	int check_corner_building_type(int corner);
 	int check_robber(void);
 	int update_board_info_from_server(char*, int, int);
+	int set_resource_type(int res_type);
+	int set_dice_roll(int dicerollval);
 	
 	/*
 	functions to delete:
@@ -84,8 +86,7 @@ public:
 	int upgrade_settlement(int corner, int player);
 	int build_road(int corner1, int corner2, int player);		//must call for both adjacent roads!
 	void build_settlement(int corner, int player);
-	int set_resource_type(int res_type);
-	int set_dice_roll(int dicerollval);
+
 	void place_robber(void);
 	void remove_robber(void);
 	string get_tile_data_string(void);

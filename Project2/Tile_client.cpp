@@ -1,6 +1,7 @@
 ﻿#include "Tile_client.h"
 #include <iomanip>
 #include <iostream>
+#include "clientBaton.h"
 
 using namespace std;
 
@@ -41,7 +42,7 @@ tileclient::tileclient(void)
 	{
 		temp.corner_index = i;
 		roads[i] = 0;
-		cornersz.push_back(temp);
+		Clientcornersz.push_back(temp);
 	}
 	roll = 0;
 }
@@ -71,7 +72,7 @@ tileclient::tileclient(int resource_type_init, int dice_roll_val)
 	{
 		temp.corner_index = i;
 		roads[i] = 0;
-		cornersz.push_back(temp);
+		Clientcornersz.push_back(temp);
 	}
 	roll = dice_roll_val;
 }
@@ -92,13 +93,13 @@ int tileclient::check_neighbors(int corner, int player)
 {
 	int temp = 0;
 	cout << (corner-1)%6 << endl;
-	vector<ClientCorner>::iterator ptr1 = cornersz.begin() +  corner%6;
-	vector<ClientCorner>::iterator ptr2 = cornersz.begin() + (corner+1)%6;
+	vector<ClientCorner>::iterator ptr1 = Clientcornersz.begin() +  corner%6;
+	vector<ClientCorner>::iterator ptr2 = Clientcornersz.begin() + (corner+1)%6;
 	vector<ClientCorner>::iterator ptr3;
 	if((corner-1)%6 < 0) 
-		ptr3 = cornersz.begin() + 5%6;
+		ptr3 = Clientcornersz.begin() + 5%6;
 	else
-		ptr3 = cornersz.begin() + (corner-1)%6;
+		ptr3 = Clientcornersz.begin() + (corner-1)%6;
 /*
 	for(int x = 0; x < corner%6; x++)
 		ptr1++;
@@ -121,7 +122,7 @@ int tileclient::check_roads_settlement(int corner, int player)
 	int status = 0;
 	int temp = 0;
 	int debugtemp = -1;
-	ptr = cornersz.begin() + corner;
+	ptr = Clientcornersz.begin() + corner;
 	//if the player has any roads from another tile that connect to either of these corners, then you can build a road if other conditions are met.
 	for(temp_ptr = ptr->players_connected.begin(); temp_ptr < ptr->players_connected.end(); temp_ptr++)
 	{
@@ -155,16 +156,35 @@ int tileclient::update_board_info_from_server(char* datain, int datasize, int st
 	int temp = 0;
 	int index = start_index;
 	int retval = 0;
+	char tempchar1[1] = { 0 };
+	char tempchar2[1] = { 0 };
+	char tempchar3[1] = { 0 };
+	char tempchar4[1] = { 0 };
+	char tempchar5[1] = { 0 };
 	if (datain[index++] == 'S')	//if start of a new corner, then process data.
 	{
 		tempnum = datain[index++];
-		for (ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
+//		for (vector<ClientCorner>::iterator ctptr = Clientcornersz.begin(); ctptr < Clientcornersz.end(); ctptr++)
+		for (int px = 0; px < 6; px++)
 		{
-			ptr->corner_index = datain[index++];
-			ptr->road_connected = datain[index++];
-			ptr->property_owner = datain[index++];
-			ptr->property_type = datain[index++];
+			ptr = Clientcornersz.begin() + px;
+			tempchar1[0] = datain[index++];
+			tempchar2[0] = datain[index++];
+			tempchar3[0] = datain[index++];
+			tempchar4[0] = datain[index++];
+			tempchar5[0] = datain[index++];
+			ptr->corner_index = atoi(tempchar1);
+			ptr->road_connected = atoi(tempchar2);
+			ptr->property_owner = atoi(tempchar3);
+			ptr->property_type = atoi(tempchar4);
+			temp = atoi(tempchar5);
+/*
+			ctptr->corner_index = datain[index++];
+			ctptr->road_connected = datain[index++];
+			ctptr->property_owner = datain[index++];
+			ctptr->property_type = datain[index++];
 			temp = datain[index++];
+*/
 			for (int x = 0; x < temp; x++)
 				ptr->players_connected.push_back(datain[index++]);		//add # players connected to each corner
 		}
@@ -227,7 +247,7 @@ int tileclient::check_roads(int corner1, int corner2, int player)
 		road_to_check = corner1;
 	else
 		road_to_check = corner2;
-	ptr = cornersz.begin();
+	ptr = Clientcornersz.begin();
 	//if the player has any roads from another tile that connect to either of these corners, then you can build a road if other conditions are met.
 	for(temp_ptr = (ptr+corner1)->players_connected.begin(); temp_ptr < (ptr+corner1)->players_connected.end(); temp_ptr++)
 		if(*temp_ptr == player)
@@ -235,12 +255,12 @@ int tileclient::check_roads(int corner1, int corner2, int player)
 	for(temp_ptr = (ptr+corner2)->players_connected.begin(); temp_ptr < (ptr+corner2)->players_connected.end(); temp_ptr++)
 		if(*temp_ptr == player)
 			temp = 1;
-	ptr = cornersz.begin() + corner1;
+	ptr = Clientcornersz.begin() + corner1;
 	if(ptr->property_owner == player)
 		temp1 = 1;
 	if(ptr->road_connected > 0)
 		temp2 = 1;
-	ptr = cornersz.begin() + corner2;
+	ptr = Clientcornersz.begin() + corner2;
 	if(ptr->property_owner == player)
 		temp3 = 1;
 	if(ptr->road_connected > 0)
@@ -254,13 +274,13 @@ int tileclient::check_roads(int corner1, int corner2, int player)
 
 int tileclient::check_corner_owner(int corner)
 {
-	ptr = cornersz.begin() + corner%6;
+	ptr = Clientcornersz.begin() + corner%6;
 	return(ptr->property_owner);
 }
 
 int tileclient::check_corner_building_type(int corner)
 {
-	ptr = cornersz.begin() + corner%6;
+	ptr = Clientcornersz.begin() + corner%6;
 	return(ptr->property_type);
 }
 
@@ -306,7 +326,7 @@ int tileclient::get_road_owner(int roadnum)
 
 int tileclient::read_corner_owner(int corner)
 {
-	ptr = cornersz.begin();
+	ptr = Clientcornersz.begin();
 	ptr += (corner%6);
 	return(ptr->property_owner);
 }
@@ -314,7 +334,7 @@ int tileclient::read_corner_owner(int corner)
 
 int tileclient::read_corner_type(int corner)
 {
-	ptr = cornersz.begin();
+	ptr = Clientcornersz.begin();
 	ptr += (corner%6);
 	return(ptr->property_type);
 }
@@ -329,8 +349,6 @@ int tileclient::read_road(int road)
 	return(roads[road%6]);
 }
 
-
-/*
 int tileclient::set_resource_type(int res_type)
 {
 	int retval = 1;
@@ -340,19 +358,16 @@ int tileclient::set_resource_type(int res_type)
 		retval = -7;
 	return(retval);
 }
-*/
 
-/*
 int tileclient::set_dice_roll(int dicerollval)
 {
 	int retval = 1;
-	if(roll == 0)
+	if((roll == 0) && (resource_type != DESERT))
 		roll = dicerollval;
 	else
 		retval = -2;
 	return(retval);
 }
-*/
 
 //needs to sum up multiplier of # res player gets for this tile and return to user. should also pass resource type by reference to user.
 //int tileclient::calculate_resources_from_roll_by_player(int rollval, int playernum, int& res_typee)
@@ -362,7 +377,7 @@ int tileclient::calculate_resources_from_roll_by_player(int playernum, int& res_
 	if (!check_robber())		//if the robber is not on this tile, then players get resources
 	{
 		res_typee = resource_type;
-		for (ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
+		for (ptr = Clientcornersz.begin(); ptr < Clientcornersz.end(); ptr++)
 		{
 			if (ptr->property_owner == playernum)
 				retval += ptr->property_type;		//this will be the number of cards the player gets. if for some reason they 'own' the corner but dont have a settlement, it will just add 0, so its safe!
