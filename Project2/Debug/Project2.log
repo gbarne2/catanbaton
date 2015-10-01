@@ -1,18 +1,8 @@
-﻿Build started 9/29/2015 10:47:38 PM.
+﻿Build started 10/1/2015 5:29:18 PM.
      1>Project "C:\Users\gtb\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt clientFramehandler.cpp clientTransmitHandler.cpp server_Catan.cpp
-         server_Catan.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(148): warning C4101: 'nulptr': unreferenced local variable
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(492): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-         c:\program files (x86)\windows kits\10\include\10.0.10150.0\ucrt\string.h(119): note: see declaration of 'strcpy'
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(593): warning C4018: '<': signed/unsigned mismatch
-         clientTransmitHandler.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\clienttransmithandler.cpp(66): warning C4018: '<': signed/unsigned mismatch
-         clientFramehandler.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\clientframehandler.cpp(274): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-     1>c:\users\gtb\documents\github\catanbaton\project2\clientframehandler.cpp(275): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
-         Generating Code...
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Tile_client.cpp
+         Tile_client.cpp
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.exe" /VERBOSE /INCREMENTAL /NOLOGO /LTCG:STATUS /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.lib" /MACHINE:X86 Debug\CatanBaton.res
          Debug\catanBaton.obj
@@ -1536,27 +1526,27 @@
           /v
           /x
           /fo
-          "C:\Users\gtb\AppData\Local\Temp\lnk{370BE9F2-CD8D-442D-AC23-55AA818A781B}.tmp"
-          "C:\Users\gtb\AppData\Local\Temp\lnk{1AB5C184-FA8E-44A7-8D0B-148B5442CA6C}.tmp"
+          "C:\Users\gtb\AppData\Local\Temp\lnk{96D2520F-2381-4DE7-B1FD-22CCA654ABBA}.tmp"
+          "C:\Users\gtb\AppData\Local\Temp\lnk{5CBA1E48-8FE1-491D-96EB-1707941DE170}.tmp"
          Microsoft (R) Windows (R) Resource Compiler Version 6.3.9600.17336
          
          Copyright (C) Microsoft Corporation.  All rights reserved.
          
          
-         Creating C:\Users\gtb\AppData\Local\Temp\lnk{370BE9F2-CD8D-442D-AC23-55AA818A781B}.tmp
+         Creating C:\Users\gtb\AppData\Local\Temp\lnk{96D2520F-2381-4DE7-B1FD-22CCA654ABBA}.tmp
          
          Using codepage 1252 as default
          
-         C:\Users\gtb\AppData\Local\Temp\lnk{1AB5C184-FA8E-44A7-8D0B-148B5442CA6C}.tmp.
+         C:\Users\gtb\AppData\Local\Temp\lnk{5CBA1E48-8FE1-491D-96EB-1707941DE170}.tmp.
          Writing 24:1,	lang:0x409,	size 381
          
          Invoking cvtres.exe:
           /machine:x86
           /verbose
-          /out:"C:\Users\gtb\AppData\Local\Temp\lnk{344D3097-FD25-49F7-AD52-A6625E1364E1}.tmp"
+          /out:"C:\Users\gtb\AppData\Local\Temp\lnk{6017DF1E-EFF2-423C-A281-9E93EA9F738A}.tmp"
           /readonly
           "Debug\CatanBaton.res"
-          "C:\Users\gtb\AppData\Local\Temp\lnk{370BE9F2-CD8D-442D-AC23-55AA818A781B}.tmp"
+          "C:\Users\gtb\AppData\Local\Temp\lnk{96D2520F-2381-4DE7-B1FD-22CCA654ABBA}.tmp"
          Microsoft (R) Windows Resource To Object Converter Version 14.00.23026.0
          Copyright (C) Microsoft Corporation.  All rights reserved.
          
@@ -1842,4 +1832,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:04.49
+Time Elapsed 00:00:02.63

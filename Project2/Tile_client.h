@@ -52,7 +52,7 @@ private:
 	int robber_on_tile;
 //	int roadAB, roadBC, roadCD, roadDE, roadEF, roadFA;		//not used
 	int roll;
-	vector<ClientCorner>::iterator ptr;
+	vector<ClientCorner>::iterator ptrr;
 	int roads[6];		//this will contain the status of all 6 possible roads around a tile, and which player owns them.
 	//	int corners[6];		//this will contain all of the corners, and their value will be used to determine which player owns them
 										//for now, lets make it be the function that checks if a corner is available (check neighboring corners and desired corner)

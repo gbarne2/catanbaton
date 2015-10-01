@@ -122,9 +122,9 @@ int tileclient::check_roads_settlement(int corner, int player)
 	int status = 0;
 	int temp = 0;
 	int debugtemp = -1;
-	ptr = Clientcornersz.begin() + corner;
+	ptrr = Clientcornersz.begin() + corner;
 	//if the player has any roads from another tile that connect to either of these corners, then you can build a road if other conditions are met.
-	for(temp_ptr = ptr->players_connected.begin(); temp_ptr < ptr->players_connected.end(); temp_ptr++)
+	for(temp_ptr = ptrr->players_connected.begin(); temp_ptr < ptrr->players_connected.end(); temp_ptr++)
 	{
 		debugtemp = *temp_ptr;
 		if(*temp_ptr == player)
@@ -137,7 +137,7 @@ int tileclient::check_roads_settlement(int corner, int player)
 		else
 			temp = *temp_ptr;									//assign current road owner to temp (if no owner, value stays 0...)
 	}
-	return((ptr->road_connected > 0) && status);
+	return((ptrr->road_connected > 0) && status);
 }
 
 //build_settlement needs to check if it is legal for player to build a settlement here, based on roads and other neighboring structures. 
@@ -167,26 +167,26 @@ int tileclient::update_board_info_from_server(char* datain, int datasize, int st
 //		for (vector<ClientCorner>::iterator ctptr = Clientcornersz.begin(); ctptr < Clientcornersz.end(); ctptr++)
 		for (int px = 0; px < 6; px++)
 		{
-			ptr = Clientcornersz.begin() + px;
+			ptrr = this->Clientcornersz.begin() + px;
 			tempchar1[0] = datain[index++];
 			tempchar2[0] = datain[index++];
 			tempchar3[0] = datain[index++];
 			tempchar4[0] = datain[index++];
 			tempchar5[0] = datain[index++];
-			ptr->corner_index = atoi(tempchar1);
-			ptr->road_connected = atoi(tempchar2);
-			ptr->property_owner = atoi(tempchar3);
-			ptr->property_type = atoi(tempchar4);
+			ptrr->corner_index = atoi(tempchar1);
+			ptrr->road_connected = atoi(tempchar2);
+			ptrr->property_owner = atoi(tempchar3);
+			ptrr->property_type = atoi(tempchar4);
 			temp = atoi(tempchar5);
 /*
-			ctptr->corner_index = datain[index++];
-			ctptr->road_connected = datain[index++];
-			ctptr->property_owner = datain[index++];
-			ctptr->property_type = datain[index++];
+			ctptrr->corner_index = datain[index++];
+			ctptrr->road_connected = datain[index++];
+			ctptrr->property_owner = datain[index++];
+			ctptrr->property_type = datain[index++];
 			temp = datain[index++];
 */
 			for (int x = 0; x < temp; x++)
-				ptr->players_connected.push_back(datain[index++]);		//add # players connected to each corner
+				ptrr->players_connected.push_back(datain[index++]);		//add # players connected to each corner
 		}
 		retval = index - start_index;	//retval is how much to increment start_index by in calling function.
 	}
@@ -219,10 +219,10 @@ void tileclient::build_settlement(int corner, int player)
 /*
 int tileclient::upgrade_settlement(int corner, int player)
 {
-	ptr = cornersz.begin() + (corner%6);
-	if((ptr->property_owner == player) && (ptr->property_type == 1))
+	ptrr = cornersz.begin() + (corner%6);
+	if((ptrr->property_owner == player) && (ptrr->property_type == 1))
 	{
-		ptr->property_type = 2;
+		ptrr->property_type = 2;
 		return(1);
 	}
 	return(0);
@@ -247,41 +247,41 @@ int tileclient::check_roads(int corner1, int corner2, int player)
 		road_to_check = corner1;
 	else
 		road_to_check = corner2;
-	ptr = Clientcornersz.begin();
+	ptrr = Clientcornersz.begin();
 	//if the player has any roads from another tile that connect to either of these corners, then you can build a road if other conditions are met.
-	for(temp_ptr = (ptr+corner1)->players_connected.begin(); temp_ptr < (ptr+corner1)->players_connected.end(); temp_ptr++)
+	for(temp_ptr = (ptrr+corner1)->players_connected.begin(); temp_ptr < (ptrr+corner1)->players_connected.end(); temp_ptr++)
 		if(*temp_ptr == player)
 			status = 1;
-	for(temp_ptr = (ptr+corner2)->players_connected.begin(); temp_ptr < (ptr+corner2)->players_connected.end(); temp_ptr++)
+	for(temp_ptr = (ptrr+corner2)->players_connected.begin(); temp_ptr < (ptrr+corner2)->players_connected.end(); temp_ptr++)
 		if(*temp_ptr == player)
 			temp = 1;
-	ptr = Clientcornersz.begin() + corner1;
-	if(ptr->property_owner == player)
+	ptrr = Clientcornersz.begin() + corner1;
+	if(ptrr->property_owner == player)
 		temp1 = 1;
-	if(ptr->road_connected > 0)
+	if(ptrr->road_connected > 0)
 		temp2 = 1;
-	ptr = Clientcornersz.begin() + corner2;
-	if(ptr->property_owner == player)
+	ptrr = Clientcornersz.begin() + corner2;
+	if(ptrr->property_owner == player)
 		temp3 = 1;
-	if(ptr->road_connected > 0)
+	if(ptrr->road_connected > 0)
 		temp4 = 1;
 	return((temp1 || (temp2 && status) || temp3 || (temp4 && temp)) && (roads[road_to_check] == 0));
 //	return((roads[road_to_check] == 0)	//if the current road is empty, and	(player has property on either end of road OR has a road connected from another tile)
-//		&& (((ptr+(corner1))->property_owner == player) || ((ptr+(corner2))->property_owner == player) || (((ptr+corner1)->road_connected > 0) && status) || 
-//		(((ptr+corner2)->road_connected > 0) && temp)));
+//		&& (((ptrr+(corner1))->property_owner == player) || ((ptrr+(corner2))->property_owner == player) || (((ptrr+corner1)->road_connected > 0) && status) || 
+//		(((ptrr+corner2)->road_connected > 0) && temp)));
 }
 
 
 int tileclient::check_corner_owner(int corner)
 {
-	ptr = Clientcornersz.begin() + corner%6;
-	return(ptr->property_owner);
+	ptrr = Clientcornersz.begin() + corner%6;
+	return(ptrr->property_owner);
 }
 
 int tileclient::check_corner_building_type(int corner)
 {
-	ptr = Clientcornersz.begin() + corner%6;
-	return(ptr->property_type);
+	ptrr = Clientcornersz.begin() + corner%6;
+	return(ptrr->property_type);
 }
 
 /*
@@ -308,12 +308,12 @@ int tileclient::build_road(int corner1, int corner2, int player)
 		retval = 0;
 
 //		roads[road_index] = player;
-//		ptr = cornersz.begin() + corner1;
-//		ptr->road_connected += 1;
-//		ptr->players_connected.push_back(player);		//update who is connected to each corner
-//		ptr = cornersz.begin() + corner2;
-//		ptr->road_connected += 1;
-//		ptr->players_connected.push_back(player);
+//		ptrr = cornersz.begin() + corner1;
+//		ptrr->road_connected += 1;
+//		ptrr->players_connected.push_back(player);		//update who is connected to each corner
+//		ptrr = cornersz.begin() + corner2;
+//		ptrr->road_connected += 1;
+//		ptrr->players_connected.push_back(player);
 
 	return(retval);
 }
@@ -326,17 +326,17 @@ int tileclient::get_road_owner(int roadnum)
 
 int tileclient::read_corner_owner(int corner)
 {
-	ptr = Clientcornersz.begin();
-	ptr += (corner%6);
-	return(ptr->property_owner);
+	ptrr = Clientcornersz.begin();
+	ptrr += (corner%6);
+	return(ptrr->property_owner);
 }
 
 
 int tileclient::read_corner_type(int corner)
 {
-	ptr = Clientcornersz.begin();
-	ptr += (corner%6);
-	return(ptr->property_type);
+	ptrr = Clientcornersz.begin();
+	ptrr += (corner%6);
+	return(ptrr->property_type);
 }
 
 int tileclient::check_tile_resource_type()
@@ -377,10 +377,10 @@ int tileclient::calculate_resources_from_roll_by_player(int playernum, int& res_
 	if (!check_robber())		//if the robber is not on this tile, then players get resources
 	{
 		res_typee = resource_type;
-		for (ptr = Clientcornersz.begin(); ptr < Clientcornersz.end(); ptr++)
+		for (ptrr = Clientcornersz.begin(); ptrr < Clientcornersz.end(); ptrr++)
 		{
-			if (ptr->property_owner == playernum)
-				retval += ptr->property_type;		//this will be the number of cards the player gets. if for some reason they 'own' the corner but dont have a settlement, it will just add 0, so its safe!
+			if (ptrr->property_owner == playernum)
+				retval += ptrr->property_type;		//this will be the number of cards the player gets. if for some reason they 'own' the corner but dont have a settlement, it will just add 0, so its safe!
 		}
 	}
 	return(retval);
@@ -439,11 +439,11 @@ string tileclient::get_tile_data_string()
 	string data_out = "S" + resource_type + roll;
 	for (int x = 0; x < 6; x++)
 		data_out += roads[x];
-	for (ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
+	for (ptrr = cornersz.begin(); ptrr < cornersz.end(); ptrr++)
 	{
-		data_out += ptr->corner_index + ptr->road_connected + ptr->property_owner + ptr->property_type;
+		data_out += ptrr->corner_index + ptrr->road_connected + ptrr->property_owner + ptrr->property_type;
 		count = 0;
-		for (vector<int>::iterator tempptr = ptr->players_connected.begin(); tempptr < ptr->players_connected.end(); tempptr++)
+		for (vector<int>::iterator tempptr = ptrr->players_connected.begin(); tempptr < ptrr->players_connected.end(); tempptr++)
 		{
 			temp_string += *tempptr;
 			count++;
