@@ -38,7 +38,7 @@
 #include <WS2tcpip.h>
 #include <Windows.h>
 #include <stdlib.h>
-#include "clientBaton.h"
+#include "gameClient.h"
 #include <stdio.h>
 #include <thread>
 #include "tcpclient.h"
@@ -53,6 +53,8 @@ using namespace std;
 //game catangame();
 
 	game catan;
+	gameClient clientcatan;
+
 int corner_info(int corner, int tilenum)
 {
 //	cout << catan.check_corner_owner(cornB, 18) << catan.check_corner_building_type(cornB, 18);
@@ -224,7 +226,7 @@ int main()
 //	SetConsoleTextAttribute(console_handle, FOREGROUND_RED | FOREGROUND_INTENSITY);
 	catan.temp_build_settlement(1,  2, cornD);
 	catan.temp_build_settlement(0,  1, cornF);
-	init_game();
+	//init_game();
 	//catan.temp_build_settlement(9,  2, cornE);
 //	SetConsoleCursorPosition(console_handle, dwPosition);
 //	cout << "\n\n\n", 3, &written, NULL);
@@ -299,7 +301,7 @@ int main()
 			cout << "                                                                     " << endl;
 			cin >> user_input3;
 			user_input3 = user_input3 % 6;		//force a valid number
-			temp = client_build_settlement(user_input2, user_input3);
+			temp = clientcatan.build_settlement(user_input2, user_input3);
 			temp = framehandler(catan, rxdatabuff, sizerxbuff);
 			temp = clientFrameHandler(txdatabuff);
 			//			temp = catan.build_settlement(user_input2, current_player, user_input3);
@@ -330,7 +332,7 @@ int main()
 			cout << "                                                                     " << endl;
 			cin >> user_input3;
 			user_input3 = user_input3 % 6;		//force a valid number
-			temp = client_build_road(user_input2, user_input3);
+			temp = clientcatan.build_road(user_input2, user_input3);
 			temp = framehandler(catan, rxdatabuff, sizerxbuff);
 			temp = clientFrameHandler(txdatabuff);
 			//temp = catan.build_roads(user_input2, current_player, user_input3);
@@ -403,7 +405,7 @@ int main()
 			break;
 		case 6:
 			current_player = (current_player + 1)%(number_of_players + 1);
-			start_turn();
+			clientcatan.start_turn();
 			break;
 		case 7:
 			exit(1);

@@ -54,6 +54,9 @@
     <ClInclude Include="catanBaton.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="gameClient.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Tile.cpp">
@@ -90,6 +93,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Tile_client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameClient.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

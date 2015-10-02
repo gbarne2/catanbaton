@@ -170,3 +170,8 @@ void playerClient::set_player_num(int num)
 		player_ID = num;
 	return;
 }
+
+int playerClient::get_player_num()
+{
+	return(player_ID);
+}

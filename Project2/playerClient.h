@@ -58,6 +58,7 @@ public:
 	int update_settlements(int);
 	int update_cities(int);
 	void set_player_num(int);		//only updates 1 time!
+	int get_player_num();
 	~playerClient(void);
 };
 

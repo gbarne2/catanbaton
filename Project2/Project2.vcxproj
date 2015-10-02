@@ -77,6 +77,7 @@
     <ClInclude Include="clientFramehandler.h" />
     <ClInclude Include="clientTransmitHandler.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="gameClient.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="playerClient.h" />
     <ClInclude Include="resource.h" />
@@ -91,6 +92,7 @@
     <ClCompile Include="clientBaton.cpp" />
     <ClCompile Include="clientFramehandler.cpp" />
     <ClCompile Include="clientTransmitHandler.cpp" />
+    <ClCompile Include="gameClient.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="playerClient.cpp" />

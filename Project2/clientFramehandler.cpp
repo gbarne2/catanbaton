@@ -34,7 +34,7 @@ What does the client need to define / do
 #include "clientFramehandler.h"
 #include "Tile_client.h"
 #include "playerClient.h"
-#include "clientBaton.h"
+#include "gameClient.h"
 
 using namespace std;
 
@@ -77,7 +77,7 @@ using namespace std;
 static client_trade_cards_offer trade_to_process;
 
 
-int clientFrameHandler(char* datain)
+int clientFrameHandler(char* datain, gameClient session)
 {
 	int dataptr = 8;		//use this to grab data from datain buffer.
 	int tempdata = 0;
@@ -193,11 +193,11 @@ int clientFrameHandler(char* datain)
 		case BUY_DV_CARD:
 			break;
 		case READ_RESOURCES:
-			playerdata.update_resources(1, datain[dataptr++]);
-			playerdata.update_resources(2, datain[dataptr++]);
-			playerdata.update_resources(3, datain[dataptr++]);
-			playerdata.update_resources(4, datain[dataptr++]);
-			playerdata.update_resources(5, datain[dataptr++]);
+			session.playerinfo.update_resources(1, datain[dataptr++]);
+			session.playerinfo.update_resources(2, datain[dataptr++]);
+			session.playerinfo.update_resources(3, datain[dataptr++]);
+			session.playerinfo.update_resources(4, datain[dataptr++]);
+			session.playerinfo.update_resources(5, datain[dataptr++]);
 			flag_rx_packet_needs_processing = 1;
 			break;
 		case GET_BOARD_INFO:
@@ -221,8 +221,8 @@ int clientFrameHandler(char* datain)
 		case STEAL_CARD_ROBBER:
 			//data[0] = card that was stolen!
 			//	-> if data[0] > 0, it was obtained, < 0 it was stolen
-			retval = playerdata.check_resource_amount(abs(datain[dataptr]));
-			playerdata.update_resources(abs(retval), (1 * (retval / abs(retval))));
+			retval = session.playerinfo.check_resource_amount(abs(datain[dataptr]));
+			session.playerinfo.update_resources(abs(retval), (1 * (retval / abs(retval))));
 			if (retval < 0)	//if card stolen, tell use!
 				cout << "replace this text, but yo bitch ass just got robbed" << endl;
 			else
@@ -236,7 +236,7 @@ int clientFrameHandler(char* datain)
 			current_players_turn = datain[dataptr++];
 			if (datain[dataptr] == '1')
 			{
-				FLAG_MY_TURN = 1;
+				session.update_flag(F_TURN_START, 1);// FLAG_MY_TURN = 1;
 				cout << "It is my turn! End turn should actually handle starting turn. client needs to send this packet to 'roll' the dice" << endl;
 			}
 			//this should maybe just update whose turn it is.
@@ -282,7 +282,7 @@ vector<int> get_num_active_tiles(int data)
 	return(retval);
 }
 
-int update_board_info(char* data, int datasize)
+int update_board_info(gameClient session, char* data, int datasize)
 {
 	int startindex = 0;
 	int size_corner;
@@ -305,7 +305,8 @@ int update_board_info(char* data, int datasize)
 			if (startindex + size_corner < datasize)
 			{
 				tilenum = data[startindex + 2];
-				retval = board[tilenum].update_board_info_from_server(data, datasize, startindex);
+				retval = session.update_board(data, datasize, startindex, tilenum);
+//				retval = session.board[tilenum].update_board_info_from_server(data, datasize, startindex);
 				startindex += retval;
 			}
 		}
