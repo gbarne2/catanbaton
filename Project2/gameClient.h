@@ -21,6 +21,10 @@
 #define F_BUILD_CITY		5
 #endif
 
+#ifndef MAX_NUM_PLAYERS
+#define MAX_NUM_PLAYERS		4
+#endif
+
 class gameClient
 {
 	int players;
@@ -29,11 +33,11 @@ class gameClient
 	int assign_resources();
 	int build_board();
 	//Flag definitions
-	static int FLAG_TURN_START;
-	static int FLAG_MY_TURN;
-	static int FLAG_BUILD_ROAD;
-	static int FLAG_BUILD_CITY;
-	static int FLAG_BUILD_SETTLEMENT;
+	int FLAG_TURN_START;
+	int FLAG_MY_TURN;
+	int FLAG_BUILD_ROAD;
+	int FLAG_BUILD_CITY;
+	int FLAG_BUILD_SETTLEMENT;
 public:
 	playerClient playerinfo;
 	gameClient();
@@ -49,6 +53,7 @@ public:
 	int refresh_cards();
 	int update_flag(int, int);
 	int update_board(char*, int, int, int);
+	int set_player_number(int);
 };
 
 

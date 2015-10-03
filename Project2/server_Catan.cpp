@@ -243,6 +243,13 @@ int framehandler(game session, char *datain, int size_of_data)
 		//data[11] = qty sheep to receive
 			break;
 		case GET_PLAYER_INFO:
+			//data[0] = player number
+			//data[1] = num bytes in name
+			//data[2] = player name
+			//data[2+1]	= player name
+			//....
+			//data[2+data[1]] = player name
+
 			break;
 		case SEND_DICE_ROLL:
 			retval = send_dice_roll(session);

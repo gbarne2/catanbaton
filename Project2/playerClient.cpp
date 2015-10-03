@@ -20,6 +20,8 @@ playerClient::playerClient(void)
 	DC.qty_monopoly = 0;
 	DC.qty_victory_points = 0;
 	DC.qty_year_of_plenty = 0;
+	player_ID = -72;
+	Player_name = "";
 }
 
 playerClient::playerClient(string p_name)

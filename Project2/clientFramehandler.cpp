@@ -77,7 +77,7 @@ using namespace std;
 static client_trade_cards_offer trade_to_process;
 
 
-int clientFrameHandler(char* datain, gameClient session)
+int clientFrameHandler(gameClient session, char* datain)
 {
 	int dataptr = 8;		//use this to grab data from datain buffer.
 	int tempdata = 0;
@@ -156,7 +156,7 @@ int clientFrameHandler(char* datain, gameClient session)
 				nulptr = new char[datasize];
 				for (int x = 0; x < datasize; x++)
 					nulptr[x] = datain[x + dataptr];
-				update_board_info(nulptr, datasize);
+				update_board_info(session, nulptr, datasize);
 				retval = 1;
 				flag_rx_packet_needs_processing = 1;
 			}
@@ -169,7 +169,7 @@ int clientFrameHandler(char* datain, gameClient session)
 				nulptr = new char[datasize];
 				for (int x = 0; x < datasize; x++)
 					nulptr[x] = datain[x + dataptr];
-				update_board_info(nulptr, datasize);
+				update_board_info(session, nulptr, datasize);
 				retval = 1;
 				flag_rx_packet_needs_processing = 1;
 			}
@@ -182,7 +182,7 @@ int clientFrameHandler(char* datain, gameClient session)
 				nulptr = new char[datasize];
 				for (int x = 0; x < datasize; x++)
 					nulptr[x] = datain[x + dataptr];
-				update_board_info(nulptr, datasize);
+				update_board_info(session, nulptr, datasize);
 				retval = 1;
 				flag_rx_packet_needs_processing = 1;
 			}
@@ -204,7 +204,7 @@ int clientFrameHandler(char* datain, gameClient session)
 			nulptr = new char[datasize];
 			for (int x = 0; x < datasize; x++)
 				nulptr[x] = datain[x + dataptr];
-			update_board_info(nulptr, datasize);
+			update_board_info(session, nulptr, datasize);
 			retval = 1;
 			flag_rx_packet_needs_processing = 1;
 			break;
@@ -213,6 +213,12 @@ int clientFrameHandler(char* datain, gameClient session)
 			flag_rx_packet_needs_processing = 1;
 			break;
 		case START_GAME:
+			//data[0] = player number
+			if (session.get_player_num() == 0)
+				session.set_player_number(datain[dataptr]);
+			else if (debug_text)
+				cout << "cannot set the player number! it has already been set!" << endl;
+			//data[1] = ???
 			//Not sure what this needs to do on the client side when received.
 			break;
 		case JOIN_GAME:
@@ -268,14 +274,14 @@ vector<int> get_num_active_tiles(int data)
 	static int X_tiles = 0;
 	static int Y_tiles = 0;
 	vector<int> retval;
-	if ((data > 0) && (data < ACTIVE_NUM_TILES_CLIENT))
-	{
-		active_num_tile = data;
+//	if ((data > 0) && (data < ACTIVE_NUM_TILES_CLIENT+1))
+//	{
+		active_num_tile = ACTIVE_NUM_TILES_CLIENT;
 		X_tiles = ceil(sqrt(active_num_tile));
 		Y_tiles = ceil(sqrt(active_num_tile));
-	}
-	else if (data == RESET_STATIC_VAR_IN_FUNCTION)
-		active_num_tile = 0;
+//	}
+//	else if (data == RESET_STATIC_VAR_IN_FUNCTION)
+//	active_num_tile = 0;
 	retval.push_back(active_num_tile);
 	retval.push_back(X_tiles);
 	retval.push_back(Y_tiles);
@@ -304,7 +310,9 @@ int update_board_info(gameClient session, char* data, int datasize)
 			size_corner = atoi(ptrchar);
 			if (startindex + size_corner < datasize)
 			{
-				tilenum = data[startindex + 2];
+				ptrchar[0] = data[startindex + 2];
+				tilenum = atoi(ptrchar);
+//				tilenum = data[startindex + 2];
 				retval = session.update_board(data, datasize, startindex, tilenum);
 //				retval = session.board[tilenum].update_board_info_from_server(data, datasize, startindex);
 				startindex += retval;
@@ -313,7 +321,10 @@ int update_board_info(gameClient session, char* data, int datasize)
 		else
 		{
 			if (debug_text)
-				cout << "ERROR in update_board_info! invalid packet header!" << endl;
+			{
+				ptrchar[0] = data[startindex];
+				cout << "ERROR in update_board_info! invalid packet header! Invalid data: " << atoi(ptrchar) << endl;
+			}
 			startindex++;	//search through string for start deliminator!
 		}
 	}

@@ -1,7 +1,7 @@
 ﻿#include "Tile_client.h"
 #include <iomanip>
 #include <iostream>
-#include "clientBaton.h"
+//#include "clientBaton.h"
 
 using namespace std;
 
@@ -156,6 +156,7 @@ int tileclient::update_board_info_from_server(char* datain, int datasize, int st
 	int temp = 0;
 	int index = start_index;
 	int retval = 0;
+	char tempchar[1] = { 0 };
 	char tempchar1[1] = { 0 };
 	char tempchar2[1] = { 0 };
 	char tempchar3[1] = { 0 };
@@ -163,30 +164,63 @@ int tileclient::update_board_info_from_server(char* datain, int datasize, int st
 	char tempchar5[1] = { 0 };
 	if (datain[index++] == 'S')	//if start of a new corner, then process data.
 	{
+
+		//Data format
+		//"S"		-> beginning of each tile object.
+		//datasize
+		//tilenumber
+		//resource type
+		//roll
+		//roads[0]
+		//roads[1]
+		//roads[2]
+		//roads[3]
+		//roads[4]
+		//roads[5]
+		//cornersz data
+			//corner_index
+			//road_connected
+			//property_owner
+			//property_type
+			//number of players connected
+			//1st player connected
+			//2nd player connected
+			//.... 
+			//(number of players connected) player connected
+
 		tempnum = datain[index++];
-//		for (vector<ClientCorner>::iterator ctptr = Clientcornersz.begin(); ctptr < Clientcornersz.end(); ctptr++)
-		for (int px = 0; px < 6; px++)
+		index++;		//should skip past the tilenum.
+		tempchar[0] = datain[index++];
+		resource_type = atoi(tempchar);
+		tempchar[0] = datain[index++];
+		roll = (atoi(tempchar));// & 0x00FF);
+
+		for (int x = 0; x < 6; x++)
 		{
-			ptrr = this->Clientcornersz.begin() + px;
+			tempchar[0] = datain[index++];
+			roads[x] = atoi(tempchar);
+		}
+
+		for (vector<ClientCorner>::iterator ctptr = Clientcornersz.begin(); ctptr < Clientcornersz.end(); ctptr++)
+		{
 			tempchar1[0] = datain[index++];
 			tempchar2[0] = datain[index++];
 			tempchar3[0] = datain[index++];
 			tempchar4[0] = datain[index++];
 			tempchar5[0] = datain[index++];
-			ptrr->corner_index = atoi(tempchar1);
-			ptrr->road_connected = atoi(tempchar2);
-			ptrr->property_owner = atoi(tempchar3);
-			ptrr->property_type = atoi(tempchar4);
+
+			ctptr->corner_index = atoi(tempchar1);
+			ctptr->road_connected = atoi(tempchar2);
+			ctptr->property_owner = atoi(tempchar3);
+			ctptr->property_type = atoi(tempchar4);
 			temp = atoi(tempchar5);
-/*
-			ctptrr->corner_index = datain[index++];
-			ctptrr->road_connected = datain[index++];
-			ctptrr->property_owner = datain[index++];
-			ctptrr->property_type = datain[index++];
-			temp = datain[index++];
-*/
+			ctptr->players_connected.clear();	//clear out old data so it doesnt just keep getting bigger and bigger
 			for (int x = 0; x < temp; x++)
-				ptrr->players_connected.push_back(datain[index++]);		//add # players connected to each corner
+			{
+				tempchar[0] = datain[index++];
+//				tempnum = tempchar[0];
+				ctptr->players_connected.push_back(atoi(tempchar));		//add # players connected to each corner
+			}
 		}
 		retval = index - start_index;	//retval is how much to increment start_index by in calling function.
 	}

@@ -73,7 +73,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="catanBaton.h" />
-    <ClInclude Include="clientBaton.h" />
     <ClInclude Include="clientFramehandler.h" />
     <ClInclude Include="clientTransmitHandler.h" />
     <ClInclude Include="game.h" />
@@ -89,7 +88,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="catanBaton.cpp" />
-    <ClCompile Include="clientBaton.cpp" />
     <ClCompile Include="clientFramehandler.cpp" />
     <ClCompile Include="clientTransmitHandler.cpp" />
     <ClCompile Include="gameClient.cpp" />

@@ -1,14 +1,14 @@
-﻿Build started 10/1/2015 5:29:18 PM.
-     1>Project "C:\Users\gtb\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" on node 2 (Build target(s)).
+﻿Build started 10/3/2015 1:06:44 AM.
+     1>Project "C:\Users\GTB\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt Tile_client.cpp
-         Tile_client.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt catanBaton.cpp
+         catanBaton.cpp
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.exe" /VERBOSE /INCREMENTAL /NOLOGO /LTCG:STATUS /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.lib" /MACHINE:X86 Debug\CatanBaton.res
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\GTB\Documents\GitHub\catanbaton\Debug\CatanBaton.exe" /VERBOSE /INCREMENTAL /NOLOGO /LTCG:STATUS /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\GTB\Documents\GitHub\catanbaton\Debug\CatanBaton.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\GTB\Documents\GitHub\catanbaton\Debug\CatanBaton.lib" /MACHINE:X86 Debug\CatanBaton.res
          Debug\catanBaton.obj
-         Debug\clientBaton.obj
          Debug\clientFramehandler.obj
          Debug\clientTransmitHandler.obj
+         Debug\gameClient.obj
          Debug\player.obj
          Debug\game.obj
          Debug\playerClient.obj
@@ -39,9 +39,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: __thiscall std::_Lockit::~_Lockit(void)" (__imp_??1_Lockit@std@@QAE@XZ)
                  Referenced in Tile.obj
@@ -51,9 +51,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) bool __cdecl std::uncaught_exception(void)" (__imp_?uncaught_exception@std@@YA_NXZ)
                  Referenced in tcpclient.obj
@@ -63,19 +63,19 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) void __cdecl std::_Debug_message(wchar_t const *,wchar_t const *,unsigned int)" (__imp_?_Debug_message@std@@YAXPB_W0I@Z)
-                 Referenced in game.obj
+                 Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in Tile.obj
                  Referenced in Tile_client.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in game.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) void __cdecl std::_Xbad_alloc(void)" (__imp_?_Xbad_alloc@std@@YAXXZ)
                  Referenced in Tile.obj
@@ -85,30 +85,30 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) void __cdecl std::_Xlength_error(char const *)" (__imp_?_Xlength_error@std@@YAXPBD@Z)
-                 Referenced in Tile.obj
                  Referenced in Tile_client.obj
-                 Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in player.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) void __cdecl std::_Xout_of_range(char const *)" (__imp_?_Xout_of_range@std@@YAXPBD@Z)
+                 Referenced in game.obj
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in Tile.obj
                  Referenced in catanBaton.obj
+                 Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in player.obj
-                 Referenced in game.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "void __cdecl std::_Facet_Register(class std::_Facet_base *)" (?_Facet_Register@std@@YAXPAV_Facet_base@1@@Z)
                  Referenced in catanBaton.obj
@@ -142,9 +142,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: int __thiscall std::ios_base::flags(void)const " (__imp_?flags@ios_base@std@@QBEHXZ)
                  Referenced in tcpclient.obj
@@ -154,9 +154,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: __int64 __thiscall std::ios_base::width(void)const " (__imp_?width@ios_base@std@@QBE_JXZ)
                  Referenced in tcpclient.obj
@@ -166,9 +166,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: __int64 __thiscall std::ios_base::width(__int64)" (__imp_?width@ios_base@std@@QAE_J_J@Z)
                  Referenced in tcpclient.obj
@@ -178,9 +178,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::basic_streambuf<char,struct std::char_traits<char> >(void)" (__imp_??0?$basic_streambuf@DU?$char_traits@D@std@@@std@@IAE@XZ)
                  Referenced in catanBaton.obj
@@ -204,9 +204,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: __int64 __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::sputn(char const *,__int64)" (__imp_?sputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QAE_JPBD_J@Z)
                  Referenced in tcpclient.obj
@@ -216,9 +216,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: char * __thiscall std::basic_streambuf<char,struct std::char_traits<char> >::eback(void)const " (__imp_?eback@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IBEPADXZ)
                  Referenced in catanBaton.obj
@@ -308,9 +308,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: class std::basic_ostream<char,struct std::char_traits<char> > * __thiscall std::basic_ios<char,struct std::char_traits<char> >::tie(void)const " (__imp_?tie@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEPAV?$basic_ostream@DU?$char_traits@D@std@@@2@XZ)
                  Referenced in tcpclient.obj
@@ -320,9 +320,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: class std::basic_streambuf<char,struct std::char_traits<char> > * __thiscall std::basic_ios<char,struct std::char_traits<char> >::rdbuf(void)const " (__imp_?rdbuf@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEPAV?$basic_streambuf@DU?$char_traits@D@std@@@2@XZ)
                  Referenced in tcpclient.obj
@@ -332,9 +332,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: char __thiscall std::basic_ios<char,struct std::char_traits<char> >::fill(void)const " (__imp_?fill@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEDXZ)
                  Referenced in tcpclient.obj
@@ -344,9 +344,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: char __thiscall std::basic_ios<char,struct std::char_traits<char> >::widen(char)const " (__imp_?widen@?$basic_ios@DU?$char_traits@D@std@@@std@@QBEDD@Z)
                  Referenced in tcpclient.obj
@@ -357,9 +357,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) protected: __thiscall std::basic_ios<char,struct std::char_traits<char> >::basic_ios<char,struct std::char_traits<char> >(void)" (__imp_??0?$basic_ios@DU?$char_traits@D@std@@@std@@IAE@XZ)
                  Referenced in catanBaton.obj
@@ -374,9 +374,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: class std::basic_ostream<char,struct std::char_traits<char> > & __thiscall std::basic_ostream<char,struct std::char_traits<char> >::operator<<(class std::basic_ostream<char,struct std::char_traits<char> > & (__cdecl*)(class std::basic_ostream<char,struct std::char_traits<char> > &))" (__imp_??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV01@P6AAAV01@AAV01@@Z@Z)
                  Referenced in tcpclient.obj
@@ -387,9 +387,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: class std::basic_ostream<char,struct std::char_traits<char> > & __thiscall std::basic_ostream<char,struct std::char_traits<char> >::operator<<(int)" (__imp_??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV01@H@Z)
                  Referenced in server_Catan.obj
@@ -409,9 +409,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: class std::basic_ostream<char,struct std::char_traits<char> > & __thiscall std::basic_ostream<char,struct std::char_traits<char> >::flush(void)" (__imp_?flush@?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV12@XZ)
                  Referenced in tcpclient.obj
@@ -422,9 +422,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: __thiscall std::basic_istream<char,struct std::char_traits<char> >::basic_istream<char,struct std::char_traits<char> >(class std::basic_streambuf<char,struct std::char_traits<char> > *,bool)" (__imp_??0?$basic_istream@DU?$char_traits@D@std@@@std@@QAE@PAV?$basic_streambuf@DU?$char_traits@D@std@@@1@_N@Z)
                  Referenced in catanBaton.obj
@@ -518,12 +518,13 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) public: class std::basic_ostream<char,struct std::char_traits<char> > & __thiscall std::basic_ostream<char,struct std::char_traits<char> >::operator<<(unsigned int)" (__imp_??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QAEAAV01@I@Z)
                  Referenced in game.obj
+                 Referenced in Tile.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) class std::basic_ostream<char,struct std::char_traits<char> > std::cerr" (__imp_?cerr@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A)
                  Referenced in game.obj
@@ -623,6 +624,7 @@
              Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\MSVCRTD.lib:
                Found "void __stdcall `eh vector copy constructor iterator'(void *,void *,unsigned int,unsigned int,void (__thiscall*)(void *,void *),void (__thiscall*)(void *))" (??__C@YGXPAX0IIP6EX00@ZP6EX0@Z@Z)
                  Referenced in catanBaton.obj
+                 Referenced in clientFramehandler.obj
                  Referenced in server_Catan.obj
                  Loaded MSVCRTD.lib(ehvccctr.obj)
                Found "void * __cdecl operator new(unsigned int)" (??2@YAPAXI@Z)
@@ -633,9 +635,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded MSVCRTD.lib(new_scalar.obj)
                Found "void __cdecl operator delete(void *)" (??3@YAXPAX@Z)
                  Referenced in Tile.obj
@@ -645,21 +647,21 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded MSVCRTD.lib(delete_scalar.obj)
                Found "void __cdecl operator delete(void *,unsigned int)" (??3@YAXPAXI@Z)
+                 Referenced in server_Catan.obj
                  Referenced in Tile.obj
                  Referenced in Tile_client.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
+                 Referenced in clientFramehandler.obj
+                 Referenced in gameClient.obj
                  Referenced in game.obj
-                 Referenced in server_Catan.obj
                  Loaded MSVCRTD.lib(delete_scalar_size.obj)
                Found _atexit
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in server_Catan.obj
                  Referenced in msvcprtd.lib(locale0_implib.obj)
                  Loaded MSVCRTD.lib(utility.obj)
@@ -673,9 +675,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded MSVCRTD.lib(_stack_.obj)
                Found @__security_check_cookie@4
                  Referenced in msvcprtd.lib(locale0_implib.obj)
@@ -688,9 +690,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded MSVCRTD.lib(_secchk_.obj)
                Found __RTC_InitBase
                  Referenced in tcpclient.obj
@@ -702,9 +704,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded MSVCRTD.lib(_init_.obj)
                Found __chkstk
                  Referenced in catanBaton.obj
@@ -731,18 +733,10 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded MSVCRTD.lib(gs_cookie.obj)
-               Found "void __stdcall `eh vector constructor iterator'(void *,unsigned int,unsigned int,void (__thiscall*)(void *),void (__thiscall*)(void *))" (??_L@YGXPAXIIP6EX0@Z1@Z)
-                 Referenced in clientBaton.obj
-                 Referenced in game.obj
-                 Loaded MSVCRTD.lib(ehvecctr.obj)
-               Found "void __stdcall `eh vector destructor iterator'(void *,unsigned int,unsigned int,void (__thiscall*)(void *))" (??_M@YGXPAXIIP6EX0@Z@Z)
-                 Referenced in clientBaton.obj
-                 Referenced in game.obj
-                 Loaded MSVCRTD.lib(ehvecdtr.obj)
                Found "void * __cdecl operator new[](unsigned int)" (??_U@YAPAXI@Z)
                  Referenced in clientFramehandler.obj
                  Referenced in server_Catan.obj
@@ -753,6 +747,14 @@
                Found __fltused
                  Referenced in clientFramehandler.obj
                  Loaded MSVCRTD.lib(fltused.obj)
+               Found "void __stdcall `eh vector constructor iterator'(void *,unsigned int,unsigned int,void (__thiscall*)(void *),void (__thiscall*)(void *))" (??_L@YGXPAXIIP6EX0@Z1@Z)
+                 Referenced in gameClient.obj
+                 Referenced in game.obj
+                 Loaded MSVCRTD.lib(ehvecctr.obj)
+               Found "void __stdcall `eh vector destructor iterator'(void *,unsigned int,unsigned int,void (__thiscall*)(void *))" (??_M@YGXPAXIIP6EX0@Z@Z)
+                 Referenced in gameClient.obj
+                 Referenced in game.obj
+                 Loaded MSVCRTD.lib(ehvecdtr.obj)
                Found "void __cdecl operator delete[](void *)" (??_V@YAXPAX@Z)
                  Referenced in server_Catan.obj
                  Loaded MSVCRTD.lib(delete_array.obj)
@@ -1063,16 +1065,15 @@
                  Referenced in player.obj
                  Loaded vcruntimed.lib(VCRUNTIME140D.dll)
                Found __imp__memmove
-                 Referenced in Tile.obj
                  Referenced in Tile_client.obj
-                 Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in player.obj
                  Loaded vcruntimed.lib(VCRUNTIME140D.dll)
                Found _memset
                  Referenced in tcpclient.obj
@@ -1091,17 +1092,16 @@
                  Referenced in catanBaton.obj
                  Loaded vcruntimed.lib(VCRUNTIME140D.dll)
                Found __CxxThrowException@8
-                 Referenced in Tile.obj
                  Referenced in Tile_client.obj
                  Referenced in MSVCRTD.lib(throw_bad_alloc.obj)
-                 Referenced in player.obj
                  Referenced in game.obj
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
+                 Referenced in Tile.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in player.obj
                  Loaded vcruntimed.lib(VCRUNTIME140D.dll)
                Found ___CxxFrameHandler3
                  Referenced in tcpclient.obj
@@ -1113,9 +1113,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded vcruntimed.lib(VCRUNTIME140D.dll)
                Found ___telemetry_main_invoke_trigger
                  Referenced in MSVCRTD.lib(exe_main.obj)
@@ -1166,9 +1166,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found __imp___invalid_parameter_noinfo
                  Referenced in catanBaton.obj
@@ -1181,7 +1181,7 @@
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found __imp__rand
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
+                 Referenced in gameClient.obj
                  Referenced in game.obj
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found __imp___get_stream_buffer_pointers
@@ -1231,9 +1231,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
+                 Referenced in gameClient.obj
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found __imp___CrtDbgReportW
                  Referenced in Tile.obj
@@ -1243,17 +1243,9 @@
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientBaton.obj
                  Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
-                 Loaded ucrtd.lib(ucrtbased.dll)
-               Found __imp__srand
-                 Referenced in clientBaton.obj
-                 Referenced in game.obj
-                 Loaded ucrtd.lib(ucrtbased.dll)
-               Found __imp___time64
-                 Referenced in clientBaton.obj
-                 Referenced in game.obj
+                 Referenced in gameClient.obj
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found _abs
                  Referenced in clientFramehandler.obj
@@ -1269,6 +1261,14 @@
                Found __imp__atoi
                  Referenced in clientFramehandler.obj
                  Referenced in Tile_client.obj
+                 Loaded ucrtd.lib(ucrtbased.dll)
+               Found __imp__srand
+                 Referenced in gameClient.obj
+                 Referenced in game.obj
+                 Loaded ucrtd.lib(ucrtbased.dll)
+               Found __imp___time64
+                 Referenced in gameClient.obj
+                 Referenced in game.obj
                  Loaded ucrtd.lib(ucrtbased.dll)
                Found _strcpy
                  Referenced in server_Catan.obj
@@ -1526,27 +1526,27 @@
           /v
           /x
           /fo
-          "C:\Users\gtb\AppData\Local\Temp\lnk{96D2520F-2381-4DE7-B1FD-22CCA654ABBA}.tmp"
-          "C:\Users\gtb\AppData\Local\Temp\lnk{5CBA1E48-8FE1-491D-96EB-1707941DE170}.tmp"
+          "C:\Users\GTB\AppData\Local\Temp\lnk{D2056FB5-D512-44C8-B688-6585E91470F8}.tmp"
+          "C:\Users\GTB\AppData\Local\Temp\lnk{2C67CC0C-E9CD-4576-812B-FDDA9BC95C04}.tmp"
          Microsoft (R) Windows (R) Resource Compiler Version 6.3.9600.17336
          
          Copyright (C) Microsoft Corporation.  All rights reserved.
          
          
-         Creating C:\Users\gtb\AppData\Local\Temp\lnk{96D2520F-2381-4DE7-B1FD-22CCA654ABBA}.tmp
+         Creating C:\Users\GTB\AppData\Local\Temp\lnk{D2056FB5-D512-44C8-B688-6585E91470F8}.tmp
          
          Using codepage 1252 as default
          
-         C:\Users\gtb\AppData\Local\Temp\lnk{5CBA1E48-8FE1-491D-96EB-1707941DE170}.tmp.
+         C:\Users\GTB\AppData\Local\Temp\lnk{2C67CC0C-E9CD-4576-812B-FDDA9BC95C04}.tmp.
          Writing 24:1,	lang:0x409,	size 381
          
          Invoking cvtres.exe:
           /machine:x86
           /verbose
-          /out:"C:\Users\gtb\AppData\Local\Temp\lnk{6017DF1E-EFF2-423C-A281-9E93EA9F738A}.tmp"
+          /out:"C:\Users\GTB\AppData\Local\Temp\lnk{335ABA75-08DE-42CE-8469-F2A887C5BC4D}.tmp"
           /readonly
           "Debug\CatanBaton.res"
-          "C:\Users\gtb\AppData\Local\Temp\lnk{96D2520F-2381-4DE7-B1FD-22CCA654ABBA}.tmp"
+          "C:\Users\GTB\AppData\Local\Temp\lnk{D2056FB5-D512-44C8-B688-6585E91470F8}.tmp"
          Microsoft (R) Windows Resource To Object Converter Version 14.00.23026.0
          Copyright (C) Microsoft Corporation.  All rights reserved.
          
@@ -1568,9 +1568,9 @@
               playerClient.obj
               game.obj
               player.obj
+              gameClient.obj
               clientTransmitHandler.obj
               clientFramehandler.obj
-              clientBaton.obj
               catanBaton.obj
               msvcprtd.lib(locale0_implib.obj)
               msvcprtd.lib(MSVCP140D.dll)
@@ -1827,9 +1827,9 @@
               ucrtd.lib(ucrtbased.dll)
               ucrtd.lib(ucrtbased.dll)
          Finished pass 2
-         Project2.vcxproj -> C:\Users\gtb\Documents\GitHub\catanbaton\Debug\CatanBaton.exe
-     1>Done Building Project "C:\Users\gtb\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" (Build target(s)).
+         Project2.vcxproj -> C:\Users\GTB\Documents\GitHub\catanbaton\Debug\CatanBaton.exe
+     1>Done Building Project "C:\Users\GTB\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:02.63
+Time Elapsed 00:00:03.19

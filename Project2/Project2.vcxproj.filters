@@ -33,9 +33,6 @@
     <ClInclude Include="tcpserver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="clientBaton.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="clientTransmitHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -78,9 +75,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="server_Catan.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="clientBaton.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="clientFramehandler.cpp">

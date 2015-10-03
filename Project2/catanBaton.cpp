@@ -44,6 +44,7 @@
 #include "tcpclient.h"
 #include "tcpserver.h"
 #include "clientTransmitHandler.h"
+#include "clientFramehandler.h"
 #include "server_Catan.h"
 #include "catanBaton.h"
 
@@ -53,7 +54,7 @@ using namespace std;
 //game catangame();
 
 	game catan;
-	gameClient clientcatan;
+	static gameClient clientcatan;
 
 int corner_info(int corner, int tilenum)
 {
@@ -204,6 +205,8 @@ int main()
 	dwPosition1.Y = 30;
 	dwPosition2.X = 0;
 	dwPosition2.Y = 0;
+	cout << "Need to make server send the player info to the client at start of game!" << endl;
+	clientcatan.set_player_number(1);
 //	if(flag ^= 1)
 //		cout <<
 
@@ -303,7 +306,7 @@ int main()
 			user_input3 = user_input3 % 6;		//force a valid number
 			temp = clientcatan.build_settlement(user_input2, user_input3);
 			temp = framehandler(catan, rxdatabuff, sizerxbuff);
-			temp = clientFrameHandler(txdatabuff);
+			temp = clientFrameHandler(clientcatan, txdatabuff);
 			//			temp = catan.build_settlement(user_input2, current_player, user_input3);
 			if(temp < 0)	//if error, print message!
 				cout << "ERROR: unable to build settlement!" << endl;
@@ -334,11 +337,11 @@ int main()
 			user_input3 = user_input3 % 6;		//force a valid number
 			temp = clientcatan.build_road(user_input2, user_input3);
 			temp = framehandler(catan, rxdatabuff, sizerxbuff);
-			temp = clientFrameHandler(txdatabuff);
+			temp = clientFrameHandler(clientcatan, txdatabuff);
 			//temp = catan.build_roads(user_input2, current_player, user_input3);
-			if(temp < 0)	//if error, print message!
+			if(temp <= 0)	//if error, print message!
 				cout << "ERROR: unable to build road!" << endl;
-			else if (user_input3 == (temp - 1))
+			else// if (user_input3 == (temp - 1))
 			{
 				tempstrtowrite = std::stringstream();
 				tempstrtowrite << "Road " << user_input3 << "successfully built on tile " << setw(2) << user_input2 << endl;

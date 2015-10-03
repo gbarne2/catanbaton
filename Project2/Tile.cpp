@@ -29,7 +29,7 @@ tile::tile(void)
 	temp.property_owner = 0;
 	temp.property_type = 0;
 	robber_on_tile = 0;
-	temp.players_connected.push_back(0);
+//	temp.players_connected.push_back(0);
 	resource_type = 0;
 	D = 0;
 	E = 0;
@@ -58,7 +58,7 @@ tile::tile(int resource_type_init, int dice_roll_val)
 	temp.road_connected = 0;
 	temp.property_owner = 0;
 	temp.property_type = 0;
-	temp.players_connected.push_back(0);
+	//temp.players_connected.push_back(0);
 	resource_type = resource_type_init;
 	robber_on_tile = 0;
 	D = 0;
@@ -256,10 +256,6 @@ int tile::build_road(int corner1, int corner2, int player)
 			road_index = corner2;
 		roads[road_index] = player;
 		retval = road_index+1;
-	}
-	else
-		retval = 0;
-/*
 		roads[road_index] = player;
 		ptr = cornersz.begin() + corner1;
 		ptr->road_connected += 1;
@@ -267,7 +263,9 @@ int tile::build_road(int corner1, int corner2, int player)
 		ptr = cornersz.begin() + corner2;
 		ptr->road_connected += 1;
 		ptr->players_connected.push_back(player);
-*/
+	}
+	else
+		retval = 0;
 	return(retval);
 }
 
@@ -368,6 +366,7 @@ string tile::get_tile_data_string(int tilenum)
 	//Data format
 	//"S"		-> beginning of each tile object.
 	//datasize
+	//tilenumber
 	//resource type
 	//roll
 	//roads[0]
@@ -401,13 +400,14 @@ string tile::get_tile_data_string(int tilenum)
 		strStream << ptr->corner_index << ptr->road_connected << ptr->property_owner << ptr->property_type;
 		//data_outtemp += ptr->corner_index + ptr->road_connected + ptr->property_owner
 //			+ptr->property_type;
-		count = 0;
-		for (vector<int>::iterator tempptr = ptr->players_connected.begin(); tempptr < ptr->players_connected.end(); tempptr++)
+		strStream << ptr->players_connected.size();
+		cout << "players connected size in Tile.cpp: " << ptr->players_connected.size() << endl;
+//		for (vector<int>::iterator tempptr = ptr->players_connected.begin(); tempptr < ptr->players_connected.end(); tempptr++)
+		for (int y = 0; y < ptr->players_connected.size(); y++)
 		{
-			temp_string += *tempptr;
-			count++;
+			strStream << ptr->players_connected.at(y);
 		}
-		strStream << count << temp_string;
+//		strStream << count << temp_string;
 //		data_outtemp += count;
 //		data_outtemp += temp_string;
 	}

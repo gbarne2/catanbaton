@@ -56,10 +56,10 @@ private:
 	int roads[6];		//this will contain the status of all 6 possible roads around a tile, and which player owns them.
 	//	int corners[6];		//this will contain all of the corners, and their value will be used to determine which player owns them
 										//for now, lets make it be the function that checks if a corner is available (check neighboring corners and desired corner)
-	vector<ClientCorner> Clientcornersz;		//move this into the private part!!!! build_roads, ,  all depend on this being public. make update them as well
 	int check_roads_settlement(int corner, int player);
 	int check_roads(int corner1, int corner2, int player);
-public:
+public:	
+	vector<ClientCorner> Clientcornersz;		//move this into the private part!!!! build_roads, ,  all depend on this being public. make update them as well
 	int check_neighbors(int corner, int player);	//not sure how this is supposed to actually work. my plan was to have this higher I think, so it can check more than 1 tile. 
 	tileclient(void);
 	tileclient(int res, int dc);
@@ -71,7 +71,7 @@ public:
 	int read_corner_owner(int corner);
 	int read_corner_type(int corner);
 	int read_road(int road);
-	void init_corners(ClientCorner temp) {Clientcornersz.push_back(temp);}
+//	void init_corners(ClientCorner temp) {Clientcornersz.push_back(temp);}
 	int check_tile_resource_type();
 	int check_corner_owner(int corner);
 	int check_corner_building_type(int corner);

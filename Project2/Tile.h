@@ -68,7 +68,7 @@ public:
 	int read_corner_owner(int corner);
 	int read_corner_type(int corner);
 	int read_road(int road);
-	void init_corners(Corner temp) {cornersz.push_back(temp);}
+//	void init_corners(Corner temp) {cornersz.push_back(temp);}
 	int check_build_settlement_tile(int corner, int player);
 	int upgrade_settlement(int corner, int player);
 	int build_road(int corner1, int corner2, int player);		//must call for both adjacent roads!

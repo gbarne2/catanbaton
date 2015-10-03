@@ -954,11 +954,11 @@ string game::get_board_info()
 }
 game::game(void)
 {
-	Corner temps;
-	vector<int> tempvec;
+//	Corner temps;
+//	vector<int> tempvec;
 
 		//	corner_index = xy;
-	for(int x = 0; x <= max_x; x++)
+/*	for(int x = 0; x <= max_x; x++)
 	{
 		for(int y = 0; y <= max_y; y++)
 		{
@@ -970,9 +970,10 @@ game::game(void)
 				temps.property_type = 0;
 				temps.road_connected = 0;
 			}
-			pieces[x][y].init_corners(temps);
+//			pieces[x][y].init_corners(temps);
 		}
 	}
+	*/
 }
 
 game::~game(void)

@@ -51,11 +51,11 @@ exit_assign_resources:
 
 gameClient::gameClient()
 {
-	ClientCorner temps;
-	vector<int> tempvec;
+//	ClientCorner temps;
+//	vector<int> tempvec;
 
 	//	corner_index = xy;
-	for (int x = 0; x <= MAX_NUM_ACTIVE_TILES; x++)
+/*	for (int x = 0; x < MAX_NUM_ACTIVE_TILES; x++)
 	{
 		for (int xy = 0; xy < 6; xy++)
 		{
@@ -67,6 +67,7 @@ gameClient::gameClient()
 			board[x].init_corners(temps);
 		}
 	}
+	*/
 	build_board();
 }
 
@@ -181,4 +182,17 @@ int gameClient::update_flag(int flag, int val)
 int gameClient::update_board(char* data, int datasize, int startindex, int tilenum)
 {
 	return(board[tilenum].update_board_info_from_server(data, datasize, startindex));
+}
+
+int gameClient::set_player_number(int idnum)
+{
+	int retval = 0;
+	if ((playerinfo.get_player_num() == -72) && (idnum > 0) && (idnum <= MAX_NUM_PLAYERS))
+	{
+		playerinfo.set_player_num(idnum);
+		retval = 1;
+	}
+	else
+		retval = -1;
+	return(retval);
 }

@@ -3,6 +3,7 @@
 #include "Tile_client.h"
 #include <vector>
 #include "playerClient.h"
+#include "gameClient.h"
 
 #define INVALID_TRADE				-49
 #define ACTIVE_NUM_TILES_CLIENT		19
@@ -64,9 +65,9 @@ extern client_trade_cards_offer trade_to_process;
 //extern playerClient playerdata;
 //extern tileclient board[ACTIVE_NUM_TILES_CLIENT];
 
-int clientFrameHandler(char* datain);
+int clientFrameHandler(gameClient, char*);
 vector<int> get_num_active_tiles(int data);
-int update_board_info(char* data, int datasize);
+int update_board_info(gameClient session, char* data, int datasize);
 int dice_roll(int data);
 int trade_status(int data);
 int last_packet_sent(int data);
