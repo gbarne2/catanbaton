@@ -113,6 +113,7 @@ public:
 	int get_num_settlements(int);
 	int get_num_cities(int);
 	int check_corner_owner(int corner, int tilenum);
+	int get_road_owner(int, int);
 	int check_resources_city(int playernum);
 	int upgrade_settlement(int tilenum, int playernum, int cornernum);
 	int check_resources_devcard(int playernum);

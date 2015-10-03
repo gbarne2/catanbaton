@@ -129,7 +129,7 @@ extern char txdatabuff[4096];
 static int debug_text = 1;
 static trade_cards_offer trade_to_process;
 //functions
-int framehandler(game session, char *datain, int size_of_data)
+int framehandler(game &session, char *datain, int size_of_data)
 {
 
 	//the datain field will need to be pulled in from tcpserver->receivebuffer or whateevr its called. 

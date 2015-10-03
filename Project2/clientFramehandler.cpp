@@ -77,7 +77,7 @@ using namespace std;
 static client_trade_cards_offer trade_to_process;
 
 
-int clientFrameHandler(gameClient session, char* datain)
+int clientFrameHandler(gameClient &session, char* datain)
 {
 	int dataptr = 8;		//use this to grab data from datain buffer.
 	int tempdata = 0;
@@ -288,7 +288,7 @@ vector<int> get_num_active_tiles(int data)
 	return(retval);
 }
 
-int update_board_info(gameClient session, char* data, int datasize)
+int update_board_info(gameClient &session, char* data, int datasize)
 {
 	int startindex = 0;
 	int size_corner;

@@ -451,6 +451,12 @@ int game::upgrade_settlement(int tilenum, int playernum, int cornernum)
 
 }
 
+int game::get_road_owner(int road, int tilenum)
+{
+	int xcoord = determine_x_index_from_tile(tilenum);
+	int ycoord = determine_y_index_from_tile(tilenum);
+	return(pieces[xcoord][ycoord].read_road(road));
+}
 int game::check_corner_owner(int corner, int tilenum)
 {
 	int xcoord = determine_x_index_from_tile(tilenum);

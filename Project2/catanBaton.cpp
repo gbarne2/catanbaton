@@ -263,14 +263,8 @@ int main()
 		cout << "4) Check resources!                    " << endl;
 		cout << "5) Roll dice dice!!                    " << endl;
 		cout << "6) Goto next player                    " << endl;
-		cout << "7) Quit, llama duck                    " << endl;
-		cout << "                                                                     " << endl;
-		cout << "                                                                     " << endl;
-		cout << "                                                                     " << endl;
-		cout << "                                                                     " << endl;
-		cout << "                                                                     " << endl;
-		cout << "                                                                     " << endl;
-		cout << "                                                                     " << endl;
+		cout << "7) Check road owner                    " << endl;
+		cout << "8) Quit, llama duck                    " << endl;
 		cout << "                                                                     " << endl;
 		cout << "                                                                     " << endl;
 	//	cin.clear();
@@ -296,13 +290,7 @@ int main()
 			cout << "      5 \\_______/ 4                     " << endl;
 			cout << "                                                                     " << endl;
 			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cin >> user_input3;
+				cin >> user_input3;
 			user_input3 = user_input3 % 6;		//force a valid number
 			temp = clientcatan.build_settlement(user_input2, user_input3);
 			temp = framehandler(catan, rxdatabuff, sizerxbuff);
@@ -325,12 +313,6 @@ int main()
 			cout << "      \\           / " << endl;
 			cout << "     5 \\         / 3" << endl;
 			cout << "        \\___4___/   \n\n\n\n\n\n" << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
-			cout << "                                                                     " << endl;
 			cout << "                                                                     " << endl;
 			cout << "                                                                     " << endl;
 			cin >> user_input3;
@@ -410,8 +392,38 @@ int main()
 			current_player = (current_player + 1)%(number_of_players + 1);
 			clientcatan.start_turn();
 			break;
-		case 7:
+		case 8:
 			exit(1);
+			break;
+		case 7:
+			cout << "What tile do you want to see road owners for?" << endl;
+			cin >> user_input2;
+			cout << "Do you want to check server roads or client roads?" << endl << "1) server roads" << endl << "2) Client roads" << endl;
+			cin >> user_input3;
+			if (user_input3 == 1)
+			{
+				cout << "         ___" << catan.get_road_owner(1, user_input2) << "____   " << endl;
+				cout << "        /       \\   " << endl;
+				cout << "     " << catan.get_road_owner(0, user_input2) << " /         \\ " << catan.get_road_owner(2, user_input2) << endl;
+				cout << "      /           \\ " << endl;
+				cout << "      \\           / " << endl;
+				cout << "     " << catan.get_road_owner(5, user_input2) << " \\         / " << catan.get_road_owner(3, user_input2) << endl;
+				cout << "        \\___" << catan.get_road_owner(4, user_input2) << "___/   " << endl;
+				cout << endl << endl;
+			}
+			else if (user_input3 == 2)
+			{
+				cout << "         ___" << clientcatan.get_road_owner(1, user_input2) << "____   " << endl;
+				cout << "        /       \\   " << endl;
+				cout << "     " << clientcatan.get_road_owner(0, user_input2) << " /         \\ " << clientcatan.get_road_owner(2, user_input2) << endl;
+				cout << "      /           \\ " << endl;
+				cout << "      \\           / " << endl;
+				cout << "     " << clientcatan.get_road_owner(5, user_input2) << " \\         / " << clientcatan.get_road_owner(3, user_input2) << endl;
+				cout << "        \\___" << clientcatan.get_road_owner(4, user_input2) << "___/   " << endl;
+				cout << endl << endl;
+			}
+			else
+				cout << "invalid choice!" << endl;
 			break;
 		default:
 			cin.clear();

@@ -65,9 +65,9 @@ extern client_trade_cards_offer trade_to_process;
 //extern playerClient playerdata;
 //extern tileclient board[ACTIVE_NUM_TILES_CLIENT];
 
-int clientFrameHandler(gameClient, char*);
+int clientFrameHandler(gameClient &session, char*);
 vector<int> get_num_active_tiles(int data);
-int update_board_info(gameClient session, char* data, int datasize);
+int update_board_info(gameClient &session, char* data, int datasize);
 int dice_roll(int data);
 int trade_status(int data);
 int last_packet_sent(int data);

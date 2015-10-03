@@ -1,8 +1,18 @@
-﻿Build started 10/3/2015 1:06:44 AM.
+﻿Build started 10/3/2015 5:16:08 PM.
      1>Project "C:\Users\GTB\Documents\GitHub\catanbaton\Project2\Project2.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt catanBaton.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt catanBaton.cpp clientFramehandler.cpp clientTransmitHandler.cpp gameClient.cpp
+         clientFramehandler.cpp
+     1>c:\users\gtb\documents\github\catanbaton\project2\clientframehandler.cpp(280): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+     1>c:\users\gtb\documents\github\catanbaton\project2\clientframehandler.cpp(281): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+         Generating Code...
+         Compiling...
+         gameClient.cpp
+     1>c:\users\gtb\documents\github\catanbaton\project2\gameclient.cpp(84): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+         clientTransmitHandler.cpp
+     1>c:\users\gtb\documents\github\catanbaton\project2\clienttransmithandler.cpp(66): warning C4018: '<': signed/unsigned mismatch
          catanBaton.cpp
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\GTB\Documents\GitHub\catanbaton\Debug\CatanBaton.exe" /VERBOSE /INCREMENTAL /NOLOGO /LTCG:STATUS /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\GTB\Documents\GitHub\catanbaton\Debug\CatanBaton.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\GTB\Documents\GitHub\catanbaton\Debug\CatanBaton.lib" /MACHINE:X86 Debug\CatanBaton.res
          Debug\catanBaton.obj
@@ -101,14 +111,13 @@
                  Referenced in player.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "__declspec(dllimport) void __cdecl std::_Xout_of_range(char const *)" (__imp_?_Xout_of_range@std@@YAXPBD@Z)
-                 Referenced in game.obj
                  Referenced in playerClient.obj
                  Referenced in server_Catan.obj
                  Referenced in Tile.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientFramehandler.obj
                  Referenced in clientTransmitHandler.obj
                  Referenced in player.obj
+                 Referenced in game.obj
                  Loaded msvcprtd.lib(MSVCP140D.dll)
                Found "void __cdecl std::_Facet_Register(class std::_Facet_base *)" (?_Facet_Register@std@@YAXPAV_Facet_base@1@@Z)
                  Referenced in catanBaton.obj
@@ -622,11 +631,6 @@
                  Loaded msvcprtd.lib(MSVCP140D.dll)
              Searching C:\Program Files (x86)\Windows Kits\8.1\lib\winv6.3\um\x86\uuid.lib:
              Searching C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\lib\MSVCRTD.lib:
-               Found "void __stdcall `eh vector copy constructor iterator'(void *,void *,unsigned int,unsigned int,void (__thiscall*)(void *,void *),void (__thiscall*)(void *))" (??__C@YGXPAX0IIP6EX00@ZP6EX0@Z@Z)
-                 Referenced in catanBaton.obj
-                 Referenced in clientFramehandler.obj
-                 Referenced in server_Catan.obj
-                 Loaded MSVCRTD.lib(ehvccctr.obj)
                Found "void * __cdecl operator new(unsigned int)" (??2@YAPAXI@Z)
                  Referenced in Tile.obj
                  Referenced in Tile_client.obj
@@ -652,13 +656,12 @@
                  Referenced in gameClient.obj
                  Loaded MSVCRTD.lib(delete_scalar.obj)
                Found "void __cdecl operator delete(void *,unsigned int)" (??3@YAXPAXI@Z)
-                 Referenced in server_Catan.obj
                  Referenced in Tile.obj
                  Referenced in Tile_client.obj
                  Referenced in catanBaton.obj
-                 Referenced in clientFramehandler.obj
                  Referenced in gameClient.obj
                  Referenced in game.obj
+                 Referenced in server_Catan.obj
                  Loaded MSVCRTD.lib(delete_scalar_size.obj)
                Found _atexit
                  Referenced in catanBaton.obj
@@ -719,11 +722,10 @@
                  Referenced in Tile.obj
                  Loaded MSVCRTD.lib(std_type_info_static.obj)
                Found ___security_cookie
-                 Referenced in MSVCRTD.lib(_secchk_.obj)
                  Referenced in msvcprtd.lib(locale0_implib.obj)
-                 Referenced in MSVCRTD.lib(ehvccctr.obj)
                  Referenced in MSVCRTD.lib(utility.obj)
                  Referenced in MSVCRTD.lib(utility.obj)
+                 Referenced in MSVCRTD.lib(_secchk_.obj)
                  Referenced in tcpclient.obj
                  Referenced in tcpserver.obj
                  Referenced in Tile.obj
@@ -755,26 +757,22 @@
                  Referenced in gameClient.obj
                  Referenced in game.obj
                  Loaded MSVCRTD.lib(ehvecdtr.obj)
+               Found "void __stdcall `eh vector copy constructor iterator'(void *,void *,unsigned int,unsigned int,void (__thiscall*)(void *,void *),void (__thiscall*)(void *))" (??__C@YGXPAX0IIP6EX00@ZP6EX0@Z@Z)
+                 Referenced in server_Catan.obj
+                 Loaded MSVCRTD.lib(ehvccctr.obj)
                Found "void __cdecl operator delete[](void *)" (??_V@YAXPAX@Z)
                  Referenced in server_Catan.obj
                  Loaded MSVCRTD.lib(delete_array.obj)
                Found _mainCRTStartup
                  Loaded MSVCRTD.lib(exe_main.obj)
                Found @_guard_check_icall@4
-                 Referenced in MSVCRTD.lib(ehvecdtr.obj)
+                 Referenced in MSVCRTD.lib(ehvccctr.obj)
                  Referenced in MSVCRTD.lib(exe_main.obj)
                  Referenced in msvcprtd.lib(locale0_implib.obj)
-                 Referenced in MSVCRTD.lib(ehvccctr.obj)
-                 Referenced in MSVCRTD.lib(utility.obj)
-                 Referenced in MSVCRTD.lib(ehvecctr.obj)
-                 Loaded MSVCRTD.lib(checkcfg.obj)
-               Found __except_handler4
-                 Referenced in MSVCRTD.lib(exe_main.obj)
-                 Referenced in MSVCRTD.lib(ehvccctr.obj)
                  Referenced in MSVCRTD.lib(utility.obj)
                  Referenced in MSVCRTD.lib(ehvecctr.obj)
                  Referenced in MSVCRTD.lib(ehvecdtr.obj)
-                 Loaded MSVCRTD.lib(_chandler4gs_.obj)
+                 Loaded MSVCRTD.lib(checkcfg.obj)
                Found "void __cdecl __scrt_throw_std_bad_alloc(void)" (?__scrt_throw_std_bad_alloc@@YAXXZ)
                  Referenced in MSVCRTD.lib(new_scalar.obj)
                  Loaded MSVCRTD.lib(throw_bad_alloc.obj)
@@ -788,6 +786,13 @@
                  Referenced in MSVCRTD.lib(utility.obj)
                  Referenced in MSVCRTD.lib(exe_main.obj)
                  Loaded MSVCRTD.lib(utility_desktop.obj)
+               Found __except_handler4
+                 Referenced in MSVCRTD.lib(exe_main.obj)
+                 Referenced in MSVCRTD.lib(utility.obj)
+                 Referenced in MSVCRTD.lib(ehvecctr.obj)
+                 Referenced in MSVCRTD.lib(ehvecdtr.obj)
+                 Referenced in MSVCRTD.lib(ehvccctr.obj)
+                 Loaded MSVCRTD.lib(_chandler4gs_.obj)
                Found "void __cdecl _RTC_Failure(void *,int)" (?_RTC_Failure@@YAXPAXH@Z)
                  Referenced in MSVCRTD.lib(_stack_.obj)
                  Loaded MSVCRTD.lib(_error_.obj)
@@ -1526,27 +1531,27 @@
           /v
           /x
           /fo
-          "C:\Users\GTB\AppData\Local\Temp\lnk{D2056FB5-D512-44C8-B688-6585E91470F8}.tmp"
-          "C:\Users\GTB\AppData\Local\Temp\lnk{2C67CC0C-E9CD-4576-812B-FDDA9BC95C04}.tmp"
+          "C:\Users\GTB\AppData\Local\Temp\lnk{CE41AF34-66D0-4205-9BFC-45BA2A0F4F81}.tmp"
+          "C:\Users\GTB\AppData\Local\Temp\lnk{BD3EA173-251A-41C7-8715-B2CCEC85309D}.tmp"
          Microsoft (R) Windows (R) Resource Compiler Version 6.3.9600.17336
          
          Copyright (C) Microsoft Corporation.  All rights reserved.
          
          
-         Creating C:\Users\GTB\AppData\Local\Temp\lnk{D2056FB5-D512-44C8-B688-6585E91470F8}.tmp
+         Creating C:\Users\GTB\AppData\Local\Temp\lnk{CE41AF34-66D0-4205-9BFC-45BA2A0F4F81}.tmp
          
          Using codepage 1252 as default
          
-         C:\Users\GTB\AppData\Local\Temp\lnk{2C67CC0C-E9CD-4576-812B-FDDA9BC95C04}.tmp.
+         C:\Users\GTB\AppData\Local\Temp\lnk{BD3EA173-251A-41C7-8715-B2CCEC85309D}.tmp.
          Writing 24:1,	lang:0x409,	size 381
          
          Invoking cvtres.exe:
           /machine:x86
           /verbose
-          /out:"C:\Users\GTB\AppData\Local\Temp\lnk{335ABA75-08DE-42CE-8469-F2A887C5BC4D}.tmp"
+          /out:"C:\Users\GTB\AppData\Local\Temp\lnk{E3F3D8E3-6307-40F1-A7E1-108AF65DCCD2}.tmp"
           /readonly
           "Debug\CatanBaton.res"
-          "C:\Users\GTB\AppData\Local\Temp\lnk{D2056FB5-D512-44C8-B688-6585E91470F8}.tmp"
+          "C:\Users\GTB\AppData\Local\Temp\lnk{CE41AF34-66D0-4205-9BFC-45BA2A0F4F81}.tmp"
          Microsoft (R) Windows Resource To Object Converter Version 14.00.23026.0
          Copyright (C) Microsoft Corporation.  All rights reserved.
          
@@ -1832,4 +1837,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.19
+Time Elapsed 00:00:05.70

@@ -256,7 +256,7 @@ int tile::build_road(int corner1, int corner2, int player)
 			road_index = corner2;
 		roads[road_index] = player;
 		retval = road_index+1;
-		roads[road_index] = player;
+//		roads[road_index] = player;
 		ptr = cornersz.begin() + corner1;
 		ptr->road_connected += 1;
 		ptr->players_connected.push_back(player);		//update who is connected to each corner

@@ -196,3 +196,8 @@ int gameClient::set_player_number(int idnum)
 		retval = -1;
 	return(retval);
 }
+
+int gameClient::get_road_owner(int road, int tilenum)
+{
+	return(board[tilenum].read_road(road));
+}

@@ -54,6 +54,7 @@ public:
 	int update_flag(int, int);
 	int update_board(char*, int, int, int);
 	int set_player_number(int);
+	int get_road_owner(int road, int tilenum);
 };
 
 
