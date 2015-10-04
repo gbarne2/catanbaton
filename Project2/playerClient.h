@@ -4,6 +4,15 @@
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
+#ifndef START_CARD_VALUES
+#define START_CARD_VALUES
+#define START_ORE		50
+#define START_SHEEP		50
+#define START_BRICK		50
+#define START_WHEAT		50
+#define START_WOOD		50
+#endif
+
 /*
 struct trade_cards
 {

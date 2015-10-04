@@ -745,7 +745,12 @@ int game::deduct_resources(int player, int resource, int qty)
 
 int game::deduct_resources_trade_low(int player, int resource, int qty)
 {
+	int retval = 0;
 	player_ptr = player_list.begin() + player;
+	if (((player_ptr->check_resource_amount(resource) >= qty) && qty < 0) || (qty > 0))		//if dudcting resources, make sure there are enough. or add resources
+		retval = player_ptr->update_resources(resource, qty);
+	else
+		retval = -46;
 	return(player_ptr->update_resources(resource, qty));
 }
 
@@ -914,7 +919,7 @@ int game::steal_random_card(int playernum, int player_to_steal_from)
 	retval = deduct_resources_trade_low(player_to_steal_from, card_to_steal, -1);
 	if (retval < 0)
 	{
-		cout << "oh no! fatal error! shit fuck titty cock! the player stolen from has negative cards. adding one card back." << endl;
+		cout << "oh no! fatal error! the player stolen from has negative cards. adding one card back." << endl;
 		deduct_resources_trade_low(player_to_steal_from, card_to_steal, 1);
 		return(retval);
 	}

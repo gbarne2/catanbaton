@@ -56,10 +56,18 @@ using namespace std;
 	game catan;
 	static gameClient clientcatan;
 
+int usrin = 0;
+
 int corner_info(int corner, int tilenum)
 {
-//	cout << catan.check_corner_owner(cornB, 18) << catan.check_corner_building_type(cornB, 18);
-	return(10*catan.check_corner_owner(corner, tilenum) + catan.check_corner_building_type(corner, tilenum));
+	int retval = 0;
+	if(usrin == 1)
+		retval = (10 * catan.check_corner_owner(corner, tilenum) + catan.check_corner_building_type(corner, tilenum));
+	else if (usrin == 2)
+		retval = (10 * catan.check_corner_owner(corner, tilenum) + catan.check_corner_building_type(corner, tilenum));
+	else
+		cout << "invalid input dickhead!" << endl;
+	return(retval);
 }
 
 int droll(int tilenumb)
@@ -69,6 +77,9 @@ int droll(int tilenumb)
 
 string print_board()
 {
+	cout << "Update board from server or client data?" << endl << "1) Server data" << endl << "2) Client data" << endl;
+	cin >> usrin;
+
 	std::ifstream filein;
 	std::stringstream strStream;
 

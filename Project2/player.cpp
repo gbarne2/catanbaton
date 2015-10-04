@@ -4,13 +4,14 @@
 
 using namespace std;
 
+
 player::player(void)
 {
-	qty_brick = 4;		//start off with enough resources to build two roads and two settlements
-	qty_ore = 0;
-	qty_sheep = 2;		//start off with enough resources to build two roads and two settlements
-	qty_wheat = 2;		//start off with enough resources to build two roads and two settlements
-	qty_wood = 4;		//start off with enough resources to build two roads and two settlements
+	qty_brick = START_BRICK;		//start off with enough resources to build two roads and two settlements
+	qty_ore = START_ORE;
+	qty_sheep = START_SHEEP;		//start off with enough resources to build two roads and two settlements
+	qty_wheat = START_WHEAT;		//start off with enough resources to build two roads and two settlements
+	qty_wood = START_WOOD;		//start off with enough resources to build two roads and two settlements
 	roads_to_place = 15;
 	settlements_to_build = 5;
 	cities_to_build = 4;
@@ -25,11 +26,11 @@ player::player(int IDset, string p_name)
 {
 	player_ID = IDset;
 	Player_name = p_name;
-	qty_brick = 4;		//start off with enough resources to build two roads and two settlements
-	qty_ore = 0;
-	qty_sheep = 2;		//start off with enough resources to build two roads and two settlements
-	qty_wheat = 2;		//start off with enough resources to build two roads and two settlements
-	qty_wood = 4;		//start off with enough resources to build two roads and two settlements
+	qty_brick = START_BRICK;		//start off with enough resources to build two roads and two settlements
+	qty_ore = START_ORE;
+	qty_sheep = START_SHEEP;		//start off with enough resources to build two roads and two settlements
+	qty_wheat = START_WHEAT;		//start off with enough resources to build two roads and two settlements
+	qty_wood = START_WOOD;		//start off with enough resources to build two roads and two settlements
 	roads_to_place = 15;
 	settlements_to_build = 5;
 	cities_to_build = 4;
