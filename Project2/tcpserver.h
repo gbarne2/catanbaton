@@ -14,8 +14,8 @@
 //#pragma comment (lib, "Ws2_32.lib")
 // #pragma comment (lib, "Mswsock.lib")
 
-#define DEFAULT_SERV_BUFLEN 512
-#define DEFAULT_SERV_PORT "80"
+#define DEFAULT_SERV_BUFLEN 4096
+#define DEFAULT_SERV_PORT "4242"
 
 class tcpserver
 {

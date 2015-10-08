@@ -1,11 +1,15 @@
 #include <iostream>
+#include <winsock2.h>
+#include <ws2tcpip.h>
 #include "tcpserver.h"
+#include "serverMain.h"
 
 
 //#undef UNICODE
 //int __cdecl main(void)
 
-//#pragma comment (lib, "Ws2_32.lib")
+#pragma comment (lib, "Ws2_32.lib")
+
 
 SOCKET tcpserver::initializeServer(SOCKET ClientSocket)
 {
@@ -55,7 +59,7 @@ SOCKET tcpserver::initializeServer(SOCKET ClientSocket)
 	}
 
 	freeaddrinfo(result);
-
+	std::cout << "About to listen" << std::endl;
 	iResult = listen(ListenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
 		printf("listen failed with error: %d\n", WSAGetLastError());
@@ -64,6 +68,7 @@ SOCKET tcpserver::initializeServer(SOCKET ClientSocket)
 		return INVALID_SOCKET;
 	}
 
+	std::cout << "done with listen" << std::endl;
 	// Accept a client socket
 	ClientSocket = accept(ListenSocket, NULL, NULL);
 	if (ClientSocket == INVALID_SOCKET) {
@@ -82,12 +87,14 @@ int tcpserver::receiveUntilDoneWithEcho(SOCKET ClientSocket)
 	// Receive until the peer shuts down the connection
 	do {
 
-		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+//		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+		iResult = recv(ClientSocket, databuff, recvbuflen, 0);
 		if (iResult > 0) {
 			printf("Bytes received: %d\n", iResult);
 
 			// Echo the buffer back to the sender
-			iSendResult = send(ClientSocket, recvbuf, iResult, 0);
+//			iSendResult = send(ClientSocket, recvbuf, iResult, 0);
+			iSendResult = send(ClientSocket, databuff, iResult, 0);
 			if (iSendResult == SOCKET_ERROR) {
 				printf("send failed with error: %d\n", WSAGetLastError());
 				cleanup(ClientSocket);
@@ -124,7 +131,8 @@ int tcpserver::receiveUntilDone(SOCKET ClientSocket)
 {
 // Receive until the peer shuts down the connection
 	do {
-		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+//		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+		iResult = recv(ClientSocket, databuff, recvbuflen, 0);
 		if (iResult > 0)
 			printf("Bytes received: %d\n", iResult);
 		else if (iResult == 0)
@@ -132,7 +140,7 @@ int tcpserver::receiveUntilDone(SOCKET ClientSocket)
 		else {
 			printf("recv failed with error: %d\n", WSAGetLastError());
 			cleanup(ClientSocket);
-			return 1;
+			return -1;
 		}
 
 	} while (iResult > 0);
@@ -146,7 +154,7 @@ int tcpserver::shutDownClientSocket(SOCKET ClientSocket)
 	if (iResult == SOCKET_ERROR) {
 		printf("shutdown failed with error: %d\n", WSAGetLastError());
 		cleanup(ClientSocket);
-		return 1;
+		return -1;
 	}
 	return 0;
 }

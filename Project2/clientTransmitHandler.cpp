@@ -39,6 +39,7 @@ int packetAssembler(char buffer[], int size)
 		cout << temp[x];
 		rxdatabuff[x] = temp[x];
 	}
+
 	cout << endl << endl;
 //	delete[] temp;
 	//use playerClient class to get server address and socket (server_address and ServerSocket)

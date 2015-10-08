@@ -41,7 +41,8 @@ Launch this operation in another thread, and once the start game command is rece
 #include <WS2tcpip.h>
 #include <Windows.h>
 #include <stdlib.h>
-#include "catanBaton.h"
+#include "serverMain.h"
+//#include "catanBaton.h"
 
 using namespace std;
 
@@ -103,33 +104,34 @@ using namespace std;
 //game catan;
 map<int, player> playermap;
 static int game_status = 0;
-tcpserver serv(" ");
+
 //function prototypes
 int get_qty_cities_left(game session, int player_number);
 int get_qty_settlements_left(game session, int player_number);
 int get_qty_roads_remaining(game session, int player_number);
-int send_board_info(game session);
+int send_board_info(game session, tcpserver servv);
 int steal_card(game session, int player_taking_card, int player_giving);
 static int trade_in_progress = 0;
 static int initiating_player_trade = 0;
 static int requested_player_trade = 0;
 static int last_player = 0;
-int send_packet(game session, int player_num, string data_to_send, int packet_type);
-int send_packet(game session, int player_num, int data_to_send, int packet_type);
-int send_packet(game session, int player_num, char *data_to_send, int packet_type, int length);
-int send_dice_roll(game session);
-int send_resources(game session, int playernum);
-int join_game(game session, int player_number, string name);
+int send_packet(game session, int player_num, string data_to_send, int packet_type, tcpserver servv);
+int send_packet(game session, int player_num, int data_to_send, int packet_type, tcpserver servv);
+int send_packet(game session, int player_num, char *data_to_send, int packet_type, int length, tcpserver servv);
+int send_dice_roll(game session, tcpserver servv);
+int send_resources(game session, int playernum, tcpserver servv);
+int join_game(game session, int player_number, string name, tcpserver servv);
 unsigned int read_dice_roll(game session);
-int place_robber(game session, int tilenum, int playernum);
-int send_resources_all_players(game session);
+int place_robber(game session, int tilenum, int playernum, tcpserver servv);
+int send_resources_all_players(game session, tcpserver servv);
 
-extern char txdatabuff[4096];
+char txdatabuff[4096];
+//extern tcpserver serv(" ");
 
 static int debug_text = 1;
 static trade_cards_offer trade_to_process;
 //functions
-int framehandler(game &session, char *datain, int size_of_data)
+int framehandler(game &session, char *datain, int size_of_data, tcpserver servv)
 {
 
 	//the datain field will need to be pulled in from tcpserver->receivebuffer or whateevr its called. 
@@ -179,7 +181,7 @@ int framehandler(game &session, char *datain, int size_of_data)
 					{
 						tempstring += datain[x];
 					}
-					retval = send_packet(session, requested_player_trade, tempstring, PROPOSE_TRADE);
+					retval = send_packet(session, requested_player_trade, tempstring, PROPOSE_TRADE, servv);
 				}
 			}
 		//data field:
@@ -209,8 +211,8 @@ int framehandler(game &session, char *datain, int size_of_data)
 				dataptr += 1;
 				retval = session.trade_with_player(trade_to_process, initiating_player_trade, requested_player_trade, datain[dataptr]);
 				//need to add return value handling! tell both users what happened with trade (accepted or denied, why)
-				send_packet(session, initiating_player_trade, retval, ACCEPT_REJECT_TRADE);
-				send_packet(session, requested_player_trade, retval, ACCEPT_REJECT_TRADE);	//may need to change these to not return retval, but something else so that the client wont be getting the real reason why (ex: if req player doesnt have enough cards, then retval will tell the initiating player that the other player doesnt have the cards.)
+				send_packet(session, initiating_player_trade, retval, ACCEPT_REJECT_TRADE, servv);
+				send_packet(session, requested_player_trade, retval, ACCEPT_REJECT_TRADE, servv);	//may need to change these to not return retval, but something else so that the client wont be getting the real reason why (ex: if req player doesnt have enough cards, then retval will tell the initiating player that the other player doesnt have the cards.)
 			}
 		}
 		initiating_player_trade = 0;
@@ -252,22 +254,22 @@ int framehandler(game &session, char *datain, int size_of_data)
 
 			break;
 		case SEND_DICE_ROLL:
-			retval = send_dice_roll(session);
+			retval = send_dice_roll(session, servv);
 			//maybe just send dice roll to every client?
 			break;
 		case GET_QTY_ROADS_LEFT:
 			retval = get_qty_roads_remaining(session, player_number);
-			send_packet(session, player_number, retval, GET_QTY_ROADS_LEFT);
+			send_packet(session, player_number, retval, GET_QTY_ROADS_LEFT, servv);
 			//data field:
 			break;
 		case GET_QTY_SETTLEMENTS_LEFT:
 			retval = get_qty_settlements_left(session, player_number); 
-			send_packet(session, player_number, retval, GET_QTY_SETTLEMENTS_LEFT);
+			send_packet(session, player_number, retval, GET_QTY_SETTLEMENTS_LEFT, servv);
 			//data field:
 			break;
 		case GET_QTY_CITIES_LEFT:
 			retval = get_qty_cities_left(session, player_number);
-			send_packet(session, player_number, retval, GET_QTY_CITIES_LEFT);
+			send_packet(session, player_number, retval, GET_QTY_CITIES_LEFT, servv);
 			//data field:
 			break;
 		case BUILD_ROAD:
@@ -278,9 +280,9 @@ int framehandler(game &session, char *datain, int size_of_data)
 			{
 				retval = session.build_roads(datain[dataptr], player_number, datain[dataptr + 1]);
 				if (retval >= 0)		//if a success, then send player new board layout!
-					send_board_info(session);
+					send_board_info(session, servv);
 				else
-					send_packet(session, player_number, -31, BUILD_ROAD);
+					send_packet(session, player_number, -31, BUILD_ROAD, servv);
 			}	
 			//add some error handling if the road was not able to be built! should tell client so they can make another move
 			//if successful, send the board info to all players.
@@ -293,9 +295,9 @@ int framehandler(game &session, char *datain, int size_of_data)
 			{
 				retval = session.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
 				if (retval >= 0)		//if a success, then send player new board layout!
-					send_board_info(session);
+					send_board_info(session, servv);
 				else
-					send_packet(session, player_number, -32, BUILD_SETTLEMENT);
+					send_packet(session, player_number, -32, BUILD_SETTLEMENT, servv);
 			}
 			break;
 		case UPGRADE_SETTLEMENT:
@@ -306,9 +308,9 @@ int framehandler(game &session, char *datain, int size_of_data)
 			{
 				retval = session.upgrade_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
 				if (retval >= 0)		//if a success, then send player new board layout!
-					send_board_info(session);
+					send_board_info(session, servv);
 				else
-					send_packet(session, player_number, -33, UPGRADE_SETTLEMENT);
+					send_packet(session, player_number, -33, UPGRADE_SETTLEMENT, servv);
 			}
 			break;
 		case BUY_DV_CARD:		//should allow user to buy more than 1 at once?
@@ -317,15 +319,15 @@ int framehandler(game &session, char *datain, int size_of_data)
 			//data[0]	=	number of DV cards to buy
 			break;
 		case READ_RESOURCES:
-			send_resources(session, player_number);
+			send_resources(session, player_number, servv);
 			//data field:
 			break;
 		case GET_BOARD_INFO:
-			send_board_info(session);
+			send_board_info(session, servv);
 			//data field:
 			break;
 		case GET_TIME_LIMIT:
-			send_packet(session, player_number, 1000, GET_TIME_LIMIT);
+			send_packet(session, player_number, 1000, GET_TIME_LIMIT, servv);
 			break;
 		case START_GAME:
 			//data field:
@@ -348,14 +350,14 @@ int framehandler(game &session, char *datain, int size_of_data)
 				tempstring += datain[dataptr];
 				dataptr += 1;
 			}
-			retval = join_game(session, player_number, tempstring);
+			retval = join_game(session, player_number, tempstring, servv);
 			break;
 		case END_TURN:
 			if (session.check_current_player() == player_number)
 			{
 				retval = session.next_player();
-				send_board_info(session);
-				send_packet(session, retval, 0, END_TURN);		//make END_TURN be start turn when received from server?
+				send_board_info(session, servv);
+				send_packet(session, retval, 0, END_TURN, servv);		//make END_TURN be start turn when received from server?
 				//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
 			}
 			break;
@@ -364,11 +366,11 @@ int framehandler(game &session, char *datain, int size_of_data)
 			//datain[1] = tile to place robber
 			if ((last_player == player_number) && (read_dice_roll(session) == 7))
 			{
-				place_robber(session, datain[dataptr + 1], player_number);
+				place_robber(session, datain[dataptr + 1], player_number, servv);
 				retval = steal_card(session, player_number, datain[dataptr]);
-				send_packet(session, player_number, retval, STEAL_CARD_ROBBER);	//tell player they stole a card (and what the card was!)
+				send_packet(session, player_number, retval, STEAL_CARD_ROBBER, servv);	//tell player they stole a card (and what the card was!)
 				temp = datain[dataptr];
-				send_packet(session, temp, retval*(-1), STEAL_CARD_ROBBER);	//tell player what card was stolen from them. if > 0, it was aquired, if < 0 it was stolen
+				send_packet(session, temp, retval*(-1), STEAL_CARD_ROBBER, servv);	//tell player what card was stolen from them. if > 0, it was aquired, if < 0 it was stolen
 			}
 			last_player = 0;
 			break;
@@ -378,7 +380,7 @@ int framehandler(game &session, char *datain, int size_of_data)
 			if (session.check_current_player() == player_number)
 			{
 				retval = session.start_turn(0);
-				retval = send_dice_roll(session);		//send out dice roll to every player
+				retval = send_dice_roll(session, servv);		//send out dice roll to every player
 				for (int x = 1; x < session.check_number_of_players() + 1; x++)
 				{
 					tempstring = "";
@@ -388,7 +390,7 @@ int framehandler(game &session, char *datain, int size_of_data)
 					else
 						tempstring += '0';
 						
-					send_packet(session, x, tempstring, START_TURN);
+					send_packet(session, x, tempstring, START_TURN, servv);
 				}
 				retval = read_dice_roll(session);
 				if (retval == 7)
@@ -398,7 +400,7 @@ int framehandler(game &session, char *datain, int size_of_data)
 				}
 				else		//if not a 7, then send out all players resources
 				{
-					send_resources_all_players(session);
+					send_resources_all_players(session, servv);
 				}
 			}
 			//Data format:
@@ -421,7 +423,7 @@ int steal_card(game session, int player_taking_card, int player_giving)
 	return(session.steal_random_card(player_taking_card, player_giving));
 }
 
-int place_robber(game session, int tilenum, int playernum)
+int place_robber(game session, int tilenum, int playernum, tcpserver servv)
 {
 	int retval = 0;
 	int count = 0;
@@ -455,11 +457,11 @@ unsigned int read_dice_roll(game session)
 }
 
 
-int send_dice_roll(game session)
+int send_dice_roll(game session, tcpserver servv)
 {
 	int temp = read_dice_roll(session);
 	for (int x = 1; x < session.check_number_of_players(); x++)
-		send_packet(session, x, temp, SEND_DICE_ROLL);
+		send_packet(session, x, temp, SEND_DICE_ROLL, servv);
 	return(temp);
 }
 
@@ -471,19 +473,19 @@ int roll_dice()
 }
 */
 
-int send_board_info(game session)
+int send_board_info(game session, tcpserver servv)
 {
 	string data_out;
 	data_out = session.get_board_info();
 	for (int x = 1; x < session.check_number_of_players(); x++)
 	{
-		send_packet(session, x, data_out, GET_BOARD_INFO);		//send board info to all players
+		send_packet(session, x, data_out, GET_BOARD_INFO, servv);		//send board info to all players
 	}
 	//needs to format and send all data associated with the board. need to define the format!
 	return(0);
 }
 
-int send_resources(game session, int playernum)
+int send_resources(game session, int playernum, tcpserver servv)
 {
 	int temp[5] = { 0,0,0,0,0 };
 	string datastr;
@@ -496,16 +498,18 @@ int send_resources(game session, int playernum)
 	}
 	datastr = convert.str();
 	char *tempc = new char[datastr.length() + 1];
-	strcpy(tempc, datastr.c_str());
-	temp2 = send_packet(session, playernum, tempc, READ_RESOURCES);
+	for (int x = 0; x < datastr.length(); x++)
+		tempc[x] = datastr[x];
+//	strcpy(tempc, datastr.c_str());
+	temp2 = send_packet(session, playernum, tempc, READ_RESOURCES,servv);
 	return(temp2);
 }
 
-int send_resources_all_players(game session)
+int send_resources_all_players(game session, tcpserver servv)
 {
 	int num = session.check_number_of_players();
 	for(int x = 1; x <= num; x++)
-		send_resources(session, x);
+		send_resources(session, x, servv);
 	return(1);	
 }
 
@@ -524,7 +528,7 @@ int get_qty_cities_left(game session, int player_number)
 	return(session.get_num_cities(player_number));
 }
 
-int join_game(game session, int player_number, string name)
+int join_game(game session, int player_number, string name, tcpserver servv)
 {
 	if (game_status == 0)	//if game not started, then allow new players to join
 	{
@@ -539,7 +543,7 @@ int join_game(game session, int player_number, string name)
 	//needs to figure out what the next player number is, save the clientsocket off to player data, tell the client that, and keep waiting for more players until game is started
 }
 
-int packetHandler(SOCKET tempsock, char buffer[], int size)
+int packetHandler(SOCKET tempsock, char buffer[], int size, tcpserver servv)
 {
 	char *temp = new char [4096];
 	int tempsize = ((size & 0x0FF00) >> 8);
@@ -561,12 +565,12 @@ int packetHandler(SOCKET tempsock, char buffer[], int size)
 	}
 	for (int x = 0; x < size+4; x++)
 		txdatabuff[x] = temp[x];
-//	return(serv.sendPacket(tempsock, temp));
+	return(servv.sendPacket(tempsock, temp));
 	delete[] temp;
 	return(0);
 }
 
-int send_packet(game session, int player_num, int data_to_send, int packet_type)
+int send_packet(game session, int player_num, int data_to_send, int packet_type, tcpserver servv)
 {
 	string datastr;
 	SOCKET tempsock;
@@ -581,14 +585,14 @@ int send_packet(game session, int player_num, int data_to_send, int packet_type)
 		temp[x] = datastr.c_str()[x];
 //	strcpy(temp, datastr.c_str());
 	tempsock = session.get_player_socket(player_num);
-	retval = packetHandler(tempsock, temp, 3);
+	retval = packetHandler(tempsock, temp, 3, servv);
 //	retval = serv.sendPacket(tempsock, temp);
 	delete[] temp;
 	return(retval);
 	//return(sendPacket())
 }
 
-int send_packet(game session, int player_num, string data_to_send, int packet_type)
+int send_packet(game session, int player_num, string data_to_send, int packet_type, tcpserver servv)
 {
 	string datastr;
 	SOCKET tempsock;
@@ -603,13 +607,13 @@ int send_packet(game session, int player_num, string data_to_send, int packet_ty
 //	strcpy(temp, tempchar);
 //	strcat(temp, data_to_send.c_str());
 	tempsock = session.get_player_socket(player_num);
-	retval = packetHandler(tempsock, temp, (data_to_send.length()%4096) + 2);
+	retval = packetHandler(tempsock, temp, (data_to_send.length()%4096) + 2, servv);
 //	retval = serv.sendPacket(tempsock, temp);
 //	delete[] temp;
 	return(retval);
 }
 
-int send_packet(game session, int player_num, char *data_to_send, int packet_type, int length)
+int send_packet(game session, int player_num, char *data_to_send, int packet_type, int length, tcpserver servv)
 {
 	SOCKET tempsock;
 	int retval = 0;
@@ -620,7 +624,7 @@ int send_packet(game session, int player_num, char *data_to_send, int packet_typ
 		temp[2 + x] = data_to_send[x];
 //	strcat(temp, data_to_send);
 	tempsock = session.get_player_socket(player_num);
-	retval = packetHandler(tempsock, temp, length + 2);
+	retval = packetHandler(tempsock, temp, length + 2, servv);
 //	retval = serv.sendPacket(tempsock, temp);
 	return(retval);
 }
