@@ -28,11 +28,11 @@
 */
 #include <iostream>
 #include <iomanip>
-#include "game.h"
+#include "gameClient.h"
 #include <fstream>
 #include <sstream>
-#include "player.h"
-#include "tile.h"
+#include "playerClient.h"
+#include "Tile_client.h"
 #include <string>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
