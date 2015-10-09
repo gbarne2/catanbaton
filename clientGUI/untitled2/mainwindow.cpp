@@ -26,6 +26,8 @@
 #define Xicon_size  150
 #define Yicon_size  150
 
+char rxdatabuff [4096];
+
 int get_tile_resource(int tile_num, QString& file)
 {
     int tempnum = tile_num%7;
@@ -459,7 +461,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;exitskwkxxwxaz
+    delete ui;
+    exit(2);
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -468,7 +471,7 @@ void MainWindow::on_pushButton_clicked()
     int tile = 0;
     int corner = 0;
     int road = 0;
-    QPushButton *ptrobj === qobject_cast<QPushButton *>(sender());
+    QPushButton *ptrobj = qobject_cast<QPushButton *>(sender());
     QObject *senderObj = sender(); // This will give Sender object
     // This will give obejct name for above it will give "A", "B", "C"
     QString senderObjName = senderObj->objectName();
@@ -485,11 +488,21 @@ void MainWindow::on_pushButton_clicked()
 		if (senderObjName.toStdString() == "BUILD_CITY")
 		{
 			std::cout << "Make me build a city!" << std::endl;
+            ui->BUILD_ROAD->setChecked(FALSE);
+            ui->BUILD_SET->setChecked(FALSE);
 		}
         else if(senderObjName.toStdString() == "BUILD_ROAD")
+        {
             std::cout << "Make me build a road!" << std::endl;
+            ui->BUILD_CITY->setChecked(FALSE);
+            ui->BUILD_SET->setChecked(FALSE);
+        }
         else if(senderObjName.toStdString() == "BUILD_SET")
+        {
             std::cout << "Make me build a settlement!" << std::endl;
+            ui->BUILD_CITY->setChecked(FALSE);
+            ui->BUILD_ROAD->setChecked(FALSE);
+        }
         else if(senderObjName.toStdString() == "B_START_TURN")
             std::cout << "Start my turn!" << std::endl;
         else if(senderObjName.toStdString() == "B_CARDS_REF")

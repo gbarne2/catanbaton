@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "gameClient.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +25,9 @@ public: signals:
 
 private:
     Ui::MainWindow *ui;
+    gameClient Cgame;
 };
+
+extern char rxdatabuff [4096];
 
 #endif // MAINWINDOW_H

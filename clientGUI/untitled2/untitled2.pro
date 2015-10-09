@@ -13,10 +13,22 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    clientFramehandler.cpp \
+    clientTransmitHandler.cpp \
+    gameClient.cpp \
+    playerClient.cpp \
+    tcpclient.cpp \
+    Tile_client.cpp
 
 HEADERS  += \
-    mainwindow.h
+    mainwindow.h \
+    clientFramehandler.h \
+    clientTransmitHandler.h \
+    gameClient.h \
+    playerClient.h \
+    tcpclient.h \
+    Tile_client.h
 
 FORMS    += \
 #    mainwindow - Copy.ui
