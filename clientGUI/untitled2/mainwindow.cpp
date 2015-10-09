@@ -459,7 +459,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete ui;exitskwkxxwxaz
 }
 
 void MainWindow::on_pushButton_clicked()
@@ -468,7 +468,7 @@ void MainWindow::on_pushButton_clicked()
     int tile = 0;
     int corner = 0;
     int road = 0;
-    QPushButton *ptrobj = qobject_cast<QPushButton *>(sender());
+    QPushButton *ptrobj === qobject_cast<QPushButton *>(sender());
     QObject *senderObj = sender(); // This will give Sender object
     // This will give obejct name for above it will give "A", "B", "C"
     QString senderObjName = senderObj->objectName();
@@ -479,6 +479,29 @@ void MainWindow::on_pushButton_clicked()
         retval = get_tile_num_from_tile_name(senderObjName.toStdString());
         std::cout << "Tile pressed: " << retval << std::endl;
         ptrobj->setIcon(tempp);
+    }
+    else if(senderObjName.toStdString()[0] == 'B')//if one of the control buttons was pressed (all start with B), process it here
+    {
+		if (senderObjName.toStdString() == "BUILD_CITY")
+		{
+			std::cout << "Make me build a city!" << std::endl;
+		}
+        else if(senderObjName.toStdString() == "BUILD_ROAD")
+            std::cout << "Make me build a road!" << std::endl;
+        else if(senderObjName.toStdString() == "BUILD_SET")
+            std::cout << "Make me build a settlement!" << std::endl;
+        else if(senderObjName.toStdString() == "B_START_TURN")
+            std::cout << "Start my turn!" << std::endl;
+        else if(senderObjName.toStdString() == "B_CARDS_REF")
+            std::cout << "Refresh my cards!" << std::endl;
+        else if(senderObjName.toStdString() == "B_DICE_ROLL")
+            std::cout << "Roll my dice!" << std::endl;
+        else if(senderObjName.toStdString() == "B_END_TURN")
+            std::cout << "End my turn!" << std::endl;
+        else if(senderObjName.toStdString() == "B_UPDATE_BOARD")
+            std::cout << "Update board!" << std::endl;
+        else
+            std::cout << "invalid action!" << std::endl;
     }
     else
     {

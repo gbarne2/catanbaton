@@ -14,6 +14,14 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
     w.show();
+    a.exec();
+
+    Sleep(3000);
+    while(1)
+    {
+        std::cout << "looping in main!" << std::endl;
+        Sleep(1000);
+    }
 /*    QWidget *window = new QWidget;
     PushShape *button1 = new PushShape("C:/Users/gtb/Documents/GitHub/Brick.png");
     PushShape *button2 = new PushShape("C:/Users/gtb/Documents/GitHub/forest.png");
@@ -33,6 +41,6 @@ int main(int argc, char *argv[])
     layout->addWidget(button6);
     window->setLayout(layout);
     window->show();*/
-    return a.exec();
+    return(1);
 }
 

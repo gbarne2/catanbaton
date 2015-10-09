@@ -2367,6 +2367,119 @@
      <string>Set.</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="B_DICE_ROLL">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Roll Dice</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_START_TURN">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>50</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start Turn</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_CARDS_REF">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Refresh Cards</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_UPDATE_BOARD">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>140</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Refresh Board</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="BUILD_SET">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>170</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Build Settlement</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="BUILD_ROAD">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>200</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Build Road</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="BUILD_CITY">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>230</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Upgrade to City</string>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_END_TURN">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>260</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>End Turn</string>
+    </property>
+   </widget>
    <zorder>tile1_10</zorder>
    <zorder>tile1_2</zorder>
    <zorder>tile1_3</zorder>
@@ -2512,6 +2625,14 @@
    <zorder>set_52</zorder>
    <zorder>set_53</zorder>
    <zorder>set_54</zorder>
+   <zorder>B_DICE_ROLL</zorder>
+   <zorder>B_START_TURN</zorder>
+   <zorder>B_CARDS_REF</zorder>
+   <zorder>B_UPDATE_BOARD</zorder>
+   <zorder>BUILD_SET</zorder>
+   <zorder>BUILD_ROAD</zorder>
+   <zorder>BUILD_CITY</zorder>
+   <zorder>B_END_TURN</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
