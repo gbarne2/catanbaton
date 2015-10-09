@@ -7,25 +7,6 @@
 #include <QWidget>
 #include <QtGui>
 
-//t0    ->  x = 0   y = 0
-//t1    ->  x = 1   y = 1
-//t2    ->  x = 2   y = 2
-//t3    ->  x = 2   y = 4
-//t4    ->  x = 2   y = 6
-//t5    ->  x = 1   y = 7
-//t6    ->  x = 0   y = 8
-//t7    ->  x = -1  y = 7
-//t8    ->  x = -2  y = 6
-//t9    ->  x = -2  y = 4
-//t10   ->  x = -2  y = 2
-//t11   ->  x = -1  y = 1
-//t12   ->  x = 0   y = 2
-//t13   ->  x = 1   y = 3
-//t14   ->  x = 1   y = 5
-//t15   ->  x = 0   y = 6
-//t16   ->  x = -1  y = 5
-//t17   ->  x = -1  y = 3
-//t18   ->  x = 0   y = 4
 
 int main(int argc, char *argv[])
 {

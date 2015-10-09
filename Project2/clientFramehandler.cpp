@@ -38,6 +38,8 @@ What does the client need to define / do
 
 using namespace std;
 
+#ifndef PACKET_TYPES
+#define PACKET_TYPES					69
 #define INVALID_PACKET_TYPE				-1001
 #define INVALID_PACKET_HEADER			-1002
 #define FAILED_TO_BUILD_ROAD			-31
@@ -69,9 +71,11 @@ using namespace std;
 #define MAX_PACKET_VAL					51
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
 
+
 #define APPROVE_TRADE 					1
 #define DENY_TRADE						-43
-
+#define INVALID_TRADE					-49
+#endif
 //static client_trade_cards_offer trade_to_process;
 //static playerClient playerdata;
 static client_trade_cards_offer trade_to_process;

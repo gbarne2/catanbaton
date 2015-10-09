@@ -5,9 +5,10 @@
 #include "playerClient.h"
 #include "gameClient.h"
 
-#define INVALID_TRADE				-49
 #define ACTIVE_NUM_TILES_CLIENT		19
 
+#ifndef PACKET_TYPES
+#define PACKET_TYPES					69
 #define INVALID_PACKET_TYPE				-1001
 #define INVALID_PACKET_HEADER			-1002
 #define FAILED_TO_BUILD_ROAD			-31
@@ -42,7 +43,8 @@
 
 #define APPROVE_TRADE 					1
 #define DENY_TRADE						-43
-
+#define INVALID_TRADE					-49
+#endif
 struct client_trade_cards_offer
 {
 	unsigned int qty_wood_to_trade;

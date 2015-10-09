@@ -55,6 +55,8 @@ public:
 	int update_board(char*, int, int, int);
 	int set_player_number(int);
 	int get_road_owner(int road, int tilenum);
+	int rx_packet_checker(int packet_type);
+	int place_robber(int, int);
 };
 
 
