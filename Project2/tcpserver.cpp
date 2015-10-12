@@ -132,6 +132,7 @@ int tcpserver::receiveUntilDone(SOCKET ClientSocket)
 // Receive until the peer shuts down the connection
 	do {
 //		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+		ZeroMemory(databuff, DEFAULT_SERV_BUFLEN);
 		iResult = recv(ClientSocket, databuff, recvbuflen, 0);
 		if (iResult > 0)
 			printf("Bytes received: %d\n", iResult);
@@ -139,7 +140,7 @@ int tcpserver::receiveUntilDone(SOCKET ClientSocket)
 			printf("Connection closing...\n");
 		else {
 			printf("recv failed with error: %d\n", WSAGetLastError());
-			cleanup(ClientSocket);
+	//		cleanup(ClientSocket);
 			return -1;
 		}
 

@@ -18,11 +18,11 @@
 
 #define setwval 1
 using namespace std;
-char* tempaddr = "192.168.0.102";
+char* tempaddr = "192.168.0.103";
 
 game catan;
 
-tcpserver serv(" ");
+static tcpserver serv(" ");
 
 int droll(int tilenumb)
 {

@@ -64,7 +64,7 @@ int corner_info(int corner, int tilenum)
 	if(usrin == 1)
 		retval = (10 * catan.check_corner_owner(corner, tilenum) + catan.check_corner_building_type(corner, tilenum));
 	else if (usrin == 2)
-		retval = (10 * catan.check_corner_owner(corner, tilenum) + catan.check_corner_building_type(corner, tilenum));
+		retval = (10 * clientcatan.check_corner_owner(corner, tilenum) + clientcatan.check_corner_building_type(corner, tilenum));
 	else
 		cout << "invalid input dickhead!" << endl;
 	return(retval);
