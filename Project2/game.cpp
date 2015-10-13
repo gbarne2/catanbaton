@@ -648,9 +648,9 @@ int game::build_settlement(int tile_number, int playernum, int corner_numbz)
 //0,3;0,4;1,4;3,0;4,0;4,1
 
 
-int game::add_player(int player_num, string player_name)
+int game::add_player(int player_num, string player_name, SOCKET sock)
 {
-	player_list.push_back(player(player_num, player_name));
+	player_list.push_back(player(player_num, player_name, sock));
 	players += 1;
 	return(players);
 }
@@ -706,6 +706,7 @@ int game::start_game(int size, vector<string> player_names)
 	//function handle that (one that can actually communicate with the clients)
 	int resource = 0;
 	int dice = 0;
+	SOCKET tempsock = INVALID_SOCKET;
 	int x = 1;
 	int temp_num_players = 0;
 	srand(time(0));
@@ -724,14 +725,15 @@ int game::start_game(int size, vector<string> player_names)
 		pieces[x_index[x]][y_index[x]].set_resource_type(resource);
 		pieces[x_index[x]][y_index[x]].set_dice_roll(dice);
 	}
-	add_player(0, "");		//make empty player so indexes are protected. player 0 is used as a null.
+	add_player(0, "", tempsock);		//make empty player so indexes are protected. player 0 is used as a null.
 	//need to handle adding players here?
 	x = 1;
-	for (vector<string>::iterator tempptr = player_names.begin(); tempptr < player_names.end(); tempptr++)
-	{
-		temp_num_players = add_player(x, tempptr->c_str()) - 1;
-		x++;
-	}
+	temp_num_players = players;
+//	for (vector<string>::iterator tempptr = player_names.begin(); tempptr < player_names.end(); tempptr++)
+//	{
+//		temp_num_players = add_player(x, tempptr->c_str(), ) - 1;
+//		x++;
+//	}
 	return(temp_num_players);
 }
 
@@ -965,6 +967,9 @@ string game::get_board_info()
 }
 game::game(void)
 {
+	string tempstr = "";
+	player tempplr(0, tempstr);
+	player_list.push_back(tempplr);
 //	Corner temps;
 //	vector<int> tempvec;
 

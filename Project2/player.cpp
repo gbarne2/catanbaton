@@ -41,6 +41,26 @@ player::player(int IDset, string p_name)
 	DC.qty_year_of_plenty = 0;
 }
 
+player::player(int IDset, string p_name, SOCKET tempsock)
+{
+	player_ID = IDset;
+	Player_name = p_name;
+	qty_brick = START_BRICK;		//start off with enough resources to build two roads and two settlements
+	qty_ore = START_ORE;
+	qty_sheep = START_SHEEP;		//start off with enough resources to build two roads and two settlements
+	qty_wheat = START_WHEAT;		//start off with enough resources to build two roads and two settlements
+	qty_wood = START_WOOD;		//start off with enough resources to build two roads and two settlements
+	roads_to_place = 15;
+	settlements_to_build = 5;
+	cities_to_build = 4;
+	DC.qty_build_roads = 0;
+	DC.qty_knights = 0;
+	DC.qty_monopoly = 0;
+	DC.qty_victory_points = 0;
+	DC.qty_year_of_plenty = 0;
+	ClientSocket = tempsock;
+}
+
 player::~player(void)
 {
 }

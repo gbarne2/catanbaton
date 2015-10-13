@@ -123,7 +123,7 @@ public:
 	int verify_valid_coordinates(int x_coord, int y_coord);
 	int build_roads(int, int, int);
 	int build_settlement(int tile_number, int playernum, int corner_numbz);
-	int add_player(int player_num, string player_name);
+	int add_player(int player_num, string player_name, SOCKET);
 	int check_resources(int player, int type);
 	int steal_random_card(int playernum, int player_to_steal_from);
 	int start_turn(int);

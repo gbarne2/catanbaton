@@ -56,6 +56,7 @@ class player
 public:
 	player(void);
 	player(int, std::string);
+	player(int, std::string, SOCKET);
 	void set_client_address(sockaddr, SOCKET);
 	SOCKET get_client_socket(void);
 	int update_resources(int type, int amount);

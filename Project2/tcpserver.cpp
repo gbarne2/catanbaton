@@ -76,6 +76,7 @@ SOCKET tcpserver::initializeServer(SOCKET ClientSocket)
 		cleanup(ListenSocket);
 		return INVALID_SOCKET;
 	}
+	std::cout << "Done with accept" << std::endl;
 
 	// No longer need server socket
 	closesocket(ListenSocket);
@@ -130,7 +131,7 @@ int tcpserver::sendPacket(SOCKET ClientSocket, char *data)
 int tcpserver::receiveUntilDone(SOCKET ClientSocket)
 {
 // Receive until the peer shuts down the connection
-	do {
+//	do {
 //		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
 		ZeroMemory(databuff, DEFAULT_SERV_BUFLEN);
 		iResult = recv(ClientSocket, databuff, recvbuflen, 0);
@@ -140,11 +141,11 @@ int tcpserver::receiveUntilDone(SOCKET ClientSocket)
 			printf("Connection closing...\n");
 		else {
 			printf("recv failed with error: %d\n", WSAGetLastError());
-	//		cleanup(ClientSocket);
+			cleanup(ClientSocket);
 			return -1;
 		}
 
-	} while (iResult > 0);
+//	} while (iResult == 0);
 	return(0);
 }
 
@@ -182,6 +183,6 @@ tcpserver::~tcpserver()
 {
 //	if(ClientSocket != INVALID_SOCKET)
 //	shutDownClientSocket();
-	WSACleanup();
+//	WSACleanup();
 //	ClientSocket = INVALID_SOCKET;
 }

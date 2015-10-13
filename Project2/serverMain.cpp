@@ -23,7 +23,7 @@ char* tempaddr = "192.168.0.103";
 game catan;
 
 static tcpserver serv(" ");
-
+static int lockrx = 0;
 int droll(int tilenumb)
 {
 	return(catan.get_dice_roll(tilenumb));
@@ -43,19 +43,68 @@ SOCKET srvinit(game session, tcpserver &tcpserv)
 }
 
 char databuff[4096] = { 0, };
+static int connplayerf = 0;
+
+SOCKET connectPlayers(game session, tcpserver &tcpserv)
+{
+	SOCKET tempsock = INVALID_SOCKET;
+	int retval = 0;
+	while (game_status == 0)
+	{
+		tempsock = srvinit(session, tcpserv);
+//		if (!lockrx)
+		{
+			lockrx = 1;
+			retval = tcpserv.receiveUntilDone(tempsock);
+			if (retval == 0)
+				retval = framehandler(catan, databuff, 4096, tcpserv, tempsock);		//join players and what not.
+			lockrx = 0;
+			Sleep(500);
+		}
+	}
+	return(retval);
+}
+
+int processData(game &session, tcpserver &tcpserv)
+{
+	vector<player>::iterator ptr;
+	SOCKET hostsocket = INVALID_SOCKET;
+	int retval = 0;
+	while (game_status == 0)
+	{
+		if ((session.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
+		{
+			lockrx = 1;
+			ptr = session.player_list.begin() + 1;
+			hostsocket = ptr->get_client_socket();
+			tcpserv.receiveUntilDone(hostsocket);
+			retval = framehandler(session, databuff, 4096, tcpserv, hostsocket);
+			lockrx = 0;
+		}
+	}
+	return(retval);
+}
+
 
 int main()
 {
-	SOCKET usethisasshole;
+	SOCKET usethisasshole = INVALID_SOCKET;
 	int retval = 1;
 	int retval2 = 0;
-	usethisasshole = srvinit(catan, serv);
+	//	thread uno(srvinit, catan, server);
+//	usethisasshole = srvinit(catan, serv);
+	thread two(processData, catan, serv);
+	thread one(connectPlayers, catan, serv);
+	while(game_status == 0)
+		Sleep(500);
+	one.join();
+	two.join();
 	while (1)
 	{
-		retval = serv.receiveUntilDone(usethisasshole);
+		//retval = serv.receiveUntilDone(usethisasshole);
 		if (retval == 0)		//if 0, packet was recievced. if 1, wtf happened? if -1, nothing was received.
 		{
-			retval2 = framehandler(catan, databuff, 4096, serv);
+			retval2 = framehandler(catan, databuff, 4096, serv, usethisasshole);
 		}
 	}
 	return(0);
