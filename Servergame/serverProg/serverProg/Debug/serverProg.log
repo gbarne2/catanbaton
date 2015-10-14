@@ -1,30 +1,8 @@
-﻿Build started 10/13/2015 7:51:51 PM.
-     1>Project "C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\serverProg\serverProg.vcxproj" on node 2 (Rebuild target(s)).
+﻿Build started 10/12/2015 10:31:44 PM.
+     1>Project "C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\serverProg\serverProg.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\..\Project2\game.cpp ..\..\..\Project2\player.cpp ..\..\..\Project2\serverMain.cpp ..\..\..\Project2\server_Catan.cpp ..\..\..\Project2\tcpserver.cpp ..\..\..\Project2\Tile.cpp
-         Tile.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\tile.cpp(406): warning C4018: '<': signed/unsigned mismatch
-         tcpserver.cpp
-         server_Catan.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(151): warning C4101: 'nulptr': unreferenced local variable
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(528): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(631): warning C4018: '<': signed/unsigned mismatch
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\..\Project2\serverMain.cpp
          serverMain.cpp
-         player.cpp
-         game.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(116): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(712): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(790): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(792): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(794): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(796): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(798): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(800): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(802): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(804): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(806): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(808): warning C4018: '<': signed/unsigned mismatch
-         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.lib" /MACHINE:X86 Debug\game.obj
          Debug\player.obj
@@ -33,8 +11,8 @@
          Debug\tcpserver.obj
          Debug\Tile.obj
          serverProg.vcxproj -> C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.exe
-     1>Done Building Project "C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\serverProg\serverProg.vcxproj" (Rebuild target(s)).
+     1>Done Building Project "C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\serverProg\serverProg.vcxproj" (Build target(s)).
 
 Build succeeded.
 
-Time Elapsed 00:00:08.83
+Time Elapsed 00:00:02.01
