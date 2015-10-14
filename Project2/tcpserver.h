@@ -29,6 +29,9 @@ private:
 	int recvbuflen;
 
 public:
+	int stopInitFlag;
+	SOCKET client_sockets[30];
+	fd_set readfds;
 	tcpserver(char*);
 	~tcpserver();
 	int sendPacket(SOCKET ClientSocket, char *data);

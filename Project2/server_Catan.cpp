@@ -333,6 +333,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				send_packet(session, player_number, 1000, GET_TIME_LIMIT, servv);
 				break;
 			case START_GAME:
+				servv.stopInitFlag = 1;
 				game_status = 1;	//flag to show game is started
 				cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
 				send_packet(session, player_number, player_number, START_GAME, servv);

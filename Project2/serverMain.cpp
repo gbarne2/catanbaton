@@ -93,12 +93,12 @@ int main()
 	int retval2 = 0;
 	//	thread uno(srvinit, catan, server);
 //	usethisasshole = srvinit(catan, serv);
-	thread two(processData, catan, serv);
+//	thread two(processData, catan, serv);
 	thread one(connectPlayers, catan, serv);
 	while(game_status == 0)
 		Sleep(500);
 	one.join();
-	two.join();
+//	two.join();
 	while (1)
 	{
 		//retval = serv.receiveUntilDone(usethisasshole);
