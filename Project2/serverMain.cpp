@@ -20,9 +20,13 @@
 using namespace std;
 char* tempaddr = "192.168.0.103";
 
+const int max_clients = 16;
+SOCKET socketarray[max_clients];
+
 game catan;
 
 static tcpserver serv(" ");
+static tcpserver rxserv("");
 static int lockrx = 0;
 int droll(int tilenumb)
 {
@@ -32,10 +36,10 @@ int droll(int tilenumb)
 SOCKET srvinit(game session, tcpserver &tcpserv)
 {
 	//will need to spawn a new thread for each players connection. the connection shouldnt be closed until either the end of the game or the player leaves the game
-	cout << "Starting server server" << endl;
+//	cout << "Starting server server" << endl;
 	SOCKET tempsocket = INVALID_SOCKET;
 	tempsocket = tcpserv.initializeServer(tempsocket);
-	cout << "Server started" << endl;
+//	cout << "Server started" << endl;
 //	tcpserv.receiveUntilDoneWithEcho(tempsocket);
 //	tcpserv.shutDownClientSocket(tempsocket);
 //	tcpserv.cleanup(tempsocket);
@@ -44,16 +48,19 @@ SOCKET srvinit(game session, tcpserver &tcpserv)
 
 char databuff[4096] = { 0, };
 static int connplayerf = 0;
+int current_num_clients = 0;
 
 SOCKET connectPlayers(game session, tcpserver &tcpserv)
 {
-	SOCKET tempsock = INVALID_SOCKET;
+	SOCKET tempsock;
 	int retval = 0;
 	while (game_status == 0)
 	{
 		tempsock = srvinit(session, tcpserv);
-//		if (!lockrx)
+		if (tempsock != INVALID_SOCKET)	//!lockrx)
 		{
+			cout << "Player connected!" << endl;
+			socketarray[current_num_clients++] = tempsock;
 			lockrx = 1;
 			retval = tcpserv.receiveUntilDone(tempsock);
 			if (retval == 0)
@@ -74,12 +81,18 @@ int processData(game &session, tcpserver &tcpserv)
 	{
 		if ((session.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
 		{
-			lockrx = 1;
-			ptr = session.player_list.begin() + 1;
-			hostsocket = ptr->get_client_socket();
-			tcpserv.receiveUntilDone(hostsocket);
-			retval = framehandler(session, databuff, 4096, tcpserv, hostsocket);
-			lockrx = 0;
+			for (int i = 0; i < current_num_clients + 1; i++)
+			{
+				lockrx = 1;
+				ptr = session.player_list.begin() + 1;
+				hostsocket = ptr->get_client_socket();
+				if (hostsocket != INVALID_SOCKET)
+				{
+					tcpserv.receiveUntilDone(hostsocket);
+					retval = framehandler(session, databuff, 4096, tcpserv, hostsocket);
+				}
+				lockrx = 0;
+			}
 		}
 	}
 	return(retval);
@@ -93,7 +106,7 @@ int main()
 	int retval2 = 0;
 	//	thread uno(srvinit, catan, server);
 //	usethisasshole = srvinit(catan, serv);
-	thread two(processData, catan, serv);
+	thread two(processData, catan, rxserv);
 	thread one(connectPlayers, catan, serv);
 	while(game_status == 0)
 		Sleep(500);

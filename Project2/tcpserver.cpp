@@ -11,13 +11,17 @@
 #pragma comment (lib, "Ws2_32.lib")
 
 
-SOCKET tcpserver::initializeServer(SOCKET ClientSocket)
+SOCKET tcpserver::initializeServer(SOCKET ClientSock)
 {
 	WSADATA wsaData;
+	timeval timeout;
+	fd_set readSet;
 	SOCKET ListenSocket = INVALID_SOCKET;
 	struct addrinfo *result = NULL;
 	struct addrinfo hints;
 
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 100;
 	// Initialize Winsock
 	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
 	if (iResult != 0) {
@@ -59,7 +63,7 @@ SOCKET tcpserver::initializeServer(SOCKET ClientSocket)
 	}
 
 	freeaddrinfo(result);
-	std::cout << "About to listen" << std::endl;
+//	std::cout << "About to listen" << std::endl;
 	iResult = listen(ListenSocket, SOMAXCONN);
 	if (iResult == SOCKET_ERROR) {
 		printf("listen failed with error: %d\n", WSAGetLastError());
@@ -68,37 +72,44 @@ SOCKET tcpserver::initializeServer(SOCKET ClientSocket)
 		return INVALID_SOCKET;
 	}
 
-	std::cout << "done with listen" << std::endl;
+//	std::cout << "done with listen" << std::endl;
 	// Accept a client socket
-	ClientSocket = accept(ListenSocket, NULL, NULL);
-	if (ClientSocket == INVALID_SOCKET) {
-		printf("accept failed with error: %d\n", WSAGetLastError());
-		cleanup(ListenSocket);
-		return INVALID_SOCKET;
+	FD_ZERO(&readSet);
+	FD_SET(ListenSocket, &readSet);
+	timeout.tv_sec = 0;  // Zero timeout (poll)
+	timeout.tv_usec = 100;
+	if (select(ListenSocket, &readSet, NULL, NULL, &timeout) == 1)
+	{
+		ClientSocket = accept(ListenSocket, NULL, NULL);
+		if (ClientSocket == INVALID_SOCKET) {
+			printf("accept failed with error: %d\n", WSAGetLastError());
+			cleanup(ListenSocket);
+			return INVALID_SOCKET;
+		}
+		std::cout << "Done with accept" << std::endl;
 	}
-	std::cout << "Done with accept" << std::endl;
-
+	ClientSock = ClientSocket;
 	// No longer need server socket
 	closesocket(ListenSocket);
 	return(ClientSocket);
 }
 
-int tcpserver::receiveUntilDoneWithEcho(SOCKET ClientSocket)
+int tcpserver::receiveUntilDoneWithEcho(SOCKET ClientSock)
 {
 	// Receive until the peer shuts down the connection
 	do {
 
-//		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
-		iResult = recv(ClientSocket, databuff, recvbuflen, 0);
+//		iResult = recv(ClientSock, recvbuf, recvbuflen, 0);
+		iResult = recv(ClientSock, databuff, recvbuflen, 0);
 		if (iResult > 0) {
 			printf("Bytes received: %d\n", iResult);
 
 			// Echo the buffer back to the sender
-//			iSendResult = send(ClientSocket, recvbuf, iResult, 0);
-			iSendResult = send(ClientSocket, databuff, iResult, 0);
+//			iSendResult = send(ClientSock, recvbuf, iResult, 0);
+			iSendResult = send(ClientSock, databuff, iResult, 0);
 			if (iSendResult == SOCKET_ERROR) {
 				printf("send failed with error: %d\n", WSAGetLastError());
-				cleanup(ClientSocket);
+				cleanup(ClientSock);
 				return 1;
 			}
 			printf("Bytes sent: %d\n", iSendResult);
@@ -107,7 +118,7 @@ int tcpserver::receiveUntilDoneWithEcho(SOCKET ClientSocket)
 			printf("Connection closing...\n");
 		else {
 			printf("recv failed with error: %d\n", WSAGetLastError());
-			cleanup(ClientSocket);
+			cleanup(ClientSock);
 			return 1;
 		}
 
@@ -115,12 +126,12 @@ int tcpserver::receiveUntilDoneWithEcho(SOCKET ClientSocket)
 	return(0);
 }
 
-int tcpserver::sendPacket(SOCKET ClientSocket, char *data)
+int tcpserver::sendPacket(SOCKET ClientSock, char *data)
 {
-	iSendResult = send(ClientSocket, data, iResult, 0);
+	iSendResult = send(ClientSock, data, iResult, 0);
 	if (iSendResult == SOCKET_ERROR) {
 		printf("send failed with error: %d\n", WSAGetLastError());
-		cleanup(ClientSocket);
+		cleanup(ClientSock);
 		return -1;
 	}
 	printf("Bytes sent: %d\n", iSendResult);
@@ -128,43 +139,54 @@ int tcpserver::sendPacket(SOCKET ClientSocket, char *data)
 }
 
 
-int tcpserver::receiveUntilDone(SOCKET ClientSocket)
+int tcpserver::receiveUntilDone(SOCKET ClientSock)
 {
 // Receive until the peer shuts down the connection
 //	do {
-//		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
-		ZeroMemory(databuff, DEFAULT_SERV_BUFLEN);
-		iResult = recv(ClientSocket, databuff, recvbuflen, 0);
+//		iResult = recv(ClientSock, recvbuf, recvbuflen, 0);
+	timeval timeout;
+	fd_set readSet;
+	timeout.tv_sec = 0;
+	timeout.tv_usec = 100;
+	ZeroMemory(databuff, DEFAULT_SERV_BUFLEN);
+	FD_ZERO(&readSet);
+	FD_SET(ClientSock, &readSet);
+	timeout.tv_sec = 0;  // Zero timeout (poll)
+	timeout.tv_usec = 1000;
+//	if (select(ClientSock, &readSet, NULL, NULL, &timeout) == 1)
+	{
+		iResult = recv(ClientSock, databuff, recvbuflen, 0);
 		if (iResult > 0)
 			printf("Bytes received: %d\n", iResult);
 		else if (iResult == 0)
 			printf("Connection closing...\n");
 		else {
 			printf("recv failed with error: %d\n", WSAGetLastError());
-			cleanup(ClientSocket);
+			cleanup(ClientSock);
 			return -1;
 		}
+	}
 
 //	} while (iResult == 0);
 	return(0);
 }
 
-int tcpserver::shutDownClientSocket(SOCKET ClientSocket)
+int tcpserver::shutDownClientSocket(SOCKET ClientSock)
 {
 	// shutdown the connection since we're done
-	iResult = shutdown(ClientSocket, SD_SEND);
+	iResult = shutdown(ClientSock, SD_SEND);
 	if (iResult == SOCKET_ERROR) {
 		printf("shutdown failed with error: %d\n", WSAGetLastError());
-		cleanup(ClientSocket);
+		cleanup(ClientSock);
 		return -1;
 	}
 	return 0;
 }
 
-void tcpserver::cleanup(SOCKET ClientSocket)
+void tcpserver::cleanup(SOCKET ClientSock)
 {
 	// cleanup
-	closesocket(ClientSocket);
+	closesocket(ClientSock);
 	WSACleanup();
 }
 
@@ -173,7 +195,7 @@ tcpserver::tcpserver(char *addr)
 //	for (int x = 0; x < sizeof(addr); x++)
 //		address[x] = addr[x];
 //	ListenSocket = INVALID_SOCKET;
-//	ClientSocket = INVALID_SOCKET;
+//	ClientSock = INVALID_SOCKET;
 //	result = NULL;
 	recvbuflen = DEFAULT_SERV_BUFLEN;
 	client_addr_length = sizeof(sockaddr);
@@ -181,8 +203,8 @@ tcpserver::tcpserver(char *addr)
 
 tcpserver::~tcpserver()
 {
-//	if(ClientSocket != INVALID_SOCKET)
+//	if(ClientSock != INVALID_SOCKET)
 //	shutDownClientSocket();
 //	WSACleanup();
-//	ClientSocket = INVALID_SOCKET;
+//	ClientSock = INVALID_SOCKET;
 }
