@@ -97,13 +97,40 @@ int processData(game &session, tcpserver &tcpserv)
 	}
 	return(retval);
 }
-
-
+/*
+int processData_Game(game &session, tcpserver &tcpserv)
+{
+	vector<player>::iterator ptr;
+	SOCKET hostsocket = INVALID_SOCKET;
+	int retval = 0;
+	while (game_status ==1)
+	{
+		if ((session.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
+		{
+			for (int i = 0; i < current_num_clients + 1; i++)
+			{
+				lockrx = 1;
+				ptr = session.player_list.begin() + 1;
+				hostsocket = ptr->get_client_socket();
+				if (hostsocket != INVALID_SOCKET)
+				{
+					tcpserv.receiveUntilDone(hostsocket);
+					retval = framehandler(session, databuff, 4096, tcpserv, hostsocket);
+				}
+				lockrx = 0;
+			}
+		}
+	}
+	return(retval);
+}
+*/
 int main()
 {
 	SOCKET usethisasshole = INVALID_SOCKET;
 	int retval = 1;
 	int retval2 = 0;
+	vector<player>::iterator ptr;
+	SOCKET hostsocket = INVALID_SOCKET;
 	//	thread uno(srvinit, catan, server);
 //	usethisasshole = srvinit(catan, serv);
 	thread two(processData, catan, rxserv);
@@ -112,6 +139,25 @@ int main()
 		Sleep(500);
 	one.join();
 	two.join();
+	while (game_status == 1)
+	{
+		if ((catan.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
+		{
+			for (int i = 0; i < current_num_clients + 1; i++)
+			{
+				lockrx = 1;
+				ptr = catan.player_list.begin() + 1;
+				hostsocket = ptr->get_client_socket();
+				if (hostsocket != INVALID_SOCKET)
+				{
+					rxserv.receiveUntilDone(hostsocket);
+					retval = framehandler(catan, databuff, 4096, rxserv, hostsocket);
+				}
+				lockrx = 0;
+			}
+		}
+	}
+/*
 	while (1)
 	{
 		//retval = serv.receiveUntilDone(usethisasshole);
@@ -120,6 +166,7 @@ int main()
 			retval2 = framehandler(catan, databuff, 4096, serv, usethisasshole);
 		}
 	}
+*/
 	return(0);
 }
 

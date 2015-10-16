@@ -357,6 +357,7 @@ string tile::get_tile_data_string(int tilenum)
 {
 	string temp_string = "";
 	int count = 0;
+	char temp[512];
 	//need to send the following data 
 	//roll
 	//resource type
@@ -369,13 +370,13 @@ string tile::get_tile_data_string(int tilenum)
 	//tilenumber
 	//resource type
 	//roll
-	//roads[0]
-	//roads[1]
-	//roads[2]
-	//roads[3]
-	//roads[4]
-	//roads[5]
-	//cornersz data
+	//roads[0]		5
+	//roads[1]		6
+	//roads[2]		7
+	//roads[3]		8
+	//roads[4]		9
+	//roads[5]		10
+	//cornersz data		
 		//corner_index
 		//road_connected
 		//property_owner
@@ -386,35 +387,54 @@ string tile::get_tile_data_string(int tilenum)
 			//.... 
 			//(number of players connected) player connected
 //	string data_outtemp = "";
-	std::stringstream strStream;
-	strStream = std::stringstream();	//flush string stream...
-	strStream << tilenum << resource_type << roll;
+	temp[0] = 'S';
+//	temp[1] = 
+	temp[2] = tilenum;
+	temp[3] = resource_type;
+	temp[4] = roll;
+//	std::stringstream strStream;
+//	strStream = std::stringstream();	//flush string stream...
+//	strStream << tilenum << resource_type << roll;
 //	data_outtemp += tilenum + resource_type + roll;
-	string data_out_final = "S";
+//	string data_out_final = "S";
+	string data_out_final = "";
 	int tempnum = 0;
+	count = 3;
+	int z = 11;
 	for (int x = 0; x < 6; x++)
-		strStream << roads[x];
+		temp[x+5] << roads[x];
 		//		data_outtemp += roads[x];
 	for (ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
 	{
-		strStream << ptr->corner_index << ptr->road_connected << ptr->property_owner << ptr->property_type;
+		temp[z++] = ptr->corner_index;
+		temp[z++] = ptr->road_connected;
+		temp[z++] = ptr->property_owner;
+		temp[z++] = ptr->property_type;
+		temp[z++] = ptr->players_connected.size();
+		count += 5;
+//		strStream << ptr->corner_index << ptr->road_connected << ptr->property_owner << ptr->property_type;
 		//data_outtemp += ptr->corner_index + ptr->road_connected + ptr->property_owner
 //			+ptr->property_type;
-		strStream << ptr->players_connected.size();
+//		strStream << ptr->players_connected.size();
 		cout << "players connected size in Tile.cpp: " << ptr->players_connected.size() << endl;
 //		for (vector<int>::iterator tempptr = ptr->players_connected.begin(); tempptr < ptr->players_connected.end(); tempptr++)
 		for (int y = 0; y < ptr->players_connected.size(); y++)
 		{
-			strStream << ptr->players_connected.at(y);
+//			strStream << ptr->players_connected.at(y);
+			temp[z++] = ptr->players_connected.at(y);
+			count++;
 		}
 //		strStream << count << temp_string;
 //		data_outtemp += count;
 //		data_outtemp += temp_string;
 	}
-	tempnum = strStream.str().length();
-	data_out_final.push_back(tempnum);
-	data_out_final.append(strStream.str().c_str());
+//	tempnum = strStream.str().length();
+//	data_out_final.push_back(tempnum);
+//	data_out_final.append(strStream.str().c_str());
 //	data_out_final += tempnum + strStream.str().c_str();
+	temp[1] = count;
+	for (int x = 0; x < count + 2; x++)
+		data_out_final += temp[x];
 	return(data_out_final);
 }
 /*

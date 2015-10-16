@@ -16,62 +16,64 @@ SOCKET tcpserver::initializeServer(SOCKET ClientSock)
 	WSADATA wsaData;
 	timeval timeout;
 	fd_set readSet;
-	SOCKET ListenSocket = INVALID_SOCKET;
+	static SOCKET ListenSocket = INVALID_SOCKET;
 	struct addrinfo *result = NULL;
 	struct addrinfo hints;
 
 	timeout.tv_sec = 0;
 	timeout.tv_usec = 100;
 	// Initialize Winsock
-	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-	if (iResult != 0) {
-		printf("WSAStartup failed with error: %d\n", iResult);
-		return INVALID_SOCKET;
-	}
+	if (ListenSocket == INVALID_SOCKET)
+	{
+		iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+		if (iResult != 0) {
+			printf("WSAStartup failed with error: %d\n", iResult);
+			return INVALID_SOCKET;
+		}
 
-	ZeroMemory(&hints, sizeof(hints));
-	hints.ai_family = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = IPPROTO_TCP;
-	hints.ai_flags = AI_PASSIVE;
+		ZeroMemory(&hints, sizeof(hints));
+		hints.ai_family = AF_INET;
+		hints.ai_socktype = SOCK_STREAM;
+		hints.ai_protocol = IPPROTO_TCP;
+		hints.ai_flags = AI_PASSIVE;
 
-	// Resolve the server address and port
-	iResult = getaddrinfo(NULL, DEFAULT_SERV_PORT, &hints, &result);
-	if (iResult != 0) {
-		printf("getaddrinfo failed with error: %d\n", iResult);
-		WSACleanup();
-		return INVALID_SOCKET;
-	}
+		// Resolve the server address and port
+		iResult = getaddrinfo(NULL, DEFAULT_SERV_PORT, &hints, &result);
+		if (iResult != 0) {
+			printf("getaddrinfo failed with error: %d\n", iResult);
+			WSACleanup();
+			return INVALID_SOCKET;
+		}
 
-	// Create a SOCKET for connecting to server
-	ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
-	if (ListenSocket == INVALID_SOCKET) {
-		printf("socket failed with error: %ld\n", WSAGetLastError());
+		// Create a SOCKET for connecting to server
+		ListenSocket = socket(result->ai_family, result->ai_socktype, result->ai_protocol);
+		if (ListenSocket == INVALID_SOCKET) {
+			printf("socket failed with error: %ld\n", WSAGetLastError());
+			freeaddrinfo(result);
+			WSACleanup();
+			return INVALID_SOCKET;
+		}
+
+		// Setup the TCP listening socket
+		iResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
+		if (iResult == SOCKET_ERROR) {
+			printf("bind failed with error: %d\n", WSAGetLastError());
+			freeaddrinfo(result);
+			closesocket(ListenSocket);
+			WSACleanup();
+			return INVALID_SOCKET;
+		}
+
 		freeaddrinfo(result);
-		WSACleanup();
-		return INVALID_SOCKET;
+		//	std::cout << "About to listen" << std::endl;
+		iResult = listen(ListenSocket, SOMAXCONN);
+		if (iResult == SOCKET_ERROR) {
+			printf("listen failed with error: %d\n", WSAGetLastError());
+			closesocket(ListenSocket);
+			WSACleanup();
+			return INVALID_SOCKET;
+		}
 	}
-
-	// Setup the TCP listening socket
-	iResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
-	if (iResult == SOCKET_ERROR) {
-		printf("bind failed with error: %d\n", WSAGetLastError());
-		freeaddrinfo(result);
-		closesocket(ListenSocket);
-		WSACleanup();
-		return INVALID_SOCKET;
-	}
-
-	freeaddrinfo(result);
-//	std::cout << "About to listen" << std::endl;
-	iResult = listen(ListenSocket, SOMAXCONN);
-	if (iResult == SOCKET_ERROR) {
-		printf("listen failed with error: %d\n", WSAGetLastError());
-		closesocket(ListenSocket);
-		WSACleanup();
-		return INVALID_SOCKET;
-	}
-
 //	std::cout << "done with listen" << std::endl;
 	// Accept a client socket
 	FD_ZERO(&readSet);
@@ -90,7 +92,7 @@ SOCKET tcpserver::initializeServer(SOCKET ClientSock)
 	}
 	ClientSock = ClientSocket;
 	// No longer need server socket
-	closesocket(ListenSocket);
+//	closesocket(ListenSocket);
 	return(ClientSocket);
 }
 
@@ -126,9 +128,9 @@ int tcpserver::receiveUntilDoneWithEcho(SOCKET ClientSock)
 	return(0);
 }
 
-int tcpserver::sendPacket(SOCKET ClientSock, char *data)
+int tcpserver::sendPacket(SOCKET ClientSock, char *data, int length)
 {
-	iSendResult = send(ClientSock, data, iResult, 0);
+	iSendResult = send(ClientSock, data, length, 0);
 	if (iSendResult == SOCKET_ERROR) {
 		printf("send failed with error: %d\n", WSAGetLastError());
 		cleanup(ClientSock);

@@ -145,7 +145,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 	int player_number = datain[7];
 	string tempstring;
 	int datasize = datain[4];
-	datasize = datasize << 8;
+	datasize = datasize << 7;
 	datasize += datain[5];
 
 	char *nulptr;
@@ -486,7 +486,7 @@ unsigned int read_dice_roll(game session)
 int send_dice_roll(game session, tcpserver servv)
 {
 	int temp = read_dice_roll(session);
-	for (int x = 1; x < session.check_number_of_players(); x++)
+	for (int x = 1; x < session.check_number_of_players()+1; x++)
 		send_packet(session, x, temp, SEND_DICE_ROLL, servv);
 	return(temp);
 }
@@ -503,7 +503,7 @@ int send_board_info(game session, tcpserver servv)
 {
 	string data_out;
 	data_out = session.get_board_info();
-	for (int x = 1; x < session.check_number_of_players(); x++)
+	for (int x = 1; x < session.check_number_of_players()+1; x++)
 	{
 		send_packet(session, x, data_out, GET_BOARD_INFO, servv);		//send board info to all players
 	}
@@ -558,8 +558,8 @@ int join_game(game &session, int &player_number, string name, tcpserver servv, S
 {
 	if (game_status == 0)	//if game not started, then allow new players to join
 	{
-		session.add_player(session.check_number_of_players()+1, name, sock);
-		
+//		player_number = session.check_number_of_players() + 1;
+		player_number = session.add_player(session.check_number_of_players()+1, name, sock);
 //		tempplayer->set_client_address()
 		//needs to figure out what the next player number is, save the clientsocket off to player data, tell the client that, and keep waiting for more players until game is started
 	}
@@ -572,48 +572,54 @@ int join_game(game &session, int &player_number, string name, tcpserver servv, S
 int packetHandler(SOCKET tempsock, char buffer[], int size, tcpserver servv)
 {
 	char *temp = new char [4096];
-	int tempsize = ((size & 0x0FF00) >> 8);
+	int tempsize = ((size & 0x07F80) >> 7);
 	temp[0] = 'S';
 	temp[1] = 8;
 	temp[2] = 53;
 	temp[3] = 'p';
 	temp[4] = tempsize;
-	temp[5] = size % 256;
+	temp[5] = (size & 0x07F);
+	cout << "Size & 0x0FF: " << (size & 0x0FF) << endl << "Size - (tempsize * 256): " << (size - (tempsize * 256)) << endl;
 	for (int x = 0; x < size; x++)
 		temp[x + 6] = buffer[x];
 //	strcat(temp, buffer);
 	if (debug_text)
 	{
 		cout << "Data to send: " << endl;
-		for (int x = 0; x < size + 4; x++)
-			cout << temp[x];
+		for (int x = 0; x < size + 6; x++)
+			cout << +temp[x] << " ";
 		cout << endl << endl;
 	}
-	for (int x = 0; x < size+4; x++)
+	for (int x = 0; x < size+6; x++)
 		txdatabuff[x] = temp[x];
-	return(servv.sendPacket(tempsock, temp));
+	return(servv.sendPacket(tempsock, temp, size+6));
 	delete[] temp;
+	Sleep(100);
 	return(0);
 }
 
 int send_packet(game session, int player_num, int data_to_send, int packet_type, tcpserver servv)
 {
-	string datastr;
+//	string datastr;
 	SOCKET tempsock;
-	ostringstream convert;
+//	ostringstream convert;
 	int retval = 0;
-	convert << packet_type;
-	convert << player_num;
-	convert << data_to_send;
-	datastr = convert.str();
-	char *temp = new char [datastr.length() + 2];
-	for (int x = 0; x < 3; x++)
-		temp[x] = datastr.c_str()[x];
+//	convert << packet_type;
+//	convert << player_num;
+//	convert << data_to_send;
+//	datastr = convert.str();
+//	char *temp = new char [datastr.length() + 2];
+	char temp[3] = { 0, };
+	temp[0] = packet_type;
+	temp[1] = player_num;
+	temp[2] = data_to_send;
+//	for (int x = 1; x < 3; x++)
+//		temp[x] = datastr.c_str()[x];
 //	strcpy(temp, datastr.c_str());
 	tempsock = session.get_player_socket(player_num);
 	retval = packetHandler(tempsock, temp, 3, servv);
 //	retval = serv.sendPacket(tempsock, temp);
-	delete[] temp;
+//	delete[] temp;
 	return(retval);
 	//return(sendPacket())
 }

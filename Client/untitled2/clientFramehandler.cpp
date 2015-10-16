@@ -90,15 +90,21 @@ int clientFrameHandler(gameClient &session, char* datain)
 	char datatype = datain[6];
 	int player_number = datain[7];
 	string tempstring;
-	int datasize = datain[4];
-	datasize = datasize << 8;
-	datasize += datain[5];
+    int datasize = datain[4];
+    datasize = datasize << 7;
+    datasize += datain[5];
 	static int requested_player = 0;
 	static int current_players_turn = 0;
-	char *nulptr;
+    char *nulptr;
     char tempchar[1] = {0};
-	int retval = 0;
+    int retval = 0;
     check_rx_data_buff = 0;
+    if(debug_text)
+    {
+        cout << "Player number: " << player_number << endl;
+        cout << "Data type:     " << datatype << endl;
+        cout << "Data size:     " << datasize << endl;
+    }
 	if ((datain[0] == 'S') && (datain[1] == 8) && (datain[2] == 53) && (datain[3] == 'p'))
 	{
 		cout << "Valid packet received.... Processing" << endl;
@@ -213,9 +219,13 @@ int clientFrameHandler(gameClient &session, char* datain)
 			break;
 		case GET_BOARD_INFO:
 			nulptr = new char[datasize];
-			for (int x = 0; x < datasize; x++)
-				nulptr[x] = datain[x + dataptr];
-			update_board_info(session, nulptr, datasize);
+            for (int x = 0; x < datasize; x++)
+            {
+                nulptr[x] = datain[x + dataptr];
+                if(debug_text)
+                    cout << +nulptr[x] << " ";
+            }
+            update_board_info(session, nulptr, datasize);
 			retval = 1;
             delete[] nulptr;
 			flag_rx_packet_needs_processing = 1;
@@ -235,7 +245,8 @@ int clientFrameHandler(gameClient &session, char* datain)
 			break;
 		case JOIN_GAME:
             tempchar[0] = datain[dataptr];
-            session.playerinfo.set_player_num(atoi(tempchar));
+            session.playerinfo.set_player_num(player_number);
+            cout << "My player number is: " << player_number << endl;
 			//maybe this wont ever be called?
 			break;
 		case STEAL_CARD_ROBBER:
@@ -335,14 +346,14 @@ int update_board_info(gameClient &session, char* data, int datasize)
 	vector<int> numtiles = get_num_active_tiles(0);
 //	int numtiles = 0;
 	vector<int>::iterator p = numtiles.begin();
-	tilenum = *p;		//?  pretty sure this is how to get the value!
+    tilenum = *p;		//?  pretty sure this is how to get the value!
 	while (startindex < datasize)
 	{
 		if (data[startindex] == 'S')
 		{
 			ptrchar[0] = data[startindex + 1];
-			size_corner = atoi(ptrchar);
-			if (startindex + size_corner < datasize)
+            size_corner = atoi(ptrchar);
+            if ((startindex + size_corner) < datasize)
 			{
 				ptrchar[0] = data[startindex + 2];
 				tilenum = atoi(ptrchar);

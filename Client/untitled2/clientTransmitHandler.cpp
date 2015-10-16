@@ -25,19 +25,19 @@ int packetAssembler(char buffer[], int size)
 //	char tempbuf[1];
 //	itoa(size, tempbuf, 10);
 	char temp[4096];
-	int tempsize = ((size & 0x0FF00) >> 8);
+    int tempsize = ((size & 0x07F80) >> 7);
 	temp[0] = 'S';
 	temp[1] = '8';
 	temp[2] = 53;
 	temp[3] = 'p';
 	temp[4] = tempsize;
-	temp[5] = size % 256;
+    temp[5] = (size & 0x07F);
 	for (int x = 0; x < size; x++)
 		temp[x + 6] = buffer[x];
 //	strcat(temp, buffer);
 	for (int x = 0; x < size + 6; x++)
 	{
-		cout << temp[x];
+        cout << +temp[x] << " ";
 		rxdatabuff[x] = temp[x];
 	}
     retval = clienttcp.sendThenReceive(rxdatabuff, size+6);

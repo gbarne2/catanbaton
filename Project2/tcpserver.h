@@ -31,7 +31,7 @@ private:
 public:
 	tcpserver(char*);
 	~tcpserver();
-	int sendPacket(SOCKET ClientSocket, char *data);
+	int sendPacket(SOCKET ClientSocket, char *data, int length);
 	SOCKET initializeServer(SOCKET ClientSocket);
 	int receiveUntilDoneWithEcho(SOCKET ClientSocket);
 	int receiveUntilDone(SOCKET ClientSocket);
