@@ -296,11 +296,22 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//data[1]	=	corner index
 				if (session.check_current_player() == player_number)
 				{
-					retval = session.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
-					if (retval >= 0)		//if a success, then send player new board layout!
-						send_board_info(session, servv);
+					if (initial_placement_phase == 1)
+					{
+						retval = session.temp_build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
+						if (retval >= 0)
+							send_board_info(session, servv);
+						else
+							send_packet(session, player_number, -32, BUILD_SETTLEMENT, servv);
+					}
 					else
-						send_packet(session, player_number, -32, BUILD_SETTLEMENT, servv);
+					{
+						retval = session.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
+						if (retval >= 0)		//if a success, then send player new board layout!
+							send_board_info(session, servv);
+						else
+							send_packet(session, player_number, -32, BUILD_SETTLEMENT, servv);
+					}
 				}
 				break;
 			case UPGRADE_SETTLEMENT:

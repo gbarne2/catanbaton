@@ -22,7 +22,7 @@ char* tempaddr = "192.168.0.103";
 
 const int max_clients = 16;
 SOCKET socketarray[max_clients];
-
+int initial_placement_phase = 0;
 game catan;
 
 static tcpserver serv(" ");
@@ -135,11 +135,32 @@ int main()
 //	usethisasshole = srvinit(catan, serv);
 	thread two(processData, catan, rxserv);
 	thread one(connectPlayers, catan, serv);
+	int count = 0;
 	while(game_status == 0)
 		Sleep(500);
 	one.join();
 	two.join();
+	initial_placement_phase = 1;
 	catan.build_std_board(19);
+	while ((game_status == 1) && (initial_placement_phase == 1) && (count < catan.check_number_of_players()))
+	{
+		if ((catan.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
+		{
+			for (int i = 0; i < current_num_clients + 1; i++)
+			{
+				lockrx = 1;
+				ptr = catan.player_list.begin() + 1;
+				hostsocket = ptr->get_client_socket();
+				if (hostsocket != INVALID_SOCKET)
+				{
+					rxserv.receiveUntilDone(hostsocket);
+					retval = framehandler(catan, databuff, 4096, rxserv, hostsocket);
+				}
+				lockrx = 0;
+			}
+		}
+
+	}
 	while (game_status == 1)
 	{
 		if ((catan.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
