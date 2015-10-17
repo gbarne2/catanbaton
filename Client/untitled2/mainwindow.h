@@ -17,6 +17,8 @@ public:
     void set_button_color(std::string nname, QPushButton *ptr);
     explicit MainWindow(QWidget *parent = 0);
     int update_board_colors();
+    void set_icons_and_rollvals_on_board();
+    void get_icon_file_rsrc_type_and_roll_from_tile_num(QString &filename, int &resourcetype, int &roll, int tile);
     ~MainWindow();
 public slots:
     void on_pushButton_clicked();

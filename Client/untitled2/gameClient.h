@@ -63,6 +63,7 @@ public:
 	int refresh_cards();
 	int update_flag(int, int);
 	int update_board(char*, int, int, int);
+    int check_resource(int);
     int get_board_info();
 	int set_player_number(int);
     int get_corner_owner(int, int);

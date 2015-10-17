@@ -34,6 +34,12 @@ string playercolors[5] = {NO_PLAYER_COLOR, PLAYER_1_COLOR, PLAYER_2_COLOR, PLAYE
  * need to make a function to 'paint' the board info... it needs to update color of buttons based on who owns them!
  */
 char rxdatabuff [4096];
+const int road_array_tile_num[72] = {0,0,0,0,0,0,3,3,3,3,3,7,7,7,7,7,12,12,12,12,12,16,16,16,16,16,17,17,17,17,17,18,18,18,18,18,15,15,15,15,15,11,11,11,11,11,6,6,6,6,6,2,2,2,2,2,10,10,10,5,5,5,1,1,1,13,13,9,8,8,4,4};
+const int road_array_road_num[72] = {0,1,2,3,4,5,0,1,2,3,4,0,1,2,3,4,0,1,2,3,5,5,0,1,2,3,0,1,2,4,5,0,1,2,4,5,0,1,3,4,5,0,1,3,4,5,0,2,3,4,5,0,2,3,4,5,2,3,4,2,3,4,2,4,5,3,4,2,1,0,1,2};
+const int settlement_array_tile_num[54] = {0,0,0,0,0,0,3,3,3,3,7,7,7,7,12,12,12,12,16,16,16,16,17,17,17,17,18,18,18,18,15,15,15,15,11,11,11,11,6,6,6,6,2,2,2,2,1,1,4,9,9,9,9,9};
+const int settlement_array_corner_num[54] = {0,1,2,3,4,5,1,2,3,4,1,2,3,4,0,1,2,3,0,1,2,3,0,1,2,5,5,0,1,2,1,4,5,0,1,0,5,4,3,0,5,4,0,3,4,5,5,2,1,0,1,2,3,4};
+const int tile_mapping_array[19] = {9,5,4,8,3,1,0,2,6,10,13,14,12,7,16,17,11,15,18};
+QList<QPushButton*> buttonlist;
 
 int get_tile_resource(int tile_num, QString& file)
 {
@@ -67,15 +73,6 @@ int get_tile_resource(int tile_num, QString& file)
     return(1);
 }
 
-const int road_array_tile_num[72] = {0,0,0,0,0,0,3,3,3,3,3,7,7,7,7,7,12,12,12,12,12,16,16,16,16,16,17,17,17,17,17,18,18,18,18,18,15,15,15,15,15,11,11,11,11,11,6,6,6,6,6,2,2,2,2,2,10,10,10,5,5,5,1,1,1,13,13,9,8,8,4,4};
-
-const int road_array_road_num[72] = {0,1,2,3,4,5,0,1,2,3,4,0,1,2,3,4,0,1,2,3,5,5,0,1,2,3,0,1,2,4,5,0,1,2,4,5,0,1,3,4,5,0,1,3,4,5,0,2,3,4,5,0,2,3,4,5,2,3,4,2,3,4,2,4,5,3,4,2,1,0,1,2};
-
-const int settlement_array_tile_num[54] = {0,0,0,0,0,0,3,3,3,3,7,7,7,7,12,12,12,12,16,16,16,16,17,17,17,17,18,18,18,18,15,15,15,15,11,11,11,11,6,6,6,6,2,2,2,2,1,1,4,9,9,9,9,9};
-
-const int settlement_array_corner_num[54] = {0,1,2,3,4,5,1,2,3,4,1,2,3,4,0,1,2,3,0,1,2,3,0,1,2,5,5,0,1,2,1,4,5,0,1,0,5,4,3,0,5,4,0,3,4,5,5,2,1,0,1,2,3,4};
-
-const int tile_mapping_array[19] = {9,5,4,8,3,1,0,2,6,10,13,14,12,7,16,17,11,15,18};
 
 void get_settlement_corner_and_tile_from_name(std::string  name, int& tile, int& corner)
 {
@@ -95,6 +92,84 @@ void get_settlement_corner_and_tile_from_name(std::string  name, int& tile, int&
     corner = settlement_array_corner_num[(switchval-1)%54];
 }
 //tcpclient clienttcp;
+
+void MainWindow::get_icon_file_rsrc_type_and_roll_from_tile_num(QString &filename, int &resourcetype, int &roll, int tile)
+{
+    roll = Cgame.check_tile_dice_roll(tile);
+    resourcetype = Cgame.check_resource(tile);
+    switch(resourcetype)
+    {
+    case 1: //Wheat
+        filename = WHEAT_ICON;
+        break;
+    case 2: //Ore
+        filename = MOUNTAIN_ICON;
+        break;
+    case 3: //Wood
+        filename = FOREST_ICON;
+        break;
+    case 4: //Sheep
+        filename = SHEEP_ICON;
+        break;
+    case 5: //Brick
+        filename = BRICK_ICON;
+        break;
+    case 6: //Desert
+        filename = DESERT_ICON;
+        break;
+    default:
+        filename = DESERT_ICON;
+        if(debug_text)
+            std::cout << "Invalid resource type in get_icon_file_rsrc_type_and_roll_from_tile_num(...)" << std::endl;
+
+    }
+}
+
+void MainWindow::set_icons_and_rollvals_on_board()
+{
+    char* charptr;
+    int resrc = 0;
+    int roll = 0;
+    int temp = 0;
+    int temp2 = 0;
+    char tempchar[1];
+    string tempstr;
+    QString qstr;
+    QString folderpath;// = QDir::currentPath();
+    QString iconpath;
+    QSize size(Xicon_size, Yicon_size);
+    for(int x = 0; x < buttonlist.size(); x++)
+    {
+        tempstr = buttonlist[x]->objectName().toStdString();
+        charptr = new char[tempstr.length()+1];
+        strcpy(charptr, tempstr.c_str());
+        if(charptr[0] == 't')   //if a tile object, then get the number of the object name
+        {
+            tempchar[0] = charptr[1];
+            temp = atoi(tempchar);
+            if(buttonlist[x]->objectName().length() == 3)   //if 3 chars long, then it will be
+            {
+                tempchar[0] = charptr[2];
+                temp2 = atoi(tempchar);
+                temp = temp*10;
+                temp += temp2;
+            }
+            temp2 = tile_mapping_array[temp%19];        //real tile number.
+            get_icon_file_rsrc_type_and_roll_from_tile_num(qstr, resrc, roll, temp2);
+            folderpath.append(qstr);
+            std::cout << "File path to set icon to: " << folderpath.toStdString() << std::endl;
+            QPixmap temppix(folderpath);//
+//            temppix.load(folderpath);
+            buttonlist[x]->setIcon(temppix);
+            buttonlist[x]->setIconSize(size);
+            folderpath.clear();
+                    //    get_tile_resource(3, tempstr);
+                    //    temppix.load(tempstr);
+                    //    ui->tile1_4->setIcon(temppix);
+                    //    ui->tile1_4->setIconSize(size);
+        }
+    }
+}
 
 void get_road_road_and_tile_from_name(std::string name, int& tile, int& road)
 {
@@ -132,10 +207,6 @@ int get_tile_num_from_tile_name(std::string name)
     return(tile_mapping_array[(switchval-1) % 19]);
 }
 
-
-
-QList<QPushButton*> buttonlist;
-
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -149,100 +220,100 @@ MainWindow::MainWindow(QWidget *parent) :
     QPixmap temppix("C:/Users/gtb/Documents/GitHub/Brick.png");//
     QSize size(Xicon_size, Yicon_size);
     Cgame.initsocketthing();
-    get_tile_resource(0, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_1->setIcon(temppix);
+//    get_tile_resource(0, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_1->setIcon(temppix);
     ui->tile1_1->setObjectName("t1");
-    ui->tile1_1->setIconSize(size);
+//    ui->tile1_1->setIconSize(size);
     get_tile_resource(1, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_2->setIcon(temppix);
+//    temppix.load(tempstr);
+//    ui->tile1_2->setIcon(temppix);
     ui->tile1_2->setObjectName("t2");
-    ui->tile1_2->setIconSize(size);
-    get_tile_resource(2, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_3->setIcon(temppix);
-    ui->tile1_3->setIconSize(size);
+//    ui->tile1_2->setIconSize(size);
+//    get_tile_resource(2, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_3->setIcon(temppix);
+//    ui->tile1_3->setIconSize(size);
     ui->tile1_3->setObjectName("t3");
-    get_tile_resource(3, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_4->setIcon(temppix);
-    ui->tile1_4->setIconSize(size);
+//    get_tile_resource(3, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_4->setIcon(temppix);
+//    ui->tile1_4->setIconSize(size);
     ui->tile1_4->setObjectName("t4");
-    get_tile_resource(4, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_5->setIcon(temppix);
-    ui->tile1_5->setIconSize(size);
+//    get_tile_resource(4, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_5->setIcon(temppix);
+//    ui->tile1_5->setIconSize(size);
     ui->tile1_5->setObjectName("t5");
-    get_tile_resource(5, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_6->setIcon(temppix);
-    ui->tile1_6->setIconSize(size);
+//    get_tile_resource(5, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_6->setIcon(temppix);
+//    ui->tile1_6->setIconSize(size);
     ui->tile1_6->setObjectName("t6");
-    get_tile_resource(6, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_7->setIcon(temppix);
-    ui->tile1_7->setIconSize(size);
+//    get_tile_resource(6, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_7->setIcon(temppix);
+//    ui->tile1_7->setIconSize(size);
     ui->tile1_7->setObjectName("t7");
-    get_tile_resource(7, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_8->setIcon(temppix);
-    ui->tile1_8->setIconSize(size);
+//    get_tile_resource(7, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_8->setIcon(temppix);
+//    ui->tile1_8->setIconSize(size);
     ui->tile1_8->setObjectName("t8");
-    get_tile_resource(8, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_9->setIcon(temppix);
-    ui->tile1_9->setIconSize(size);
+//    get_tile_resource(8, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_9->setIcon(temppix);
+//    ui->tile1_9->setIconSize(size);
     ui->tile1_9->setObjectName("t9");
-    get_tile_resource(9, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_10->setIcon(temppix);
-    ui->tile1_10->setIconSize(size);
+//    get_tile_resource(9, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_10->setIcon(temppix);
+//    ui->tile1_10->setIconSize(size);
     ui->tile1_10->setObjectName("t10");
-    get_tile_resource(10, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_11->setIcon(temppix);
-    ui->tile1_11->setIconSize(size);
+//    get_tile_resource(10, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_11->setIcon(temppix);
+//    ui->tile1_11->setIconSize(size);
     ui->tile1_11->setObjectName("t11");
-    get_tile_resource(11, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_12->setIcon(temppix);
-    ui->tile1_12->setIconSize(size);
+//    get_tile_resource(11, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_12->setIcon(temppix);
+//    ui->tile1_12->setIconSize(size);
     ui->tile1_12->setObjectName("t12");
-    get_tile_resource(12, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_13->setIcon(temppix);
-    ui->tile1_13->setIconSize(size);
+//    get_tile_resource(12, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_13->setIcon(temppix);
+//    ui->tile1_13->setIconSize(size);
     ui->tile1_13->setObjectName("t13");
-    get_tile_resource(13, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_14->setIcon(temppix);
-    ui->tile1_14->setIconSize(size);
+//    get_tile_resource(13, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_14->setIcon(temppix);
+//    ui->tile1_14->setIconSize(size);
     ui->tile1_14->setObjectName("t14");
-    get_tile_resource(14, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_15->setIcon(temppix);
-    ui->tile1_15->setIconSize(size);
+//    get_tile_resource(14, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_15->setIcon(temppix);
+//    ui->tile1_15->setIconSize(size);
     ui->tile1_15->setObjectName("t15");
-    get_tile_resource(15, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_16->setIcon(temppix);
-    ui->tile1_16->setIconSize(size);
+//    get_tile_resource(15, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_16->setIcon(temppix);
+//    ui->tile1_16->setIconSize(size);
     ui->tile1_16->setObjectName("t16");
-    get_tile_resource(16, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_17->setIcon(temppix);
-    ui->tile1_17->setIconSize(size);
+//    get_tile_resource(16, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_17->setIcon(temppix);
+//    ui->tile1_17->setIconSize(size);
     ui->tile1_17->setObjectName("t17");
-    get_tile_resource(17, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_18->setIcon(temppix);
-    ui->tile1_18->setIconSize(size);
+//    get_tile_resource(17, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_18->setIcon(temppix);
+//    ui->tile1_18->setIconSize(size);
     ui->tile1_18->setObjectName("t18");
-    get_tile_resource(18, tempstr);
-    temppix.load(tempstr);
-    ui->tile1_19->setIcon(temppix);
-    ui->tile1_19->setIconSize(size);
+//    get_tile_resource(18, tempstr);
+//    temppix.load(tempstr);
+//    ui->tile1_19->setIcon(temppix);
+//    ui->tile1_19->setIconSize(size);
     ui->tile1_19->setObjectName("t19");
     //setMask((tempmask.mask()));
 //    ui->graphicsView->mask();
@@ -360,12 +431,14 @@ void MainWindow::on_pushButton_clicked()
             updateboardcolors = 1;
             std::cout << "End my turn!" << std::endl;
             Cgame.end_turn();
+            set_icons_and_rollvals_on_board();
         }
         else if(senderObjName.toStdString() == "B_UPDATE_BOARD")
         {
             std::cout << "Update board!" << std::endl;
             Cgame.get_board_info();
             updateboardcolors = 1;
+            set_icons_and_rollvals_on_board();
         }
         else if(senderObjName.toStdString() == "B_START_GAME")
         {

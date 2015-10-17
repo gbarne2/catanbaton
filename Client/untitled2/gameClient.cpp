@@ -257,6 +257,11 @@ int gameClient::update_board(char* data, int datasize, int startindex, int tilen
 	return(board[tilenum].update_board_info_from_server(data, datasize, startindex));
 }
 
+int gameClient::check_resource(int tilenum)
+{
+    return(board[tilenum].check_tile_resource_type());
+}
+
 int gameClient::get_board_info()
 {
     sendPacketTX(get_player_num(), 0, GET_BOARD_INFO);

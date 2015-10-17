@@ -139,6 +139,7 @@ int main()
 		Sleep(500);
 	one.join();
 	two.join();
+	catan.build_std_board(19);
 	while (game_status == 1)
 	{
 		if ((catan.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
