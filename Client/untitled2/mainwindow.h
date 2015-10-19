@@ -5,6 +5,22 @@
 #include "gameClient.h"
 #include <QPushButton>
 
+#define Acorn 0
+#define Bcorn 1
+#define Ccorn 2
+#define Dcorn 3
+#define Ecorn 4
+#define Fcorn 5
+
+#define cornA	0
+#define cornB	1
+#define cornC	2
+#define cornD	3
+#define cornE	4
+#define cornF	5
+
+#define setwval 1
+
 namespace Ui {
 class MainWindow;
 }
@@ -13,6 +29,10 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    void update_resources_display();
+    string print_board();
+    int droll(int);
+    int corner_info(int corner, int tilenum);
 public:
     void set_button_color(std::string nname, QPushButton *ptr);
     explicit MainWindow(QWidget *parent = 0);
@@ -24,6 +44,7 @@ public slots:
     void on_pushButton_clicked();
     void on_pushButton_released();
     void on_hover();
+    void check_rx_packet();
 
 public: signals:
     void hovered();

@@ -64,14 +64,15 @@ using namespace std;
 #define GET_TIME_LIMIT					43
 #define START_GAME						44
 #define ACCEPT_GAME						45
-#define JOIN_GAME						46
-#define END_TURN						47
-#define END_GAME						48
 #define STEAL_CARD_ROBBER				49
 #define CONNECT							50
 #define START_TURN						51
+#define JOIN_GAME						46
+#define END_TURN						47
+#define END_GAME						48
 #define MAX_PACKET_VAL					51
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
+#define INVALID_PACKET_OR_SENDER        69
 
 
 #define APPROVE_TRADE 					1
@@ -293,7 +294,10 @@ int clientFrameHandler(gameClient &session, char* datain)
                 flag_rx_packet_needs_processing = 1;
 
 			break;
-			
+        case INVALID_PACKET_OR_SENDER:
+            if(debug_text)
+                cout << "Invalid packet or sender!" << endl;
+            break;
 		default:
 			retval = INVALID_PACKET_TYPE;
 		}

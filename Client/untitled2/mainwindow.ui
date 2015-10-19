@@ -2493,6 +2493,134 @@
      <string>Start Game</string>
     </property>
    </widget>
+   <widget class="QLCDNumber" name="card_F">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>640</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="card_B">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>663</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="card_W">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>686</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="card_S">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>709</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="card_O">
+    <property name="geometry">
+     <rect>
+      <x>910</x>
+      <y>732</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>832</x>
+      <y>644</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Forest Cards</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>841</x>
+      <y>668</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Brick Cards</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>831</x>
+      <y>690</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Wheat Cards</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_4">
+    <property name="geometry">
+     <rect>
+      <x>833</x>
+      <y>713</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Sheep Cards</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>847</x>
+      <y>736</y>
+      <width>61</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ore Cards</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_PRINT_BOARD">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>420</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Start Game</string>
+    </property>
+   </widget>
    <zorder>tile1_10</zorder>
    <zorder>tile1_2</zorder>
    <zorder>tile1_3</zorder>
@@ -2647,6 +2775,17 @@
    <zorder>BUILD_CITY</zorder>
    <zorder>B_END_TURN</zorder>
    <zorder>B_START_GAME</zorder>
+   <zorder>card_F</zorder>
+   <zorder>card_B</zorder>
+   <zorder>card_W</zorder>
+   <zorder>card_S</zorder>
+   <zorder>card_O</zorder>
+   <zorder>label</zorder>
+   <zorder>label_2</zorder>
+   <zorder>label_3</zorder>
+   <zorder>label_4</zorder>
+   <zorder>label_5</zorder>
+   <zorder>B_PRINT_BOARD</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

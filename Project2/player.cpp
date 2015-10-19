@@ -20,6 +20,7 @@ player::player(void)
 	DC.qty_monopoly = 0;
 	DC.qty_victory_points = 0;
 	DC.qty_year_of_plenty = 0;
+	ClientSocket = INVALID_SOCKET;
 }
 
 player::player(int IDset, string p_name)
@@ -39,6 +40,7 @@ player::player(int IDset, string p_name)
 	DC.qty_monopoly = 0;
 	DC.qty_victory_points = 0;
 	DC.qty_year_of_plenty = 0;
+	ClientSocket = INVALID_SOCKET;
 }
 
 player::player(int IDset, string p_name, SOCKET tempsock)

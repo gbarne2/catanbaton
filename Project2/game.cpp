@@ -107,6 +107,43 @@ exit_assign_resources:
 	return(temp);
 }
 
+int game::create_player_order()
+{
+	int temp = 0;
+	int* tempturns = new int[players];
+	player_turn_array = new int[players];
+	for (int y = 0; y < players; y++)
+	{
+		player_turn_array[y] = 0;
+		tempturns[y] = y + 1;
+	}
+	for (int z = 0; z < players; z++)
+	{
+	start_player_order_again:
+		temp = (rand()*rand()) % players + 1;
+		for (int x = 0; x < players; x++)
+		{
+			if (tempturns[x] == temp)
+			{
+				tempturns[x] = 0;
+				player_turn_array[z] = temp;
+				goto exit_player_ordering;
+			}
+		}
+	exit_player_ordering:
+		__nop;
+	}
+	delete[] tempturns;
+	for (int x = 0; x < players; x++)
+	{
+		if (player_turn_array[x] == 0)
+		{
+			return(-78);
+		}
+	}
+	
+	return(1);
+}
 
 //this function needs to create the appropriate number of tiles and index them so that they can be easily manuvered around
 int game::build_std_board(int size)
@@ -114,6 +151,7 @@ int game::build_std_board(int size)
 	int resource = 0;
 	int dice = 0;
 	srand(time(0));
+	current_player = 1;
 	//must create tile, put it into pieces array, and update tile number in other array
 	for(int x = 0; x < active_num_tiles; x++)
 	{
@@ -711,6 +749,7 @@ int game::start_game(int size, vector<string> player_names)
 	int temp_num_players = 0;
 	srand(time(0));
 	//must create tile, put it into pieces array, and update tile number in other array
+/*
 	for (int x = 0; x < size; x++)
 	{
 		x_index[x] = const_valid_x_index_array[x];
@@ -725,10 +764,12 @@ int game::start_game(int size, vector<string> player_names)
 		pieces[x_index[x]][y_index[x]].set_resource_type(resource);
 		pieces[x_index[x]][y_index[x]].set_dice_roll(dice);
 	}
+*/
 	add_player(0, "", tempsock);		//make empty player so indexes are protected. player 0 is used as a null.
 	//need to handle adding players here?
 	x = 1;
 	temp_num_players = players;
+
 //	for (vector<string>::iterator tempptr = player_names.begin(); tempptr < player_names.end(); tempptr++)
 //	{
 //		temp_num_players = add_player(x, tempptr->c_str(), ) - 1;

@@ -55,6 +55,11 @@ int gameClient::startGame()
     return(sendPacketTX(get_player_num(), 0, START_GAME));
 }
 
+int gameClient::check_player_resource_amt(int type)
+{
+    return(this->playerinfo.check_resource_amount(type));
+}
+
 int gameClient::rolldice()
 {
 	static int dice_rolls[MAX_NUM_ACTIVE_TILES] = { 2,3,3,4,4,5,5,6,6,8,8,9,9,10,10,11,11,12 };
@@ -189,7 +194,7 @@ int gameClient::check_current_player()
 int gameClient::start_turn()
 {
 	int retval = 0;
-	retval = tx_start_turn();
+    retval = tx_start_turn(get_player_num());
 	FLAG_TURN_START = 1;	//set flag to one so that when we get info back we can display it to user?
 	return(retval);
 }
@@ -197,7 +202,7 @@ int gameClient::start_turn()
 int gameClient::end_turn()
 {
 	FLAG_MY_TURN = 0;
-	return(tx_end_turn());
+    return(tx_end_turn(get_player_num()));
 }
 
 int gameClient::get_player_num()

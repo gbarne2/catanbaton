@@ -90,6 +90,7 @@ get_time_limit
 #define STEAL_CARD_ROBBER			49
 #define CONNECT						50
 #define START_TURN					51
+#define INVALID_PACKET_OR_SENDER	69
 
 //Message format:
 /*
@@ -147,7 +148,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 	int datasize = datain[4];
 	datasize = datasize << 7;
 	datasize += datain[5];
-
+	int invalid_sender = 0;
 	char *nulptr;
 	int retval = 0;	
 	if ((datain[0] == 'S') && (datain[1] == '8') && (datain[2] == 53) && (datain[3] == 'p'))
@@ -187,6 +188,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 						retval = send_packet(session, requested_player_trade, tempstring, PROPOSE_TRADE, servv);
 					}
 				}
+				else
+					invalid_sender = 1;
 				//data field:
 				//this case should create a new trade_cards object in a place that will keep it in memory while the players review trade.
 				//to avoid issues with going from int to char to possibly unsigned char somewhere back to int, the notion of -2 wood = i want 2 wood isnt used.
@@ -218,6 +221,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 						send_packet(session, requested_player_trade, retval, ACCEPT_REJECT_TRADE, servv);	//may need to change these to not return retval, but something else so that the client wont be getting the real reason why (ex: if req player doesnt have enough cards, then retval will tell the initiating player that the other player doesnt have the cards.)
 					}
 				}
+				else
+					invalid_sender = 1;
 				initiating_player_trade = 0;
 				requested_player_trade = 0;
 				trade_to_process.qty_wood_to_trade = 0;
@@ -287,6 +292,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					else
 						send_packet(session, player_number, -31, BUILD_ROAD, servv);
 				}
+				else
+					invalid_sender = 1;
 				//add some error handling if the road was not able to be built! should tell client so they can make another move
 				//if successful, send the board info to all players.
 				break;
@@ -313,6 +320,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 							send_packet(session, player_number, -32, BUILD_SETTLEMENT, servv);
 					}
 				}
+				else
+					invalid_sender = 1;
 				break;
 			case UPGRADE_SETTLEMENT:
 				//data field:
@@ -326,6 +335,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					else
 						send_packet(session, player_number, -33, UPGRADE_SETTLEMENT, servv);
 				}
+				else
+					invalid_sender = 1;
 				break;
 			case BUY_DV_CARD:		//should allow user to buy more than 1 at once?
 				cout << "Need to add ability to buy dev cards in game.cpp and in server_catan.cpp!" << endl;
@@ -344,9 +355,15 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				send_packet(session, player_number, 1000, GET_TIME_LIMIT, servv);
 				break;
 			case START_GAME:
-				game_status = 1;	//flag to show game is started
-				cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
-				send_packet(session, player_number, player_number, START_GAME, servv);
+				if (game_status == 0)
+				{
+					game_status = 1;	//flag to show game is started
+					session.build_std_board(active_num_tiles);
+					cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
+					send_packet(session, player_number, player_number, START_GAME, servv);
+				}
+				else
+					invalid_sender = 1;
 				//data field:
 				//**** need a way to get all player names that will be playing in memory before this function. maybe to a join game case to get player info
 				break;
@@ -379,6 +396,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					send_packet(session, retval, 0, END_TURN, servv);		//make END_TURN be start turn when received from server?
 					//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
 				}
+				else
+					invalid_sender = 1;
 				break;
 			case STEAL_CARD_ROBBER:
 				//datain[0] = player to steal from
@@ -391,6 +410,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					temp = datain[dataptr];
 					send_packet(session, temp, retval*(-1), STEAL_CARD_ROBBER, servv);	//tell player what card was stolen from them. if > 0, it was aquired, if < 0 it was stolen
 				}
+				else
+					invalid_sender = 1;
 				last_player = 0;
 				break;
 			case END_GAME:
@@ -436,6 +457,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 						send_resources_all_players(session, servv);
 					}
 				}
+				else
+					invalid_sender = 1;
 				//Data format:
 				//1:		dice roll
 				//2 - 7:	resource amnts
@@ -444,8 +467,14 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//need to make this do a bunch more stuff probably. like update each user of their respective resources and what not.
 				break;
 			default:
+				send_packet(session, player_number, INVALID_PACKET_OR_SENDER, INVALID_PACKET_OR_SENDER, servv);
 				cout << "ERROR: INVALID DATA TYPE! This should probably send an error back to the client saying something like please contact your system administrator" << endl;
 				break;
+			}
+			if (invalid_sender == 1)
+			{
+				send_packet(session, player_number, INVALID_PACKET_OR_SENDER, INVALID_PACKET_OR_SENDER, servv);
+				invalid_sender = 0;
 			}
 		}
 		else
@@ -526,19 +555,21 @@ int send_resources(game session, int playernum, tcpserver servv)
 {
 	int temp[5] = { 0,0,0,0,0 };
 	string datastr;
+	char tempc[5] = { 0, };
 	int temp2 = 0;
 	ostringstream convert;
-	for (int x = 1; x < 6; x++)
+	for (int x = 0; x < 5; x++)
 	{
-		temp2 = session.check_resources(playernum, x);
-		convert << temp2;
+		temp[x] = session.check_resources(playernum, x+1);
+		tempc[x] = temp[x];
+//		convert << temp2;
 	}
-	datastr = convert.str();
-	char *tempc = new char[datastr.length() + 1];
-	for (int x = 0; x < datastr.length(); x++)
-		tempc[x] = datastr[x];
+//	datastr = convert.str();
+//	char *tempc = new char[datastr.length() + 1];
+//	for (int x = 0; x < datastr.length(); x++)
+//		tempc[x] = datastr[x];
 //	strcpy(tempc, datastr.c_str());
-	temp2 = send_packet(session, playernum, tempc, READ_RESOURCES,servv);
+	temp2 = send_packet(session, playernum, tempc, READ_RESOURCES,5,servv);
 	return(temp2);
 }
 

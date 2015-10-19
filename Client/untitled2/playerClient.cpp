@@ -124,7 +124,7 @@ int playerClient::check_resource_amount(int type)
 	default:	temp = -1;
 		break;
 	}
-	cout << "resource type: " << type << endl << "Amount available: " << temp << endl;
+//	cout << "resource type: " << type << endl << "Amount available: " << temp << endl;
 	return(temp);
 }
 

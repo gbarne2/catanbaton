@@ -6,11 +6,11 @@
 
 #ifndef START_CARD_VALUES
 #define START_CARD_VALUES
-#define START_ORE		50
-#define START_SHEEP		50
-#define START_BRICK		50
-#define START_WHEAT		50
-#define START_WOOD		50
+#define START_ORE		7
+#define START_SHEEP		7
+#define START_BRICK		7
+#define START_WHEAT		7
+#define START_WOOD		7
 #endif
 
 /*

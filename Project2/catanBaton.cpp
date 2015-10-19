@@ -186,6 +186,8 @@ int main()
 	stringstream tempstrtowrite;
 	const char* tempstrtowrite2;
 	string tempstr;
+	strtowrite = tempstr.c_str();
+	cout << strtowrite << endl;
 	CONSOLE_CURSOR_INFO cursor_info;
 	tcpclient client(tempaddr);
 	tcpserver server(tempaddr);

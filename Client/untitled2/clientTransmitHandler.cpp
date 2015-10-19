@@ -40,11 +40,12 @@ int packetAssembler(char buffer[], int size)
         cout << +temp[x] << " ";
 		rxdatabuff[x] = temp[x];
 	}
+//    retval = clienttcp.sendData(rxdatabuff, size+6);
     retval = clienttcp.sendThenReceive(rxdatabuff, size+6);
 //    ZeroMemory(rxdatabuff, )
     for(int x = 0; x < DEFAULT_BUFLEN; x++)
         rxdatabuff[x] = 0;
-    for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
+;;    for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
         rxdatabuff[x] = clienttcp.read_receive_buff(x);
     check_rx_data_buff = 1;
 	cout << endl << endl;
@@ -127,15 +128,16 @@ int tx_accept_or_reject_trade(int player_to_trade, int status)
 	return(sendPacketTX(player_to_trade, data, ACCEPT_REJECT_TRADE));
 }
 
-int tx_start_turn()
+int tx_start_turn(int playernum)
 {
 	char data[1] = { START_TURN };
-	return(packetAssembler(data, 1));
+    return(sendPacketTX(playernum, 0, START_TURN));
+//	return(packetAssembler(data, 1));
 }
 
-int tx_end_turn()
+int tx_end_turn(int playernum)
 {
-	return(sendPacketTX(0, 1, END_TURN));
+    return(sendPacketTX(playernum, 1, END_TURN));
 }
 
 int txhandler_build_road(int player, int tile, int road)

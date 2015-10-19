@@ -40,7 +40,7 @@ struct dev_cards
 class player
 {
 	sockaddr client_address;
-	SOCKET ClientSocket = INVALID_SOCKET;
+	SOCKET ClientSocket;
 	int player_ID;
 	std::string Player_name; 
 	int qty_wood;

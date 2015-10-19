@@ -50,11 +50,15 @@ public:
 	~gameClient();
     SOCKET initsocketthing();
     int startGame();
+    int check_player_resource_amt(int);
 	int build_road(int tile, int corner);
 	int build_settlement(int tile, int corenr);
     int build_city(int tile, int corner);
 	int check_current_player();
-	int start_turn();
+    int check_corner_owner(int corner, int tilenum) {return(board[tilenum].check_corner_owner(corner));}
+    int check_corner_building_type(int corner, int tilenum) { return(board[tilenum].check_corner_building_type(corner));}
+    int get_dice_roll(int tilenum)  {return(board[tilenum].check_dice_roll());}
+    int start_turn();
 	int end_turn();
 	int get_player_num();
     int check_tile_dice_roll(int tilenum);

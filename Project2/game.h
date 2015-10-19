@@ -3,6 +3,7 @@
 #include <vector>
 #include "player.h"
 #include "Tile.h"
+#include "serverMain.h"
 
 #define APPROVE_TRADE 	1
 #define DENY_TRADE	-43
@@ -69,6 +70,7 @@ struct trade_cards_offer
 class game
 {
 private:
+	int* player_turn_array;
 	tile pieces[X_tiles][Y_tiles]; //data[x][y], invalid indexes will need to be checked against! ((0,3),(0,4),(1,3),(3,1),(4,0),(4,1) dont exist)
 //	vector<tile> pieces;
 	int players;
@@ -83,6 +85,7 @@ private:
 	int y_index[active_num_tiles];
 	int longest_road;
 	int largest_army;
+	int create_player_order();
 	int determine_if_neighbor_tile_occupied(int corner_numbz, int tile_number, int playernum, int& xcoord1, int& ycoord1, int& corner1, int& xcoord2, int& ycoord2, int& corner2);
 	int determine_tile_from_index(int, int);
 	int determine_x_index_from_tile(int);
@@ -142,25 +145,44 @@ public:
 	{
 		//make this function check the neighboring tiles corresponding corner in addition to this tles ones. if tile x,y coord invalid, there is not a neighbor!
 		//need to come up with way to check neighboring tile!!
-		int retval = 0;
+		static int placements_per_player = 0;
+		static int max_player_number = 0;
+		int retval	= 0;
 		int xcoord	= 0;
 		int ycoord	= 0;
 		int temp	= 0;	
+		int temp1	= 0;
 		int xcoord1	= 0;
 		int ycoord1	= 0;
 		int corner1	= -1;
 		int xcoord2	= 0;			//2nd neighbor to check
 		int ycoord2	= 0;			//2nd neighbor to check
 		int corner2	= -1;
+		static int start = 1;
+		if (playernum > max_player_number)
+			max_player_number = playernum;
 		xcoord = determine_x_index_from_tile(tile_number);
 		ycoord = determine_y_index_from_tile(tile_number);
-		determine_if_neighbor_tile_occupied(corner_numbz, tile_number,playernum,xcoord1,ycoord1,corner1,xcoord2,ycoord2,corner2);
-		pieces[xcoord][ycoord].build_settlement(corner_numbz, playernum);
-		if ((xcoord1 != xcoord) || (ycoord1 != ycoord))
-			pieces[xcoord1][ycoord1].build_settlement(corner1, playernum);
-		if (((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1)))
-			pieces[xcoord2][ycoord2].build_settlement(corner2, playernum);
-		temp = deduct_resources_settlement(playernum);
+		temp = determine_if_neighbor_tile_occupied(corner_numbz, tile_number,playernum,xcoord1,ycoord1,corner1,xcoord2,ycoord2,corner2);
+		temp1 = check_resources_settlement(playernum);
+		if ((temp > 0) && (temp1 > 0))
+		{
+			pieces[xcoord][ycoord].build_settlement(corner_numbz, playernum);
+			if ((xcoord1 != xcoord) || (ycoord1 != ycoord))
+				pieces[xcoord1][ycoord1].build_settlement(corner1, playernum);
+			if (((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1)))
+				pieces[xcoord2][ycoord2].build_settlement(corner2, playernum);
+			temp = deduct_resources_settlement(playernum);
+			if (!start && (playernum == 1))
+			{
+				placements_per_player = 2;
+			}
+			else if ((placements_per_player == 2) && (playernum == max_player_number))
+				initial_placement_phase = 0;
+			start = 0;
+		}
+		else
+			temp = -37;
 		return(temp);
 
 	}

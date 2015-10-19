@@ -39,6 +39,7 @@
 #define START_TURN						51
 #define MAX_PACKET_VAL					51
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
+#define INVALID_PACKET_OR_SENDER        69
 
 
 #define APPROVE_TRADE 					1
@@ -60,7 +61,7 @@ struct client_trade_cards_offer
 };
 
 static int flag_rx_packet_needs_processing = 0;		//when set to 1, this will indicate that something has been received that needs processing.
-static int debug_text = 1;
+volatile static int debug_text = 1;
 
 /* Globals	*/
 //extern static client_trade_cards_offer trade_to_process;

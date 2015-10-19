@@ -190,10 +190,12 @@ int tileclient::update_board_info_from_server(char* datain, int datasize, int st
 
 		tempnum = datain[index++];
 		index++;		//should skip past the tilenum.
-		tempchar[0] = datain[index++];
-		resource_type = atoi(tempchar);
-		tempchar[0] = datain[index++];
-		roll = (atoi(tempchar));// & 0x00FF);
+//		tempchar[0] = datain[index++];
+        resource_type = datain[index++];
+        roll = datain[index++];
+//		resource_type = atoi(tempchar);
+//		tempchar[0] = datain[index++];
+//		roll = (atoi(tempchar));// & 0x00FF);
 
 		for (int x = 0; x < 6; x++)
 		{

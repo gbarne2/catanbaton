@@ -34,6 +34,7 @@
 
 
 #general error codes/wtf happened codes?
+-78		failed to init the player turn order!
 
 #server game manager level codes
 -99		Game already started, unable to add new player

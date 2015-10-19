@@ -245,7 +245,7 @@ int tcpclient::shutdownConnection()
 
 int tcpclient::recieveSingle()
 {
-	iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
+    iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
 	if (iResult > 0)
 		printf("Bytes received: %d\n", iResult);
 	else

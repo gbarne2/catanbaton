@@ -1,16 +1,22 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include <iomanip>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <QPixmap>
 #include <QIcon>
 #include <QWidget>
 #include <QtGui>
 #include <string>
 #include <vector>
+#include <stdio.h>
 #include "clientTransmitHandler.h"
+#include "gameClient.h"
 #include <QPushButton>
 #include <string>
 #include <QList>
+#include <QTimer>
 
 #define BRICK_ICON      "C:/Users/gtb/Documents/GitHub/Brick.png"
 #define SHEEP_ICON      "C:/Users/gtb/Documents/GitHub/Sheep.png"
@@ -85,9 +91,9 @@ void get_settlement_corner_and_tile_from_name(std::string  name, int& tile, int&
         temp1[0] = name[5];
         switchval = switchval*10 + atoi(temp1);
     }
-    std::cout << temp1 << std::endl;
+//    std::cout << temp1 << std::endl;
 //    name.erase(name.begin(), name.begin());
-    std::cout << "switch val: " << switchval << std::endl;
+//    std::cout << "switch val: " << switchval << std::endl;
     tile = settlement_array_tile_num[(switchval-1)%54];
     corner = settlement_array_corner_num[(switchval-1)%54];
 }
@@ -121,7 +127,6 @@ void MainWindow::get_icon_file_rsrc_type_and_roll_from_tile_num(QString &filenam
         filename = DESERT_ICON;
         if(debug_text)
             std::cout << "Invalid resource type in get_icon_file_rsrc_type_and_roll_from_tile_num(...)" << std::endl;
-
     }
 }
 
@@ -182,9 +187,9 @@ void get_road_road_and_tile_from_name(std::string name, int& tile, int& road)
         temp1[0] = name[6];
         switchval = switchval*10 + atoi(temp1);
     }
-    std::cout << temp1 << std::endl;
+//    std::cout << temp1 << std::endl;
 //    name.erase(name.begin(), name.begin());
-    std::cout << "switch val: " << switchval << std::endl;
+//    std::cout << "switch val: " << switchval << std::endl;
     tile = road_array_tile_num[(switchval-1)%72];
     road = road_array_road_num[(switchval-1)%72];
 }
@@ -201,11 +206,13 @@ int get_tile_num_from_tile_name(std::string name)
         temp1[0] = name[2];
         switchval = switchval*10 + atoi(temp1);
     }
-    std::cout << temp1 << std::endl;
+//    std::cout << temp1 << std::endl;
 //    name.erase(name.begin(), name.begin());
-    std::cout << "switch val: " << switchval << std::endl;
+//    std::cout << "switch val: " << switchval << std::endl;
     return(tile_mapping_array[(switchval-1) % 19]);
 }
+
+static SOCKET ClientSock = INVALID_SOCKET;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -217,119 +224,99 @@ MainWindow::MainWindow(QWidget *parent) :
     std::cout << "# buttons found: " << buttonlist.size() << std::endl;
     for(int x = 0; x < buttonlist.size(); x++)
         connect(buttonlist[x],SIGNAL(pressed()), this, SLOT(on_pushButton_clicked()));
-    QPixmap temppix("C:/Users/gtb/Documents/GitHub/Brick.png");//
-    QSize size(Xicon_size, Yicon_size);
-    Cgame.initsocketthing();
-//    get_tile_resource(0, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_1->setIcon(temppix);
+    ClientSock = Cgame.initsocketthing();
     ui->tile1_1->setObjectName("t1");
-//    ui->tile1_1->setIconSize(size);
-    get_tile_resource(1, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_2->setIcon(temppix);
     ui->tile1_2->setObjectName("t2");
-//    ui->tile1_2->setIconSize(size);
-//    get_tile_resource(2, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_3->setIcon(temppix);
-//    ui->tile1_3->setIconSize(size);
     ui->tile1_3->setObjectName("t3");
-//    get_tile_resource(3, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_4->setIcon(temppix);
-//    ui->tile1_4->setIconSize(size);
     ui->tile1_4->setObjectName("t4");
-//    get_tile_resource(4, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_5->setIcon(temppix);
-//    ui->tile1_5->setIconSize(size);
     ui->tile1_5->setObjectName("t5");
-//    get_tile_resource(5, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_6->setIcon(temppix);
-//    ui->tile1_6->setIconSize(size);
     ui->tile1_6->setObjectName("t6");
-//    get_tile_resource(6, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_7->setIcon(temppix);
-//    ui->tile1_7->setIconSize(size);
     ui->tile1_7->setObjectName("t7");
-//    get_tile_resource(7, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_8->setIcon(temppix);
-//    ui->tile1_8->setIconSize(size);
     ui->tile1_8->setObjectName("t8");
-//    get_tile_resource(8, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_9->setIcon(temppix);
-//    ui->tile1_9->setIconSize(size);
     ui->tile1_9->setObjectName("t9");
-//    get_tile_resource(9, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_10->setIcon(temppix);
-//    ui->tile1_10->setIconSize(size);
     ui->tile1_10->setObjectName("t10");
-//    get_tile_resource(10, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_11->setIcon(temppix);
-//    ui->tile1_11->setIconSize(size);
     ui->tile1_11->setObjectName("t11");
-//    get_tile_resource(11, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_12->setIcon(temppix);
-//    ui->tile1_12->setIconSize(size);
     ui->tile1_12->setObjectName("t12");
-//    get_tile_resource(12, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_13->setIcon(temppix);
-//    ui->tile1_13->setIconSize(size);
     ui->tile1_13->setObjectName("t13");
-//    get_tile_resource(13, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_14->setIcon(temppix);
-//    ui->tile1_14->setIconSize(size);
     ui->tile1_14->setObjectName("t14");
-//    get_tile_resource(14, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_15->setIcon(temppix);
-//    ui->tile1_15->setIconSize(size);
     ui->tile1_15->setObjectName("t15");
-//    get_tile_resource(15, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_16->setIcon(temppix);
-//    ui->tile1_16->setIconSize(size);
     ui->tile1_16->setObjectName("t16");
-//    get_tile_resource(16, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_17->setIcon(temppix);
-//    ui->tile1_17->setIconSize(size);
     ui->tile1_17->setObjectName("t17");
-//    get_tile_resource(17, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_18->setIcon(temppix);
-//    ui->tile1_18->setIconSize(size);
     ui->tile1_18->setObjectName("t18");
-//    get_tile_resource(18, tempstr);
-//    temppix.load(tempstr);
-//    ui->tile1_19->setIcon(temppix);
-//    ui->tile1_19->setIconSize(size);
     ui->tile1_19->setObjectName("t19");
-    //setMask((tempmask.mask()));
-//    ui->graphicsView->mask();
-//    QPixmap pixmap("C:/Users/gtb/Documents/GitHub/Mountain.png");
-//    QIcon icon(pixmap);
-//    button->setIcon(icon);
 //    button->setMask(pixmap.createMaskFromColor(Qt::transparent,Qt::MaskInColor));
     connect(ui->tile1_1, SIGNAL(released()), this, SLOT(on_pushButton_released()));
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(check_rx_packet()));
+    timer->start(3000);
     Cgame.joinGame();
     clientFrameHandler(Cgame, rxdatabuff);
+}
+
+void MainWindow::check_rx_packet()
+{
+    static int busyflag = 0;
+    timeval timeout;
+    fd_set readSet;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 100;
+    FD_ZERO(&readSet);
+    FD_SET(ClientSock, &readSet);
+    int retval = -1;
+    if(!busyflag)
+    {
+        busyflag = 1;
+        if (select(ClientSock, &readSet, NULL, NULL, &timeout) == 1)
+        {
+            retval = recv(ClientSock, rxdatabuff, 4096, 0);
+            if (retval > 0)
+            {
+                check_rx_data_buff = 1;
+                for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
+                    rxdatabuff[x] = clienttcp.read_receive_buff(x);
+                clientFrameHandler(Cgame, rxdatabuff);
+            }
+        }
+        update_resources_display();
+        update_board_colors();
+        busyflag = 0;
+    }
+/*    if(!busyflag)
+    {
+        busyflag = 1;
+        retval = clienttcp.recieveSingle();
+        if(retval > 0)       //if we received data, then process data!
+        {
+            check_rx_data_buff = 1;
+            for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
+                rxdatabuff[x] = clienttcp.read_receive_buff(x);
+            clientFrameHandler(Cgame, rxdatabuff);
+        }
+        busyflag = 0;
+    }
+*/
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     exit(2);
+}
+
+void MainWindow::update_resources_display()
+{
+    ui->card_W->display(Cgame.check_player_resource_amt(1));
+    ui->card_O->display(Cgame.check_player_resource_amt(2));
+    ui->card_F->display(Cgame.check_player_resource_amt(3));
+    ui->card_S->display(Cgame.check_player_resource_amt(4));
+    ui->card_B->display(Cgame.check_player_resource_amt(5));
+            //1 wheat
+            //2 ore
+            //3 wood
+            //4 sheep
+            //5 brick
+            //6 desert
+
 }
 
 void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
@@ -342,7 +329,7 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
     {
         get_road_road_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_road_owner(road, tile);
-        if(retval >= 0) // && (retval < playercolors.size()))
+        if(retval > 0) // && (retval < playercolors.size()))
         {
             tempstr = QString::fromUtf8(playercolors[retval].c_str());
             ptr->setStyleSheet(tempstr);
@@ -352,14 +339,14 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
     {
         get_settlement_corner_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_corner_owner(tile, road);
-        if(retval >= 0) // && (retval < playercolors.size()))
+        if(retval > 0) // && (retval < playercolors.size()))
         {
             tempstr = QString::fromUtf8(playercolors[retval].c_str());
             ptr->setStyleSheet(tempstr);
         }
     }
-    else
-        std::cout << "ERRRRROORRRR Invalid button!" << std::endl;
+//    else
+//        std::cout << "ERRRRROORRRR Invalid button!" << std::endl;
 
 }
 
@@ -370,6 +357,70 @@ int MainWindow::update_board_colors()
     return(1);
 }
 
+
+int MainWindow::corner_info(int corner, int tilenum)
+{
+    int retval = 0;
+    retval = (10 * Cgame.check_corner_owner(corner, tilenum) + Cgame.check_corner_building_type(corner, tilenum));
+    return(retval);
+}
+
+int MainWindow::droll(int tilenumb)
+{
+    return(Cgame.get_dice_roll(tilenumb));
+}
+
+string MainWindow::print_board()
+{
+    cout << "Update board from server or client data?" << endl << "1) Server data" << endl << "2) Client data" << endl;
+
+    std::stringstream strStream;
+    strStream.flush();
+
+//    strStream = std::stringstream();	//flush string stream...
+//	strStream.open("tempfile.secret");
+    strStream << setw(setwval) << "                           /" << setw(2) << corner_info(cornB,18) << "¯¯¯" << setw(2) << corner_info(cornC, 18) << "\\                         " << endl;
+    strStream << setw(setwval) << "                          /" << setw(2) << corner_info(cornA, 18) << " |" << setw(2) << droll(18) << "|" << setw(2) << corner_info(cornD, 18) << "\\               " << endl;
+    strStream << setw(setwval) << "                 /" << setw(2) << corner_info(cornB,15) << "¯¯¯" << setw(2) << corner_info(cornC, 15) << "\\\\    18   //" << setw(2) << corner_info(cornB, 17) << "¯¯¯" <<  setw(2) << corner_info(cornC, 17) << "\\               " << endl;
+    strStream << setw(setwval) << "                /" << setw(2) << corner_info(cornA, 15) << " |" << setw(2) << droll(15) << "|" << setw(2) << corner_info(cornD, 15) << "\\\\" << setw(2) << corner_info(cornF, 18) << "___" << setw(2) << corner_info(cornE, 18) << "//" << setw(2) << corner_info(cornA, 17) << " |" << setw(2) << droll(17) << "|" << setw(2) << corner_info(cornD, 17) << "\\                  " << endl;				//		A-C-E Navigation matrix:
+    strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,11) << "¯¯¯" << setw(2) << corner_info(cornC, 11) << "\\\\   15    //" << setw(2) << corner_info(cornB, 14) << "¯¯¯" <<  setw(2) << corner_info(cornC, 14) << "\\\\   17    //" <<  setw(2) << corner_info(cornB,16) << "¯¯¯" << setw(2) << corner_info(cornC, 16) << "\\          " << endl;
+    //				/¯¯¯¯¯¯¯\\	  15   //¯¯¯¯¯¯¯\\	  17   //¯¯¯¯¯¯¯\" << endl;		//		A = (0,2)
+    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,11) << " |" << setw(2) << droll(11) << "|" << setw(2) << corner_info(cornD, 11) << "\\\\" << setw(2) << corner_info(cornF, 15) << "___" << setw(2) << corner_info(cornE, 15) << "//" << setw(2) << corner_info(cornA, 14) << " |" << setw(2) << droll(14) << "|" <<  setw(2) << corner_info(cornD, 14) << "\\\\" << setw(2) << corner_info(cornF, 17) << "___" << setw(2) << corner_info(cornE, 17) << "//" <<  setw(2) << corner_info(cornA,16) << " |" << setw(2) << droll(16) << "|" << setw(2) << corner_info(cornD, 16) << "\\        " << endl;
+    //			   /  (2,4)	 \\_______//  (3,3)	 \\_______//  (4,2)	 \				C = (1,2)
+    strStream << setw(setwval) << "      \\    11   //" << setw(2) << corner_info(cornB, 10) << "¯¯¯" << setw(2) << corner_info(cornC, 10) << "\\\\    14   //" <<setw(2) << corner_info(cornB, 13) << "¯¯¯" << setw(2) << corner_info(cornC, 13) << "\\\\   16    /          " << endl;
+        //		   \   11	 //¯¯¯¯¯¯¯\\	14	 //¯¯¯¯¯¯¯\\   16	 /" << endl;	//		E = (0,1)
+    strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 11) << "___" << setw(2) << corner_info(cornE, 11) << "//" << setw(2) << corner_info(cornA, 10) << " |" << setw(2) << droll(10) << "|" << setw(2) << corner_info(cornD, 10) << "\\\\" << setw(2) << corner_info(cornF, 14) << "___" << setw(2) << corner_info(cornE, 14) << "//" << setw(2) << corner_info(cornA, 13) << " |" << setw(2) << droll(13) << "|" << setw(2) << corner_info(cornD, 13) << "\\\\" << setw(2) << corner_info(cornF, 16) << "___" << setw(2) << corner_info(cornE, 16) << "/         " << endl;
+    //				\_______//	(2,3)  \\_______//	(3,2)  \\_______/" << endl;
+    strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,6) << "¯¯¯" << setw(2) << corner_info(cornC, 6) << "\\\\    10   //" << setw(2) << corner_info(cornB, 9) << "¯¯¯" <<  setw(2) << corner_info(cornC, 9) << "\\\\    13   //" <<  setw(2) << corner_info(cornB,12) << "¯¯¯" << setw(2) << corner_info(cornC, 12) << "\\     " << endl;
+    //				/¯¯¯¯¯¯¯\\	 10	   //¯¯¯¯¯¯¯\\	 13    //¯¯¯¯¯¯¯\'" << endl;
+    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,6) << " |" << setw(2) << droll(6) << "|" << setw(2) << corner_info(cornD, 6) << "\\\\" << setw(2) << corner_info(cornF, 5) << "___" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 9) << " |" << setw(2) << droll(9) << "|" <<  setw(2) << corner_info(cornD, 9) << "\\\\" << setw(2) << corner_info(cornF, 13) << "___" << setw(2) << corner_info(cornE, 13) << "//" <<  setw(2) << corner_info(cornA,12) << " |" << setw(2) << droll(12) << "|" << setw(2) << corner_info(cornD, 12) << "\\     " << endl;
+    //			   /  (1,3)	 \\_______//  (2,2)	 \\_______//  (3,1)	 \'" << endl;	//		B-D-F Navigation matrix:
+    strStream << setw(setwval) << "      \\    6    //" << setw(2) << corner_info(cornB, 5) << "¯¯¯" << setw(2) << corner_info(cornC, 5) << "\\\\    9    //" <<setw(2) << corner_info(cornB, 8) << "¯¯¯" << setw(2) << corner_info(cornC, 8) << "\\\\   12    /     " << endl;
+    //			   \	6	 //¯¯¯¯¯¯¯\\	9	 //¯¯¯¯¯¯¯\\	12	 /" << endl;	//		B = (2,2)
+    strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 6) << "___" << setw(2) << corner_info(cornE, 6) << "//" << setw(2) << corner_info(cornA, 5) << " |" << setw(2) << droll(5) << "|" << setw(2) << corner_info(cornD, 5) << "\\\\" << setw(2) << corner_info(cornF, 9) << "___" << setw(2) << corner_info(cornE, 9) << "//" << setw(2) << corner_info(cornA, 8) << " |" << setw(2) << droll(8) << "|" << setw(2) << corner_info(cornD, 8) << "\\\\" << setw(2) << corner_info(cornF, 12) << "___" << setw(2) << corner_info(cornE, 12) << "/     " << endl;
+    //			    \_______//	(1,2)  \\_______//	(2,1)  \\_______/" << endl;		//		D = (2,1)
+    strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,2) << "¯¯¯" << setw(2) << corner_info(cornC, 2) << "\\\\    5    //" << setw(2) << corner_info(cornB, 4) << "¯¯¯" <<  setw(2) << corner_info(cornC, 4) << "\\\\    8    //" <<  setw(2) << corner_info(cornB,7) << "¯¯¯" << setw(2) << corner_info(cornC, 7) << "\\     " << endl;
+    //				/¯¯¯¯¯¯¯\\	  5	   //¯¯¯¯¯¯¯\\	  8	   //¯¯¯¯¯¯¯\'" << endl;		//		F = (1,1)
+    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,2) << " |" << setw(2) << droll(2) << "|" << setw(2) << corner_info(cornD, 2) << "\\\\" << setw(2) << corner_info(cornF, 5) << "___" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 4) << " |" << setw(2) << droll(4) << "|" <<  setw(2) << corner_info(cornD, 4) << "\\\\" << setw(2) << corner_info(cornF, 8) << "___" << setw(2) << corner_info(cornE, 8) << "//" <<  setw(2) << corner_info(cornA,7) << " |" << setw(2) << droll(7) << "|" << setw(2) << corner_info(cornD, 7) << "\\     " << endl;
+    //			   /  (0,2)	 \\_______//  (1,1)	 \\_______//  (2,0)	 \'" << endl;
+    strStream << setw(setwval) << "      \\    2    //" << setw(2) << corner_info(cornB, 1) << "¯¯¯" << setw(2) << corner_info(cornC, 1) << "\\\\    4    //" <<setw(2) << corner_info(cornB, 3) << "¯¯¯" << setw(2) << corner_info(cornC, 3) << "\\\\    7    /     " << endl;
+    //			   \	2	 //¯¯¯¯¯¯¯\\    4    //¯¯¯¯¯¯¯\\	7	 /" << endl;
+    strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 2) << "___" << setw(2) << corner_info(cornE, 2) << "//" << setw(2) << corner_info(cornA, 1) << " |" << setw(2) << droll(1) << "|" << setw(2) << corner_info(cornD, 1) << "\\\\" << setw(2) << corner_info(cornF, 4) << "___" << setw(2) << corner_info(cornE, 4) << "//" << setw(2) << corner_info(cornA, 3) << " |" << setw(2) << droll(3) << "|" << setw(2) << corner_info(cornD, 3) << "\\\\" << setw(2) << corner_info(cornF, 7) << "___" << setw(2) << corner_info(cornE, 7) << "/     " << endl;
+    //			    \_______//	(0,1)  \\_______//	(1,0)  \\_______/" << endl;
+    strStream << setw(setwval) << "                \\    1    //" <<  setw(2) << corner_info(cornB, 0) << "¯¯¯" <<  setw(2) << corner_info(cornC, 0) << "\\\\    3    /" << endl;
+    //						 \    1    //¯¯¯¯¯¯¯\\	  3    /" << endl;
+    strStream << setw(setwval) << "                 \\" << setw(2) << corner_info(cornF, 1) << "___" << setw(2) << corner_info(cornE, 1) << "//" << setw(2) << corner_info(cornA, 0) << " |" << setw(2) << droll(0) << "|" << setw(2) << corner_info(cornD, 0) << "\\\\" << setw(2) << corner_info(cornF, 3) << "___" << setw(2) << corner_info(cornE, 3) << "/     " << endl;
+    //						  \_______//  (0,0)	 \\_______/" << endl;
+    strStream << setw(setwval) << "                          \\    0    /     " << endl;
+
+    strStream << setw(setwval) << "                           \\" << setw(2) << corner_info(cornF, 0) << "___" << setw(2) << corner_info(cornE, 0) << "/" << endl;
+    //									\_______/" << endl;
+//	filein.open("tempfile.secret");
+//	filein.rdbuf() >> s;
+//	strStream << filein.rdbuf();
+    return(strStream.str());
+}
+
 void MainWindow::on_pushButton_clicked()
 {
     int retval = -1;
@@ -378,6 +429,8 @@ void MainWindow::on_pushButton_clicked()
     int updateboardcolors = 0;
     int tile = 0;
     int corner = 0;
+    string tempstr;
+    const char* strtowrite;
     int road = 0;
     QPushButton *ptrobj = qobject_cast<QPushButton *>(sender());
     QObject *senderObj = sender(); // This will give Sender object
@@ -420,6 +473,7 @@ void MainWindow::on_pushButton_clicked()
         {
             std::cout << "Refresh my cards!" << std::endl;
             Cgame.refresh_cards();
+            update_resources_display();
         }
         else if(senderObjName.toStdString() == "B_DICE_ROLL")
         {
@@ -444,6 +498,12 @@ void MainWindow::on_pushButton_clicked()
         {
             std::cout << "Start game!" << std::endl;
             Cgame.startGame();
+        }
+        else if(senderObjName.toStdString() == "B_PRINT_BOARD")
+        {
+            tempstr = print_board();
+            strtowrite = tempstr.c_str();
+            cout << strtowrite << endl;
         }
         else
         {
