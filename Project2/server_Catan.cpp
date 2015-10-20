@@ -315,7 +315,10 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					{
 						retval = session.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
 						if (retval >= 0)		//if a success, then send player new board layout!
+						{
 							send_board_info(session, servv);
+							cout << "Build settlement successful" << endl;
+						}
 						else
 							send_packet(session, player_number, -32, BUILD_SETTLEMENT, servv);
 					}

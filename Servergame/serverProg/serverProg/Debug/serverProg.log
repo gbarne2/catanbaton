@@ -1,29 +1,14 @@
-﻿Build started 10/19/2015 12:25:42 AM.
+﻿Build started 10/19/2015 7:09:19 PM.
      1>Project "C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\serverProg\serverProg.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\..\Project2\game.cpp ..\..\..\Project2\serverMain.cpp ..\..\..\Project2\server_Catan.cpp ..\..\..\Project2\tcpserver.cpp
-         serverMain.cpp
-         Generating Code...
-         Compiling...
-         tcpserver.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\..\Project2\Tile.cpp ..\..\..\Project2\server_Catan.cpp
          server_Catan.cpp
      1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(152): warning C4101: 'nulptr': unreferenced local variable
-     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(678): warning C4018: '<': signed/unsigned mismatch
-         game.cpp
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(134): warning C4551: function call missing argument list
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(122): warning C4102: 'start_player_order_again': unreferenced label
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(153): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(750): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(831): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(833): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(835): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(837): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(839): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(841): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(843): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(845): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(847): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(849): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(681): warning C4018: '<': signed/unsigned mismatch
+         Tile.cpp
+     1>c:\users\gtb\documents\github\catanbaton\project2\tile.cpp(406): warning C4552: '<<': operator has no effect; expected operator with side-effect
+     1>c:\users\gtb\documents\github\catanbaton\project2\tile.cpp(416): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+     1>c:\users\gtb\documents\github\catanbaton\project2\tile.cpp(424): warning C4018: '<': signed/unsigned mismatch
          Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.lib" /MACHINE:X86 Debug\game.obj
@@ -37,4 +22,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:05.60
+Time Elapsed 00:00:02.70

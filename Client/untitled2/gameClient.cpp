@@ -98,6 +98,7 @@ startagain_assign_resources:
 	goto startagain_assign_resources;
 	//	__nop();
 exit_assign_resources:
+    temp = 1;
 	return(temp);
 }
 

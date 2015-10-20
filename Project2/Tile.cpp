@@ -402,7 +402,10 @@ string tile::get_tile_data_string(int tilenum)
 	count = 3;
 	int z = 11;
 	for (int x = 0; x < 6; x++)
-		temp[x+5] << roads[x];
+	{
+		temp[x + 5] << roads[x];
+		count += 1;
+	}
 		//		data_outtemp += roads[x];
 	for (ptr = cornersz.begin(); ptr < cornersz.end(); ptr++)
 	{
