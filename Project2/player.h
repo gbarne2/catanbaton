@@ -6,11 +6,14 @@
 
 #ifndef START_CARD_VALUES
 #define START_CARD_VALUES
-#define START_ORE		50
-#define START_SHEEP		50
-#define START_BRICK		50
-#define START_WHEAT		50
-#define START_WOOD		50
+#define START_ORE			50
+#define START_SHEEP			50
+#define START_BRICK			50
+#define START_WHEAT			50
+#define START_WOOD			50
+#define START_SETTLEMENTS	5
+#define START_ROADS			15
+#define START_CITIES		4
 #endif
 
 /*
@@ -30,11 +33,11 @@ struct trade_cards
 */
 struct dev_cards
 {
-	int qty_knights;
-	int qty_victory_points;
-	int qty_year_of_plenty;
-	int qty_monopoly;
-	int qty_build_roads;
+	int qty_knights;			//1
+	int qty_victory_points;		//2
+	int qty_year_of_plenty;		//3
+	int qty_monopoly;			//4
+	int qty_build_roads;		//5
 };
 
 class player
@@ -42,7 +45,7 @@ class player
 	sockaddr client_address;
 	SOCKET ClientSocket;
 	int player_ID;
-	std::string Player_name; 
+	std::string Player_name;
 	int qty_wood;
 	int qty_ore;
 	int qty_brick;
@@ -52,6 +55,7 @@ class player
 	int settlements_to_build;
 	int cities_to_build;
 	dev_cards DC;
+	int calculate_victory_points(int);
 
 public:
 	player(void);
@@ -67,6 +71,10 @@ public:
 	int update_roads(int);
 	int update_settlements(int);
 	int update_cities(int);
+	int check_qty_devcard(int);
+	int purchase_dev_card(int);
+	int use_dev_card(int);		//if retval >= 0, then it was deducted/valid. if -52, not enough of selected card. if -51, invalid card.
+	int get_victory_points(int);
 	~player(void);
 };
 

@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 player::player(void)
 {
 	qty_brick = START_BRICK;		//start off with enough resources to build two roads and two settlements
@@ -173,6 +172,120 @@ int player::update_cities(int citiesnum)
 	if (citiesnum < 0)
 			cities_to_build -= 1;
 	return(cities_to_build);
+}
+/*
+int qty_knights;			//1
+int qty_victory_points;		//2
+int qty_year_of_plenty;		//3
+int qty_monopoly;			//4
+int qty_build_roads;		//5
+*/
+int player::check_qty_devcard(int card)
+{
+	int retval = 0;
+	switch (card)
+	{
+	case 1:	retval = DC.qty_knights;
+		break;
+	case 2: retval = DC.qty_victory_points;
+		break;
+	case 3: retval = DC.qty_year_of_plenty;
+		break;
+	case 4: retval = DC.qty_monopoly;
+		break;
+	case 5:	retval = DC.qty_build_roads;
+		break;
+	default: retval = -50;
+		break;
+	}
+	return(retval);
+}
+
+//tell it what card to buy and it will return either the number of that card you now have OR an error code of -50, indicating the input was invalid.
+int player::purchase_dev_card(int card)
+{
+	int retval = 0;
+	switch (card)
+	{
+	case 1: DC.qty_knights += 1;
+		retval = DC.qty_knights;
+		break;
+	case 2: DC.qty_victory_points += 1;
+		retval = DC.qty_victory_points;
+		break;
+	case 3: DC.qty_year_of_plenty += 1;
+		retval = DC.qty_year_of_plenty;
+		break;
+	case 4: DC.qty_monopoly += 1;
+		retval = DC.qty_monopoly;
+		break;
+	case 5: DC.qty_build_roads += 1;
+		retval = DC.qty_build_roads;
+		break;
+	default:
+		retval = -50;
+		break;
+	}
+	return(retval);
+}
+
+int player::use_dev_card(int card)
+{
+	int retval = 0;
+	switch (card)
+	{
+	case 1: if (DC.qty_knights > 0) {
+		DC.qty_knights -= 1;
+		retval = DC.qty_knights;
+	}
+			else
+				retval = -51;
+		break;
+	case 2: //dont reduce this number! it is used to calculate victory points!
+		retval = DC.qty_victory_points;
+		break;
+	case 3: if (DC.qty_year_of_plenty > 0) {
+		DC.qty_year_of_plenty -= 1;
+		retval = DC.qty_year_of_plenty;
+	}
+			else
+				retval = -51;
+		break;
+	case 4: if (DC.qty_monopoly > 0) {
+		DC.qty_monopoly -= 1;
+		retval = DC.qty_monopoly;
+	}
+			else
+				retval = -51;
+		break;
+	case 5: if (DC.qty_build_roads > 0) {
+		DC.qty_build_roads -= 1;
+		retval = DC.qty_build_roads;
+	}
+			else
+				retval = -51;
+		break;
+	default:
+		retval = -50;
+		break;
+	}
+	return(retval);
+
+}
+
+//int input is to be used to determine victory points to see if there is a winner or to display to other users. if displaying to other users it shouldnt include DV victory points
+int player::calculate_victory_points(int for_win)
+{
+	int vp = 0;
+	vp = (START_SETTLEMENTS - settlements_to_build) + (START_CITIES - cities_to_build) * 2;		//need to deal with longest road and largest army at a higher level. no support for those at this level...
+	if (for_win == 1)	//if for victory, include the DV victory points
+		vp += DC.qty_victory_points;
+	return(vp);
+}
+
+int player::get_victory_points(int for_win)
+{
+	return(calculate_victory_points(for_win));
 }
 
 SOCKET player::get_client_socket(void)

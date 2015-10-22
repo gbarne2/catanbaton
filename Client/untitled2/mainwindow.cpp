@@ -17,6 +17,7 @@
 #include <string>
 #include <QList>
 #include <QTimer>
+#include <QInputDialog>
 
 #define BRICK_ICON      "C:/Users/gtb/Documents/GitHub/Brick.png"
 #define SHEEP_ICON      "C:/Users/gtb/Documents/GitHub/Sheep.png"
@@ -25,7 +26,7 @@
 #define WHEAT_ICON      "C:/Users/gtb/Documents/GitHub/Wheat.png"
 #define DESERT_ICON     "C:/Users/gtb/Documents/GitHub/Desert.png"
 
-#define NO_PLAYER_COLOR "background-color: rgb(150,150,150)"
+#define NO_PLAYER_COLOR "background-color: rgb(175,175,175)"
 #define PLAYER_1_COLOR  "background-color: rgb(0,255,0)"
 #define PLAYER_2_COLOR  "background-color: rgb(0,0,255)"
 #define PLAYER_3_COLOR  "background-color: rgb(255,0,0)"
@@ -33,12 +34,21 @@
 
 #define Xicon_size  150
 #define Yicon_size  150
+#define DICE_RADIUS 45
+
+static QPixmap* brickpic;
+static QPixmap* wheatpic;
+static QPixmap* mountainpic;
+static QPixmap* sheeppic;
+static QPixmap* forestpic;
+static QPixmap* desertpic;
 
 string playercolors[5] = {NO_PLAYER_COLOR, PLAYER_1_COLOR, PLAYER_2_COLOR, PLAYER_3_COLOR, PLAYER_4_COLOR};
 /*
  *TODO:
  * need to make a function to 'paint' the board info... it needs to update color of buttons based on who owns them!
  */
+static int update_board_icons = 0;
 char rxdatabuff [4096];
 const int road_array_tile_num[72] = {0,0,0,0,0,0,3,3,3,3,3,7,7,7,7,7,12,12,12,12,12,16,16,16,16,16,17,17,17,17,17,18,18,18,18,18,15,15,15,15,15,11,11,11,11,11,6,6,6,6,6,2,2,2,2,2,10,10,10,5,5,5,1,1,1,13,13,9,8,8,4,4};
 const int road_array_road_num[72] = {0,1,2,3,4,5,0,1,2,3,4,0,1,2,3,4,0,1,2,3,5,5,0,1,2,3,0,1,2,4,5,0,1,2,4,5,0,1,3,4,5,0,1,3,4,5,0,2,3,4,5,0,2,3,4,5,2,3,4,2,3,4,2,4,5,3,4,2,1,0,1,2};
@@ -46,7 +56,7 @@ const int settlement_array_tile_num[54] = {0,0,0,0,0,0,3,3,3,3,7,7,7,7,12,12,12,
 const int settlement_array_corner_num[54] = {0,1,2,3,4,5,1,2,3,4,1,2,3,4,0,1,2,3,0,1,2,3,0,1,2,5,5,0,1,2,1,4,5,0,1,0,5,4,3,0,5,4,0,3,4,5,5,2,1,0,1,2,3,4};
 const int tile_mapping_array[19] = {9,5,4,8,3,1,0,2,6,10,13,14,12,7,16,17,11,15,18};
 QList<QPushButton*> buttonlist;
-
+/*
 int get_tile_resource(int tile_num, QString& file)
 {
     int tempnum = tile_num%7;
@@ -78,7 +88,7 @@ int get_tile_resource(int tile_num, QString& file)
     }
     return(1);
 }
-
+*/
 
 void get_settlement_corner_and_tile_from_name(std::string  name, int& tile, int& corner)
 {
@@ -132,6 +142,13 @@ void MainWindow::get_icon_file_rsrc_type_and_roll_from_tile_num(QString &filenam
 
 void MainWindow::set_icons_and_rollvals_on_board()
 {
+/*    static QPixmap brickpic(BRICK_ICON);
+    static QPixmap wheatpic(WHEAT_ICON);
+    static QPixmap mountainpic(MOUNTAIN_ICON);
+    static QPixmap sheeppic(SHEEP_ICON);
+    static QPixmap forestpic(FOREST_ICON);
+    static QPixmap desertpic(DESERT_ICON);
+*/
     char* charptr;
     int resrc = 0;
     int roll = 0;
@@ -145,6 +162,7 @@ void MainWindow::set_icons_and_rollvals_on_board()
     QSize size(Xicon_size, Yicon_size);
     for(int x = 0; x < buttonlist.size(); x++)
     {
+        //folderpath = QDir::currentPath();
         tempstr = buttonlist[x]->objectName().toStdString();
         charptr = new char[tempstr.length()+1];
         strcpy(charptr, tempstr.c_str());
@@ -159,19 +177,49 @@ void MainWindow::set_icons_and_rollvals_on_board()
                 temp = temp*10;
                 temp += temp2;
             }
-            temp2 = tile_mapping_array[temp%19];        //real tile number.
+            temp2 = tile_mapping_array[(temp-1)%19];        //real tile number.
             get_icon_file_rsrc_type_and_roll_from_tile_num(qstr, resrc, roll, temp2);
             folderpath.append(qstr);
+            switch(resrc)
+                {
+                case 1: //Wheat
+                buttonlist[x]->setIcon(*wheatpic);
+                    break;
+                case 2: //Ore
+                buttonlist[x]->setIcon(*mountainpic);
+                    break;
+                case 3: //Wood
+                buttonlist[x]->setIcon(*forestpic);
+                    break;
+                case 4: //Sheep
+                buttonlist[x]->setIcon(*sheeppic);
+                    break;
+                case 5: //Brick
+                buttonlist[x]->setIcon(*brickpic);
+                    break;
+                case 6: //Desert
+                buttonlist[x]->setIcon(*desertpic);
+                    break;
+                default:
+                buttonlist[x]->setIcon(*desertpic);
+                    if(debug_text)
+                        std::cout << "Invalid resource type in get_icon_file_rsrc_type_and_roll_from_tile_num(...)" << std::endl;
+                }
+
             std::cout << "File path to set icon to: " << folderpath.toStdString() << std::endl;
-            QPixmap temppix(folderpath);//
+//            QPixmap temppix(folderpath);//
 //            temppix.load(folderpath);
-            buttonlist[x]->setIcon(temppix);
+//            buttonlist[x]->setIcon(temppix);
             buttonlist[x]->setIconSize(size);
             folderpath.clear();
                     //    get_tile_resource(3, tempstr);
                     //    temppix.load(tempstr);
                     //    ui->tile1_4->setIcon(temppix);
                     //    ui->tile1_4->setIconSize(size);
+        }
+        else if(charptr[0] == 'D')   //if a tile object, then get the number of the object name
+        {
+            setDiceRoll(buttonlist[x]->objectName().toStdString(), buttonlist[x]);
         }
     }
 }
@@ -214,6 +262,7 @@ int get_tile_num_from_tile_name(std::string name)
 
 static SOCKET ClientSock = INVALID_SOCKET;
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -222,6 +271,21 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     buttonlist = this->findChildren<QPushButton *> ();
     std::cout << "# buttons found: " << buttonlist.size() << std::endl;
+
+    brickpic = new QPixmap(BRICK_ICON);
+    wheatpic = new QPixmap(WHEAT_ICON);
+    mountainpic = new QPixmap(MOUNTAIN_ICON);
+    sheeppic = new QPixmap(SHEEP_ICON);
+    forestpic = new QPixmap(FOREST_ICON);
+    desertpic = new QPixmap(DESERT_ICON);
+
+/*    brickpic = QPixmap(BRICK_ICON);
+    wheatpic = QPixmap(WHEAT_ICON);
+    mountainpic = QPixmap(MOUNTAIN_ICON);
+    sheeppic = QPixmap(SHEEP_ICON);
+    forestpic = QPixmap(FOREST_ICON);
+    desertpic = QPixmap(DESERT_ICON);
+*/
     for(int x = 0; x < buttonlist.size(); x++)
         connect(buttonlist[x],SIGNAL(pressed()), this, SLOT(on_pushButton_clicked()));
     ClientSock = Cgame.initsocketthing();
@@ -318,6 +382,96 @@ void MainWindow::update_resources_display()
             //6 desert
 
 }
+void MainWindow::setdicerolls()
+{
+    for(int i = 0; i < buttonlist.size(); i++)
+    {
+        if(buttonlist[i]->objectName().toStdString()[0] == 'D')
+            setDiceRoll(buttonlist[i]->objectName().toStdString(), buttonlist[i]);
+    }
+}
+
+void MainWindow::setDiceRoll(std::string nname, QPushButton *ptr)
+{
+    std::stringstream convert;
+    int retval = 0;
+    std::string tempstr = "";
+    //DICEROLL_ = 9 lenght, if 11, then its 2 digits.
+    int length = nname.length();
+    char tempchar[1] = {nname[9]};
+    int tilenum = atoi(tempchar);
+    if(length == 11)
+    {
+        tempchar[0] = nname[10];
+        tilenum = tilenum*10 + atoi(tempchar);
+    }
+    tilenum -= 1;
+    retval = droll(tilenum);
+    convert.flush();
+    convert << retval;
+    tempstr = convert.str();
+    if(nname[0] == 'D')
+    {
+        switch(retval)
+        {
+        case 1:
+            tempstr = "DESERT";
+            break;
+        case 2:
+            tempstr += "\n*";
+            break;
+        case 3:
+            tempstr += "\n**";
+            break;
+        case 4:
+            tempstr += "\n***";
+            break;
+        case 5:
+            tempstr += "\n****";
+            break;
+        case 6:
+            tempstr += "\n*****";
+            break;
+        case 8:
+            tempstr += "\n*****";
+            break;
+        case 9:
+            tempstr += "\n****";
+            break;
+        case 10:
+            tempstr += "\n***";
+            break;
+        case 11:
+            tempstr += "\n**";
+            break;
+        case 12:
+            tempstr += "\n*";
+            break;
+        default:
+            break;
+        }
+        if(tempstr == "DESERT")     //if its the desert tile, then
+        {
+            ptr->hide();
+        }
+        else if(ptr->text().toStdString() != tempstr)
+        {
+            if(ptr->isHidden())
+                ptr->show();
+            QString qstr = QString::fromStdString(tempstr);
+            ptr->setText(qstr);
+            ptr->setFixedHeight(DICE_RADIUS);
+            ptr->setFixedWidth(DICE_RADIUS);
+            QRect *rect = new QRect(0,0,DICE_RADIUS,DICE_RADIUS);
+     //       qDebug() << rect->size();
+     //       qDebug() << ptr->size();
+            QRegion* region = new QRegion(*rect, QRegion::Ellipse);
+     //       qDebug() << region->boundingRect().size();
+            ptr->setMask(*region);
+            ptr->setStyleSheet("color: white;background-color: rgba(255,255,255,125);");
+        }
+    }
+}
 
 void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
 {
@@ -329,7 +483,7 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
     {
         get_road_road_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_road_owner(road, tile);
-        if(retval > 0) // && (retval < playercolors.size()))
+        if((retval > 0) || (ptr->styleSheet().toStdString() != playercolors[retval])) // && (retval < playercolors.size()))
         {
             tempstr = QString::fromUtf8(playercolors[retval].c_str());
             ptr->setStyleSheet(tempstr);
@@ -339,12 +493,14 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
     {
         get_settlement_corner_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_corner_owner(tile, road);
-        if(retval > 0) // && (retval < playercolors.size()))
+        if((retval > 0) || (ptr->styleSheet().toStdString() != playercolors[retval]))// && (retval < playercolors.size()))
         {
             tempstr = QString::fromUtf8(playercolors[retval].c_str());
             ptr->setStyleSheet(tempstr);
         }
     }
+//    else if(nname[0] == 'D')
+//        setDiceRoll(nname, ptr);
 //    else
 //        std::cout << "ERRRRROORRRR Invalid button!" << std::endl;
 
@@ -379,52 +535,60 @@ string MainWindow::print_board()
 
 //    strStream = std::stringstream();	//flush string stream...
 //	strStream.open("tempfile.secret");
-    strStream << setw(setwval) << "                           /" << setw(2) << corner_info(cornB,18) << "¯¯¯" << setw(2) << corner_info(cornC, 18) << "\\                         " << endl;
+    strStream << setw(setwval) << "                           /" << setw(2) << corner_info(cornB,18) << "'''''" << setw(2) << corner_info(cornC, 18) << "\\                         " << endl;
     strStream << setw(setwval) << "                          /" << setw(2) << corner_info(cornA, 18) << " |" << setw(2) << droll(18) << "|" << setw(2) << corner_info(cornD, 18) << "\\               " << endl;
-    strStream << setw(setwval) << "                 /" << setw(2) << corner_info(cornB,15) << "¯¯¯" << setw(2) << corner_info(cornC, 15) << "\\\\    18   //" << setw(2) << corner_info(cornB, 17) << "¯¯¯" <<  setw(2) << corner_info(cornC, 17) << "\\               " << endl;
-    strStream << setw(setwval) << "                /" << setw(2) << corner_info(cornA, 15) << " |" << setw(2) << droll(15) << "|" << setw(2) << corner_info(cornD, 15) << "\\\\" << setw(2) << corner_info(cornF, 18) << "___" << setw(2) << corner_info(cornE, 18) << "//" << setw(2) << corner_info(cornA, 17) << " |" << setw(2) << droll(17) << "|" << setw(2) << corner_info(cornD, 17) << "\\                  " << endl;				//		A-C-E Navigation matrix:
-    strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,11) << "¯¯¯" << setw(2) << corner_info(cornC, 11) << "\\\\   15    //" << setw(2) << corner_info(cornB, 14) << "¯¯¯" <<  setw(2) << corner_info(cornC, 14) << "\\\\   17    //" <<  setw(2) << corner_info(cornB,16) << "¯¯¯" << setw(2) << corner_info(cornC, 16) << "\\          " << endl;
-    //				/¯¯¯¯¯¯¯\\	  15   //¯¯¯¯¯¯¯\\	  17   //¯¯¯¯¯¯¯\" << endl;		//		A = (0,2)
-    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,11) << " |" << setw(2) << droll(11) << "|" << setw(2) << corner_info(cornD, 11) << "\\\\" << setw(2) << corner_info(cornF, 15) << "___" << setw(2) << corner_info(cornE, 15) << "//" << setw(2) << corner_info(cornA, 14) << " |" << setw(2) << droll(14) << "|" <<  setw(2) << corner_info(cornD, 14) << "\\\\" << setw(2) << corner_info(cornF, 17) << "___" << setw(2) << corner_info(cornE, 17) << "//" <<  setw(2) << corner_info(cornA,16) << " |" << setw(2) << droll(16) << "|" << setw(2) << corner_info(cornD, 16) << "\\        " << endl;
-    //			   /  (2,4)	 \\_______//  (3,3)	 \\_______//  (4,2)	 \				C = (1,2)
-    strStream << setw(setwval) << "      \\    11   //" << setw(2) << corner_info(cornB, 10) << "¯¯¯" << setw(2) << corner_info(cornC, 10) << "\\\\    14   //" <<setw(2) << corner_info(cornB, 13) << "¯¯¯" << setw(2) << corner_info(cornC, 13) << "\\\\   16    /          " << endl;
-        //		   \   11	 //¯¯¯¯¯¯¯\\	14	 //¯¯¯¯¯¯¯\\   16	 /" << endl;	//		E = (0,1)
-    strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 11) << "___" << setw(2) << corner_info(cornE, 11) << "//" << setw(2) << corner_info(cornA, 10) << " |" << setw(2) << droll(10) << "|" << setw(2) << corner_info(cornD, 10) << "\\\\" << setw(2) << corner_info(cornF, 14) << "___" << setw(2) << corner_info(cornE, 14) << "//" << setw(2) << corner_info(cornA, 13) << " |" << setw(2) << droll(13) << "|" << setw(2) << corner_info(cornD, 13) << "\\\\" << setw(2) << corner_info(cornF, 16) << "___" << setw(2) << corner_info(cornE, 16) << "/         " << endl;
-    //				\_______//	(2,3)  \\_______//	(3,2)  \\_______/" << endl;
-    strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,6) << "¯¯¯" << setw(2) << corner_info(cornC, 6) << "\\\\    10   //" << setw(2) << corner_info(cornB, 9) << "¯¯¯" <<  setw(2) << corner_info(cornC, 9) << "\\\\    13   //" <<  setw(2) << corner_info(cornB,12) << "¯¯¯" << setw(2) << corner_info(cornC, 12) << "\\     " << endl;
-    //				/¯¯¯¯¯¯¯\\	 10	   //¯¯¯¯¯¯¯\\	 13    //¯¯¯¯¯¯¯\'" << endl;
-    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,6) << " |" << setw(2) << droll(6) << "|" << setw(2) << corner_info(cornD, 6) << "\\\\" << setw(2) << corner_info(cornF, 5) << "___" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 9) << " |" << setw(2) << droll(9) << "|" <<  setw(2) << corner_info(cornD, 9) << "\\\\" << setw(2) << corner_info(cornF, 13) << "___" << setw(2) << corner_info(cornE, 13) << "//" <<  setw(2) << corner_info(cornA,12) << " |" << setw(2) << droll(12) << "|" << setw(2) << corner_info(cornD, 12) << "\\     " << endl;
-    //			   /  (1,3)	 \\_______//  (2,2)	 \\_______//  (3,1)	 \'" << endl;	//		B-D-F Navigation matrix:
-    strStream << setw(setwval) << "      \\    6    //" << setw(2) << corner_info(cornB, 5) << "¯¯¯" << setw(2) << corner_info(cornC, 5) << "\\\\    9    //" <<setw(2) << corner_info(cornB, 8) << "¯¯¯" << setw(2) << corner_info(cornC, 8) << "\\\\   12    /     " << endl;
-    //			   \	6	 //¯¯¯¯¯¯¯\\	9	 //¯¯¯¯¯¯¯\\	12	 /" << endl;	//		B = (2,2)
-    strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 6) << "___" << setw(2) << corner_info(cornE, 6) << "//" << setw(2) << corner_info(cornA, 5) << " |" << setw(2) << droll(5) << "|" << setw(2) << corner_info(cornD, 5) << "\\\\" << setw(2) << corner_info(cornF, 9) << "___" << setw(2) << corner_info(cornE, 9) << "//" << setw(2) << corner_info(cornA, 8) << " |" << setw(2) << droll(8) << "|" << setw(2) << corner_info(cornD, 8) << "\\\\" << setw(2) << corner_info(cornF, 12) << "___" << setw(2) << corner_info(cornE, 12) << "/     " << endl;
-    //			    \_______//	(1,2)  \\_______//	(2,1)  \\_______/" << endl;		//		D = (2,1)
-    strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,2) << "¯¯¯" << setw(2) << corner_info(cornC, 2) << "\\\\    5    //" << setw(2) << corner_info(cornB, 4) << "¯¯¯" <<  setw(2) << corner_info(cornC, 4) << "\\\\    8    //" <<  setw(2) << corner_info(cornB,7) << "¯¯¯" << setw(2) << corner_info(cornC, 7) << "\\     " << endl;
-    //				/¯¯¯¯¯¯¯\\	  5	   //¯¯¯¯¯¯¯\\	  8	   //¯¯¯¯¯¯¯\'" << endl;		//		F = (1,1)
-    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,2) << " |" << setw(2) << droll(2) << "|" << setw(2) << corner_info(cornD, 2) << "\\\\" << setw(2) << corner_info(cornF, 5) << "___" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 4) << " |" << setw(2) << droll(4) << "|" <<  setw(2) << corner_info(cornD, 4) << "\\\\" << setw(2) << corner_info(cornF, 8) << "___" << setw(2) << corner_info(cornE, 8) << "//" <<  setw(2) << corner_info(cornA,7) << " |" << setw(2) << droll(7) << "|" << setw(2) << corner_info(cornD, 7) << "\\     " << endl;
-    //			   /  (0,2)	 \\_______//  (1,1)	 \\_______//  (2,0)	 \'" << endl;
-    strStream << setw(setwval) << "      \\    2    //" << setw(2) << corner_info(cornB, 1) << "¯¯¯" << setw(2) << corner_info(cornC, 1) << "\\\\    4    //" <<setw(2) << corner_info(cornB, 3) << "¯¯¯" << setw(2) << corner_info(cornC, 3) << "\\\\    7    /     " << endl;
-    //			   \	2	 //¯¯¯¯¯¯¯\\    4    //¯¯¯¯¯¯¯\\	7	 /" << endl;
-    strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 2) << "___" << setw(2) << corner_info(cornE, 2) << "//" << setw(2) << corner_info(cornA, 1) << " |" << setw(2) << droll(1) << "|" << setw(2) << corner_info(cornD, 1) << "\\\\" << setw(2) << corner_info(cornF, 4) << "___" << setw(2) << corner_info(cornE, 4) << "//" << setw(2) << corner_info(cornA, 3) << " |" << setw(2) << droll(3) << "|" << setw(2) << corner_info(cornD, 3) << "\\\\" << setw(2) << corner_info(cornF, 7) << "___" << setw(2) << corner_info(cornE, 7) << "/     " << endl;
-    //			    \_______//	(0,1)  \\_______//	(1,0)  \\_______/" << endl;
-    strStream << setw(setwval) << "                \\    1    //" <<  setw(2) << corner_info(cornB, 0) << "¯¯¯" <<  setw(2) << corner_info(cornC, 0) << "\\\\    3    /" << endl;
-    //						 \    1    //¯¯¯¯¯¯¯\\	  3    /" << endl;
-    strStream << setw(setwval) << "                 \\" << setw(2) << corner_info(cornF, 1) << "___" << setw(2) << corner_info(cornE, 1) << "//" << setw(2) << corner_info(cornA, 0) << " |" << setw(2) << droll(0) << "|" << setw(2) << corner_info(cornD, 0) << "\\\\" << setw(2) << corner_info(cornF, 3) << "___" << setw(2) << corner_info(cornE, 3) << "/     " << endl;
-    //						  \_______//  (0,0)	 \\_______/" << endl;
+    strStream << setw(setwval) << "                 /" << setw(2) << corner_info(cornB,15) << "'''''" << setw(2) << corner_info(cornC, 15) << "\\\\    18   //" << setw(2) << corner_info(cornB, 17) << "'''''" <<  setw(2) << corner_info(cornC, 17) << "\\               " << endl;
+    strStream << setw(setwval) << "                /" << setw(2) << corner_info(cornA, 15) << " |" << setw(2) << droll(15) << "|" << setw(2) << corner_info(cornD, 15) << "\\\\" << setw(2) << corner_info(cornF, 18) << "____" << setw(2) << corner_info(cornE, 18) << "//" << setw(2) << corner_info(cornA, 17) << " |" << setw(2) << droll(17) << "|" << setw(2) << corner_info(cornD, 17) << "\\                  " << endl;				//		A-C-E Navigation matrix:
+    strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,11) << "'''''" << setw(2) << corner_info(cornC, 11) << "\\\\   15    //" << setw(2) << corner_info(cornB, 14) << "'''''" <<  setw(2) << corner_info(cornC, 14) << "\\\\   17    //" <<  setw(2) << corner_info(cornB,16) << "'''''" << setw(2) << corner_info(cornC, 16) << "\\          " << endl;
+    //				/''''''''''¯\\	  15   //''''''''''¯\\	  17   //''''''''''¯\" << endl;		//		A = (0,2)
+    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,11) << " |" << setw(2) << droll(11) << "|" << setw(2) << corner_info(cornD, 11) << "\\\\" << setw(2) << corner_info(cornF, 15) << "____" << setw(2) << corner_info(cornE, 15) << "//" << setw(2) << corner_info(cornA, 14) << " |" << setw(2) << droll(14) << "|" <<  setw(2) << corner_info(cornD, 14) << "\\\\" << setw(2) << corner_info(cornF, 17) << "____" << setw(2) << corner_info(cornE, 17) << "//" <<  setw(2) << corner_info(cornA,16) << " |" << setw(2) << droll(16) << "|" << setw(2) << corner_info(cornD, 16) << "\\        " << endl;
+    //			   /  (2,4)	 \\_________//  (3,3)	 \\_________//  (4,2)	 \				C = (1,2)
+    strStream << setw(setwval) << "      \\    11   //" << setw(2) << corner_info(cornB, 10) << "'''''" << setw(2) << corner_info(cornC, 10) << "\\\\    14   //" <<setw(2) << corner_info(cornB, 13) << "'''''" << setw(2) << corner_info(cornC, 13) << "\\\\   16    /          " << endl;
+        //		   \   11	 //''''''''''¯\\	14	 //''''''''''¯\\   16	 /" << endl;	//		E = (0,1)
+    strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 11) << "____" << setw(2) << corner_info(cornE, 11) << "//" << setw(2) << corner_info(cornA, 10) << " |" << setw(2) << droll(10) << "|" << setw(2) << corner_info(cornD, 10) << "\\\\" << setw(2) << corner_info(cornF, 14) << "____" << setw(2) << corner_info(cornE, 14) << "//" << setw(2) << corner_info(cornA, 13) << " |" << setw(2) << droll(13) << "|" << setw(2) << corner_info(cornD, 13) << "\\\\" << setw(2) << corner_info(cornF, 16) << "____" << setw(2) << corner_info(cornE, 16) << "/         " << endl;
+    //				\_________//	(2,3)  \\_________//	(3,2)  \\_________/" << endl;
+    strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,6) << "'''''" << setw(2) << corner_info(cornC, 6) << "\\\\    10   //" << setw(2) << corner_info(cornB, 9) << "'''''" <<  setw(2) << corner_info(cornC, 9) << "\\\\    13   //" <<  setw(2) << corner_info(cornB,12) << "'''''" << setw(2) << corner_info(cornC, 12) << "\\     " << endl;
+    //				/''''''''''¯\\	 10	   //''''''''''¯\\	 13    //''''''''''¯\'" << endl;
+    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,6) << " |" << setw(2) << droll(6) << "|" << setw(2) << corner_info(cornD, 6) << "\\\\" << setw(2) << corner_info(cornF, 5) << "____" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 9) << " |" << setw(2) << droll(9) << "|" <<  setw(2) << corner_info(cornD, 9) << "\\\\" << setw(2) << corner_info(cornF, 13) << "____" << setw(2) << corner_info(cornE, 13) << "//" <<  setw(2) << corner_info(cornA,12) << " |" << setw(2) << droll(12) << "|" << setw(2) << corner_info(cornD, 12) << "\\     " << endl;
+    //			   /  (1,3)	 \\_________//  (2,2)	 \\_________//  (3,1)	 \'" << endl;	//		B-D-F Navigation matrix:
+    strStream << setw(setwval) << "      \\    6    //" << setw(2) << corner_info(cornB, 5) << "'''''" << setw(2) << corner_info(cornC, 5) << "\\\\    9    //" <<setw(2) << corner_info(cornB, 8) << "'''''" << setw(2) << corner_info(cornC, 8) << "\\\\   12    /     " << endl;
+    //			   \	6	 //''''''''''¯\\	9	 //''''''''''¯\\	12	 /" << endl;	//		B = (2,2)
+    strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 6) << "____" << setw(2) << corner_info(cornE, 6) << "//" << setw(2) << corner_info(cornA, 5) << " |" << setw(2) << droll(5) << "|" << setw(2) << corner_info(cornD, 5) << "\\\\" << setw(2) << corner_info(cornF, 9) << "____" << setw(2) << corner_info(cornE, 9) << "//" << setw(2) << corner_info(cornA, 8) << " |" << setw(2) << droll(8) << "|" << setw(2) << corner_info(cornD, 8) << "\\\\" << setw(2) << corner_info(cornF, 12) << "____" << setw(2) << corner_info(cornE, 12) << "/     " << endl;
+    //			    \_________//	(1,2)  \\_________//	(2,1)  \\_________/" << endl;		//		D = (2,1)
+    strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,2) << "'''''" << setw(2) << corner_info(cornC, 2) << "\\\\    5    //" << setw(2) << corner_info(cornB, 4) << "'''''" <<  setw(2) << corner_info(cornC, 4) << "\\\\    8    //" <<  setw(2) << corner_info(cornB,7) << "'''''" << setw(2) << corner_info(cornC, 7) << "\\     " << endl;
+    //				/''''''''''¯\\	  5	   //''''''''''¯\\	  8	   //''''''''''¯\'" << endl;		//		F = (1,1)
+    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,2) << " |" << setw(2) << droll(2) << "|" << setw(2) << corner_info(cornD, 2) << "\\\\" << setw(2) << corner_info(cornF, 5) << "____" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 4) << " |" << setw(2) << droll(4) << "|" <<  setw(2) << corner_info(cornD, 4) << "\\\\" << setw(2) << corner_info(cornF, 8) << "____" << setw(2) << corner_info(cornE, 8) << "//" <<  setw(2) << corner_info(cornA,7) << " |" << setw(2) << droll(7) << "|" << setw(2) << corner_info(cornD, 7) << "\\     " << endl;
+    //			   /  (0,2)	 \\_________//  (1,1)	 \\_________//  (2,0)	 \'" << endl;
+    strStream << setw(setwval) << "      \\    2    //" << setw(2) << corner_info(cornB, 1) << "'''''" << setw(2) << corner_info(cornC, 1) << "\\\\    4    //" <<setw(2) << corner_info(cornB, 3) << "'''''" << setw(2) << corner_info(cornC, 3) << "\\\\    7    /     " << endl;
+    //			   \	2	 //''''''''''¯\\    4    //''''''''''¯\\	7	 /" << endl;
+    strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 2) << "____" << setw(2) << corner_info(cornE, 2) << "//" << setw(2) << corner_info(cornA, 1) << " |" << setw(2) << droll(1) << "|" << setw(2) << corner_info(cornD, 1) << "\\\\" << setw(2) << corner_info(cornF, 4) << "____" << setw(2) << corner_info(cornE, 4) << "//" << setw(2) << corner_info(cornA, 3) << " |" << setw(2) << droll(3) << "|" << setw(2) << corner_info(cornD, 3) << "\\\\" << setw(2) << corner_info(cornF, 7) << "____" << setw(2) << corner_info(cornE, 7) << "/     " << endl;
+    //			    \_________//	(0,1)  \\_________//	(1,0)  \\_________/" << endl;
+    strStream << setw(setwval) << "                \\    1    //" <<  setw(2) << corner_info(cornB, 0) << "'''''" <<  setw(2) << corner_info(cornC, 0) << "\\\\    3    /" << endl;
+    //						 \    1    //''''''''''¯\\	  3    /" << endl;
+    strStream << setw(setwval) << "                 \\" << setw(2) << corner_info(cornF, 1) << "____" << setw(2) << corner_info(cornE, 1) << "//" << setw(2) << corner_info(cornA, 0) << " |" << setw(2) << droll(0) << "|" << setw(2) << corner_info(cornD, 0) << "\\\\" << setw(2) << corner_info(cornF, 3) << "____" << setw(2) << corner_info(cornE, 3) << "/     " << endl;
+    //						  \_________//  (0,0)	 \\_________/" << endl;
     strStream << setw(setwval) << "                          \\    0    /     " << endl;
 
-    strStream << setw(setwval) << "                           \\" << setw(2) << corner_info(cornF, 0) << "___" << setw(2) << corner_info(cornE, 0) << "/" << endl;
-    //									\_______/" << endl;
+    strStream << setw(setwval) << "                           \\" << setw(2) << corner_info(cornF, 0) << "____" << setw(2) << corner_info(cornE, 0) << "/" << endl;
+    //									\_________/" << endl;
 //	filein.open("tempfile.secret");
 //	filein.rdbuf() >> s;
 //	strStream << filein.rdbuf();
     return(strStream.str());
 }
+void MainWindow::update_dev_cards_on_gui()
+{
+    ui->card_DK->display(Cgame.get_qty_dv_cardd(1));
+    ui->card_DV->display(Cgame.get_qty_dv_cardd(2));
+    ui->card_DY->display(Cgame.get_qty_dv_cardd(3));
+    ui->card_DM->display(Cgame.get_qty_dv_cardd(4));
+    ui->card_DR->display(Cgame.get_qty_dv_cardd(5));
+}
 
 void MainWindow::on_pushButton_clicked()
 {
     int retval = -1;
-    int i = 0;
+    static int i = 0;
     int updatecolortile = 0;
     int updateboardcolors = 0;
     int tile = 0;
@@ -432,6 +596,7 @@ void MainWindow::on_pushButton_clicked()
     string tempstr;
     const char* strtowrite;
     int road = 0;
+    i = 0;
     QPushButton *ptrobj = qobject_cast<QPushButton *>(sender());
     QObject *senderObj = sender(); // This will give Sender object
     // This will give obejct name for above it will give "A", "B", "C"
@@ -485,25 +650,60 @@ void MainWindow::on_pushButton_clicked()
             updateboardcolors = 1;
             std::cout << "End my turn!" << std::endl;
             Cgame.end_turn();
-            set_icons_and_rollvals_on_board();
+//            set_icons_and_rollvals_on_board();
         }
         else if(senderObjName.toStdString() == "B_UPDATE_BOARD")
         {
             std::cout << "Update board!" << std::endl;
             Cgame.get_board_info();
             updateboardcolors = 1;
-            set_icons_and_rollvals_on_board();
+            check_rx_data_buff = 1;
+            if(update_board_icons == 0)
+                update_board_icons = 1;
+//            set_icons_and_rollvals_on_board();
         }
         else if(senderObjName.toStdString() == "B_START_GAME")
         {
             std::cout << "Start game!" << std::endl;
             Cgame.startGame();
+            retval = clientFrameHandler(Cgame, rxdatabuff);
+            Cgame.get_board_info();
+            retval = clientFrameHandler(Cgame, rxdatabuff);
+            updateboardcolors = 1;
+            set_icons_and_rollvals_on_board();
         }
         else if(senderObjName.toStdString() == "B_PRINT_BOARD")
         {
             tempstr = print_board();
             strtowrite = tempstr.c_str();
             cout << strtowrite << endl;
+        }
+        else if(senderObjName.toStdString() == "B_INIT_DICE_ROLLS")
+        {
+            setdicerolls();
+        }
+        else if(senderObjName.toStdString() == "B_BUY_DEV_CARDS")
+        {
+            bool okayflag = FALSE;
+            int numcards = QInputDialog::getInt(this, tr("Purchase Development Card"),
+                                                tr("Qty. development cards to buy:"),
+                                                1,1,10,1,&okayflag);
+            if(okayflag)
+            {
+                Cgame.buy_dv_cardd(numcards);
+                //need to process what the server responds with, then request for updated resource cards
+                if(check_rx_data_buff == 1)
+                {
+                    retval = clientFrameHandler(Cgame, rxdatabuff);
+                    update_dev_cards_on_gui();
+                    Cgame.refresh_cards();
+                    if(check_rx_data_buff == 1)
+                    {
+                        retval = clientFrameHandler(Cgame, rxdatabuff);
+                        update_resources_display();
+                    }
+                }
+            }
         }
         else
         {
@@ -535,7 +735,7 @@ void MainWindow::on_pushButton_clicked()
                     else
                         std::cout << "Neither build city or build settlement options are selected!" << std::endl;
                 }
-                else if(buttonlist[i]->objectName().toStdString().at(0) == 'r')
+                else if(buttonlist[i]->objectName().toStdString()[0] == 'r')
                 {
                     get_road_road_and_tile_from_name(buttonlist[i]->objectName().toStdString(), tile, road);
                     if(ui->BUILD_A_ROAD->isChecked())
@@ -546,7 +746,6 @@ void MainWindow::on_pushButton_clicked()
                     else
                         std::cout << "Build road not selected!" << std::endl;
                 }
-
                 else
                     retval = -1;
 //                buttonlist[i]->setStyleSheet(PLAYER_1_COLOR);
@@ -571,11 +770,17 @@ void MainWindow::on_pushButton_clicked()
             updateboardcolors = 0;
             update_board_colors();
         }
+        if(update_board_icons == 1)
+        {
+            set_icons_and_rollvals_on_board();
+            update_board_icons = 0;
+        }
     }
 }
 
 void MainWindow::on_pushButton_released()
-{   QObject *senderObj = sender(); // This will give Sender object
+{
+    QObject *senderObj = sender(); // This will give Sender object
     // This will give obejct name for above it will give "A", "B", "C"
     QString senderObjName = senderObj->objectName();
  //   if(senderObjName[0] == "t")

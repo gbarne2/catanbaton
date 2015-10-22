@@ -76,8 +76,9 @@ public:
 	int check_corner_owner(int corner);
 	int check_corner_building_type(int corner);
 	int check_robber(void);
-	int update_board_info_from_server(char*, int, int);
-	int set_resource_type(int res_type);
+    int update_board_info_from_server(char*, int, int&);
+//    vector<ClientCorner> update_board_info_from_server(char*, int, int&);
+    int set_resource_type(int res_type);
 	int set_dice_roll(int dicerollval);
 	
 	/*

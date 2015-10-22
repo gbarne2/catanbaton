@@ -8,6 +8,18 @@
 #define APPROVE_TRADE 	1
 #define DENY_TRADE	-43
 
+#ifndef START_DECK_QTY
+#define START_DECK_QTY			1
+#define START_KNIGHTS			15
+#define START_YEAR_OF_PLENTY	2
+#define START_BUILD_ROADS		2
+#define START_MONOPOLY			1
+#define START_VICTORY_POINTS	5
+#define START_QTY_DEV_CARDS		25
+#endif
+
+#ifndef COORDS_AND_TILE_DATA
+#define COORDS_AND_TILE_DATA	1
 #define X_tiles 5
 #define Y_tiles 5
 #define active_num_tiles 19
@@ -51,7 +63,17 @@
 #define roadEFy 1
 #define roadFAx 1
 #define roadFAy 0
+#endif
 
+struct dev_card_deck_struct
+{
+	unsigned int qty_victory_points_left;
+	unsigned int qty_build_roads_left;
+	unsigned int qty_year_of_plenty_left;
+	unsigned int qty_knights_left;
+	unsigned int qty_monopoly_left;
+	vector<unsigned int> dev_card_deck;
+};
 
 struct trade_cards_offer
 {
@@ -70,6 +92,7 @@ struct trade_cards_offer
 class game
 {
 private:
+	dev_card_deck_struct DV_deck;
 	int* player_turn_array;
 	tile pieces[X_tiles][Y_tiles]; //data[x][y], invalid indexes will need to be checked against! ((0,3),(0,4),(1,3),(3,1),(4,0),(4,1) dont exist)
 //	vector<tile> pieces;
@@ -106,8 +129,11 @@ private:
 	int check_resources_trade(trade_cards_offer, int, int);
 	int calculate_card_to_steal(int playernum);
 	int deduct_resources_trade_low(int, int, int);
+	void initialize_dev_card_deck();
+
 public:
 	game(void);
+	int check_tile_resource_type(int);
 	int next_player(void);
 	int check_current_player(void);
 	int check_number_of_players(void);
@@ -120,6 +146,9 @@ public:
 	int check_resources_city(int playernum);
 	int upgrade_settlement(int tilenum, int playernum, int cornernum);
 	int check_resources_devcard(int playernum);
+	int purchase_DV_card(int playernum);
+	int redeem_DV_card(int playernum, int dvcard);
+	void get_current_dv_cards(int (&arrayarray)[5], int player_number);
 	int check_corner_building_type(int corner, int tilenum);
 	~game(void);
 	int build_std_board(int);		//this function needs to create the appropriate number of tiles and index them so that they can be easily manuvered around
@@ -130,7 +159,7 @@ public:
 	int check_resources(int player, int type);
 	int steal_random_card(int playernum, int player_to_steal_from);
 	int start_turn(int);
-	int start_game(int, vector<string>);
+	int start_game(int);
 	int get_dice_roll(int);			//used to get the dice roll of a tile.
 	unsigned int get_current_roll(void);		//used to read what the current dice roll is for the turn.
 	int trade_with_player(trade_cards_offer, int, int, int);

@@ -39,6 +39,12 @@ int corner_info(int corner, int tilenum)
 	retval = (10 * catan.check_corner_owner(corner, tilenum) + catan.check_corner_building_type(corner, tilenum));
 	return(retval);
 }
+
+int get_rsrc_type(int tilenum)
+{
+	return(catan.check_tile_resource_type(tilenum));
+}
+
 string print_board()
 {
 	std::ifstream filein;
@@ -48,37 +54,37 @@ string print_board()
 										//	strStream.open("tempfile.secret"); 
 	strStream << setw(setwval) << "                           /" << setw(2) << corner_info(cornB, 18) << "¯¯¯" << setw(2) << corner_info(cornC, 18) << "\\                         " << endl;
 	strStream << setw(setwval) << "                          /" << setw(2) << corner_info(cornA, 18) << " |" << setw(2) << droll(18) << "|" << setw(2) << corner_info(cornD, 18) << "\\               " << endl;
-	strStream << setw(setwval) << "                 /" << setw(2) << corner_info(cornB, 15) << "¯¯¯" << setw(2) << corner_info(cornC, 15) << "\\\\    18   //" << setw(2) << corner_info(cornB, 17) << "¯¯¯" << setw(2) << corner_info(cornC, 17) << "\\               " << endl;
+	strStream << setw(setwval) << "                 /" << setw(2) << corner_info(cornB, 15) << "¯¯¯" << setw(2) << corner_info(cornC, 15) << "\\\\   18," << get_rsrc_type(18) << "  //" << setw(2) << corner_info(cornB, 17) << "¯¯¯" << setw(2) << corner_info(cornC, 17) << "\\               " << endl;
 	strStream << setw(setwval) << "                /" << setw(2) << corner_info(cornA, 15) << " |" << setw(2) << droll(15) << "|" << setw(2) << corner_info(cornD, 15) << "\\\\" << setw(2) << corner_info(cornF, 18) << "___" << setw(2) << corner_info(cornE, 18) << "//" << setw(2) << corner_info(cornA, 17) << " |" << setw(2) << droll(17) << "|" << setw(2) << corner_info(cornD, 17) << "\\                  " << endl;				//		A-C-E Navigation matrix:
-	strStream << setw(setwval) << "       /" << setw(2) << corner_info(cornB, 11) << "¯¯¯" << setw(2) << corner_info(cornC, 11) << "\\\\   15    //" << setw(2) << corner_info(cornB, 14) << "¯¯¯" << setw(2) << corner_info(cornC, 14) << "\\\\   17    //" << setw(2) << corner_info(cornB, 16) << "¯¯¯" << setw(2) << corner_info(cornC, 16) << "\\          " << endl;
+	strStream << setw(setwval) << "       /" << setw(2) << corner_info(cornB, 11) << "¯¯¯" << setw(2) << corner_info(cornC, 11) << "\\\\   15," << get_rsrc_type(15) << "  //" << setw(2) << corner_info(cornB, 14) << "¯¯¯" << setw(2) << corner_info(cornC, 14) << "\\\\   17," << get_rsrc_type(17) << "  //" << setw(2) << corner_info(cornB, 16) << "¯¯¯" << setw(2) << corner_info(cornC, 16) << "\\          " << endl;
 	//				/¯¯¯¯¯¯¯\\	  15   //¯¯¯¯¯¯¯\\	  17   //¯¯¯¯¯¯¯\" << endl;		//		A = (0,2)
 	strStream << setw(setwval) << "      /" << setw(2) << corner_info(cornA, 11) << " |" << setw(2) << droll(11) << "|" << setw(2) << corner_info(cornD, 11) << "\\\\" << setw(2) << corner_info(cornF, 15) << "___" << setw(2) << corner_info(cornE, 15) << "//" << setw(2) << corner_info(cornA, 14) << " |" << setw(2) << droll(14) << "|" << setw(2) << corner_info(cornD, 14) << "\\\\" << setw(2) << corner_info(cornF, 17) << "___" << setw(2) << corner_info(cornE, 17) << "//" << setw(2) << corner_info(cornA, 16) << " |" << setw(2) << droll(16) << "|" << setw(2) << corner_info(cornD, 16) << "\\        " << endl;
 	//			   /  (2,4)	 \\_______//  (3,3)	 \\_______//  (4,2)	 \				C = (1,2)
-	strStream << setw(setwval) << "      \\    11   //" << setw(2) << corner_info(cornB, 10) << "¯¯¯" << setw(2) << corner_info(cornC, 10) << "\\\\    14   //" << setw(2) << corner_info(cornB, 13) << "¯¯¯" << setw(2) << corner_info(cornC, 13) << "\\\\   16    /          " << endl;
+	strStream << setw(setwval) << "      \\   11," << get_rsrc_type(11) << "  //" << setw(2) << corner_info(cornB, 10) << "¯¯¯" << setw(2) << corner_info(cornC, 10) << "\\\\   14," << get_rsrc_type(14) << "  //" << setw(2) << corner_info(cornB, 13) << "¯¯¯" << setw(2) << corner_info(cornC, 13) << "\\\\   16," << get_rsrc_type(16) << "  /" << endl;
 	//		   \   11	 //¯¯¯¯¯¯¯\\	14	 //¯¯¯¯¯¯¯\\   16	 /" << endl;	//		E = (0,1)
 	strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 11) << "___" << setw(2) << corner_info(cornE, 11) << "//" << setw(2) << corner_info(cornA, 10) << " |" << setw(2) << droll(10) << "|" << setw(2) << corner_info(cornD, 10) << "\\\\" << setw(2) << corner_info(cornF, 14) << "___" << setw(2) << corner_info(cornE, 14) << "//" << setw(2) << corner_info(cornA, 13) << " |" << setw(2) << droll(13) << "|" << setw(2) << corner_info(cornD, 13) << "\\\\" << setw(2) << corner_info(cornF, 16) << "___" << setw(2) << corner_info(cornE, 16) << "/         " << endl;
 	//				\_______//	(2,3)  \\_______//	(3,2)  \\_______/" << endl;
-	strStream << setw(setwval) << "       /" << setw(2) << corner_info(cornB, 6) << "¯¯¯" << setw(2) << corner_info(cornC, 6) << "\\\\    10   //" << setw(2) << corner_info(cornB, 9) << "¯¯¯" << setw(2) << corner_info(cornC, 9) << "\\\\    13   //" << setw(2) << corner_info(cornB, 12) << "¯¯¯" << setw(2) << corner_info(cornC, 12) << "\\     " << endl;
+	strStream << setw(setwval) << "       /" << setw(2) << corner_info(cornB, 6) << "¯¯¯" << setw(2) << corner_info(cornC, 6) << "\\\\   10," << get_rsrc_type(10) << "  //" << setw(2) << corner_info(cornB, 9) << "¯¯¯" << setw(2) << corner_info(cornC, 9) << "\\\\  13," << get_rsrc_type(13) << "   //" << setw(2) << corner_info(cornB, 12) << "¯¯¯" << setw(2) << corner_info(cornC, 12) << "\\     " << endl;
 	//				/¯¯¯¯¯¯¯\\	 10	   //¯¯¯¯¯¯¯\\	 13    //¯¯¯¯¯¯¯\'" << endl;
 	strStream << setw(setwval) << "      /" << setw(2) << corner_info(cornA, 6) << " |" << setw(2) << droll(6) << "|" << setw(2) << corner_info(cornD, 6) << "\\\\" << setw(2) << corner_info(cornF, 5) << "___" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 9) << " |" << setw(2) << droll(9) << "|" << setw(2) << corner_info(cornD, 9) << "\\\\" << setw(2) << corner_info(cornF, 13) << "___" << setw(2) << corner_info(cornE, 13) << "//" << setw(2) << corner_info(cornA, 12) << " |" << setw(2) << droll(12) << "|" << setw(2) << corner_info(cornD, 12) << "\\     " << endl;
 	//			   /  (1,3)	 \\_______//  (2,2)	 \\_______//  (3,1)	 \'" << endl;	//		B-D-F Navigation matrix:
-	strStream << setw(setwval) << "      \\    6    //" << setw(2) << corner_info(cornB, 5) << "¯¯¯" << setw(2) << corner_info(cornC, 5) << "\\\\    9    //" << setw(2) << corner_info(cornB, 8) << "¯¯¯" << setw(2) << corner_info(cornC, 8) << "\\\\   12    /     " << endl;
+	strStream << setw(setwval) << "      \\   6," << get_rsrc_type(6) << "   //" << setw(2) << corner_info(cornB, 5) << "¯¯¯" << setw(2) << corner_info(cornC, 5) << "\\\\   9," << get_rsrc_type(9) << "   //" << setw(2) << corner_info(cornB, 8) << "¯¯¯" << setw(2) << corner_info(cornC, 8) << "\\\\   12," << get_rsrc_type(12) << "  /" << endl;
 	//			   \	6	 //¯¯¯¯¯¯¯\\	9	 //¯¯¯¯¯¯¯\\	12	 /" << endl;	//		B = (2,2)
 	strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 6) << "___" << setw(2) << corner_info(cornE, 6) << "//" << setw(2) << corner_info(cornA, 5) << " |" << setw(2) << droll(5) << "|" << setw(2) << corner_info(cornD, 5) << "\\\\" << setw(2) << corner_info(cornF, 9) << "___" << setw(2) << corner_info(cornE, 9) << "//" << setw(2) << corner_info(cornA, 8) << " |" << setw(2) << droll(8) << "|" << setw(2) << corner_info(cornD, 8) << "\\\\" << setw(2) << corner_info(cornF, 12) << "___" << setw(2) << corner_info(cornE, 12) << "/     " << endl;
 	//			    \_______//	(1,2)  \\_______//	(2,1)  \\_______/" << endl;		//		D = (2,1)
-	strStream << setw(setwval) << "       /" << setw(2) << corner_info(cornB, 2) << "¯¯¯" << setw(2) << corner_info(cornC, 2) << "\\\\    5    //" << setw(2) << corner_info(cornB, 4) << "¯¯¯" << setw(2) << corner_info(cornC, 4) << "\\\\    8    //" << setw(2) << corner_info(cornB, 7) << "¯¯¯" << setw(2) << corner_info(cornC, 7) << "\\     " << endl;
+	strStream << setw(setwval) << "       /" << setw(2) << corner_info(cornB, 2) << "¯¯¯" << setw(2) << corner_info(cornC, 2) << "\\\\   5," << get_rsrc_type(5) << "   //" << setw(2) << corner_info(cornB, 4) << "¯¯¯" << setw(2) << corner_info(cornC, 4) << "\\\\   8," << get_rsrc_type(8) << "   //" << setw(2) << corner_info(cornB, 7) << "¯¯¯" << setw(2) << corner_info(cornC, 7) << "\\     " << endl;
 	//				/¯¯¯¯¯¯¯\\	  5	   //¯¯¯¯¯¯¯\\	  8	   //¯¯¯¯¯¯¯\'" << endl;		//		F = (1,1)
 	strStream << setw(setwval) << "      /" << setw(2) << corner_info(cornA, 2) << " |" << setw(2) << droll(2) << "|" << setw(2) << corner_info(cornD, 2) << "\\\\" << setw(2) << corner_info(cornF, 5) << "___" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 4) << " |" << setw(2) << droll(4) << "|" << setw(2) << corner_info(cornD, 4) << "\\\\" << setw(2) << corner_info(cornF, 8) << "___" << setw(2) << corner_info(cornE, 8) << "//" << setw(2) << corner_info(cornA, 7) << " |" << setw(2) << droll(7) << "|" << setw(2) << corner_info(cornD, 7) << "\\     " << endl;
 	//			   /  (0,2)	 \\_______//  (1,1)	 \\_______//  (2,0)	 \'" << endl;
-	strStream << setw(setwval) << "      \\    2    //" << setw(2) << corner_info(cornB, 1) << "¯¯¯" << setw(2) << corner_info(cornC, 1) << "\\\\    4    //" << setw(2) << corner_info(cornB, 3) << "¯¯¯" << setw(2) << corner_info(cornC, 3) << "\\\\    7    /     " << endl;
+	strStream << setw(setwval) << "      \\   2," << get_rsrc_type(2) << "   //" << setw(2) << corner_info(cornB, 1) << "¯¯¯" << setw(2) << corner_info(cornC, 1) << "\\\\   4," << get_rsrc_type(4) << "   //" << setw(2) << corner_info(cornB, 3) << "¯¯¯" << setw(2) << corner_info(cornC, 3) << "\\\\   7," << get_rsrc_type(7) << "   /" << endl;
 	//			   \	2	 //¯¯¯¯¯¯¯\\    4    //¯¯¯¯¯¯¯\\	7	 /" << endl;
 	strStream << setw(setwval) << "       \\" << setw(2) << corner_info(cornF, 2) << "___" << setw(2) << corner_info(cornE, 2) << "//" << setw(2) << corner_info(cornA, 1) << " |" << setw(2) << droll(1) << "|" << setw(2) << corner_info(cornD, 1) << "\\\\" << setw(2) << corner_info(cornF, 4) << "___" << setw(2) << corner_info(cornE, 4) << "//" << setw(2) << corner_info(cornA, 3) << " |" << setw(2) << droll(3) << "|" << setw(2) << corner_info(cornD, 3) << "\\\\" << setw(2) << corner_info(cornF, 7) << "___" << setw(2) << corner_info(cornE, 7) << "/     " << endl;
 	//			    \_______//	(0,1)  \\_______//	(1,0)  \\_______/" << endl;
-	strStream << setw(setwval) << "                \\    1    //" << setw(2) << corner_info(cornB, 0) << "¯¯¯" << setw(2) << corner_info(cornC, 0) << "\\\\    3    /" << endl;
+	strStream << setw(setwval) << "                \\    1," << get_rsrc_type(1) << "  //" << setw(2) << corner_info(cornB, 0) << "¯¯¯" << setw(2) << corner_info(cornC, 0) << "\\\\   3," << get_rsrc_type(3) << "   /" << endl;
 	//						 \    1    //¯¯¯¯¯¯¯\\	  3    /" << endl;
 	strStream << setw(setwval) << "                 \\" << setw(2) << corner_info(cornF, 1) << "___" << setw(2) << corner_info(cornE, 1) << "//" << setw(2) << corner_info(cornA, 0) << " |" << setw(2) << droll(0) << "|" << setw(2) << corner_info(cornD, 0) << "\\\\" << setw(2) << corner_info(cornF, 3) << "___" << setw(2) << corner_info(cornE, 3) << "/     " << endl;
 	//						  \_______//  (0,0)	 \\_______/" << endl;
-	strStream << setw(setwval) << "                          \\    0    /     " << endl;
+	strStream << setw(setwval) << "                          \\    0," << get_rsrc_type(0) << "  /     " << endl;
 
 	strStream << setw(setwval) << "                           \\" << setw(2) << corner_info(cornF, 0) << "___" << setw(2) << corner_info(cornE, 0) << "/" << endl;
 	//									\_______/" << endl;
@@ -232,7 +238,9 @@ int main()
 				hostsocket = ptr->get_client_socket();
 				if (hostsocket != INVALID_SOCKET)
 				{
-					rxserv.receiveUntilDone(hostsocket);
+					retval2 = rxserv.receiveUntilDone(hostsocket);
+					if (retval2 < 0)	//connection closed...
+						cerr << "connection closed! make this handle the situation!" << endl;
 					retval = framehandler(catan, databuff, 4096, rxserv, hostsocket);
 					tempstr = print_board();
 					strtowrite = tempstr.c_str();

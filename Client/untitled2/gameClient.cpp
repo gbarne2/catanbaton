@@ -14,7 +14,7 @@ char* tempaddr= "192.168.0.103";
 //this will be the main game file for the client side, other than for the GUI. 
 //All functionality on the client side will go through this function! the GUI will point to these functions do execute tasks
 tcpclient clienttcp(tempaddr);
-
+int num_dev_cards_bought = 0;
 
 //need to be able to do the following
 /*
@@ -98,7 +98,6 @@ startagain_assign_resources:
 	goto startagain_assign_resources;
 	//	__nop();
 exit_assign_resources:
-    temp = 1;
 	return(temp);
 }
 
@@ -260,7 +259,10 @@ int gameClient::update_flag(int flag, int val)
 
 int gameClient::update_board(char* data, int datasize, int startindex, int tilenum)
 {
-	return(board[tilenum].update_board_info_from_server(data, datasize, startindex));
+    int retval = 0;
+//    this->board[tilenum].Clientcornersz = this->board[tilenum].update_board_info_from_server(data, datasize, startindex);
+    retval = this->board[tilenum].update_board_info_from_server(data, datasize, startindex);
+    return(retval);
 }
 
 int gameClient::check_resource(int tilenum)
@@ -314,7 +316,19 @@ int gameClient::rx_packet_checker(int packet_type)
 
 int gameClient::place_robber(int tile, int corner)
 {
+    cout << "Make gameClient::place_robber function work! " << endl;
 	return(-1);
+}
+
+int gameClient::buy_dv_cardd(int numcards)
+{
+    num_dev_cards_bought = numcards;
+    return(sendPacketTX(get_player_num(), numcards, BUY_DV_CARD));
+}
+
+int gameClient::get_qty_dv_cardd(int devcard)
+{
+    return(this->playerinfo.get_qty_dev_card(devcard));
 }
 
 int gameClient::joinGame()

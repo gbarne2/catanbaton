@@ -4,6 +4,7 @@
 #include "Tile.h"
 #include "game.h"
 #include <ctime>
+#include <algorithm>
 
 using namespace std;
 /*
@@ -168,6 +169,13 @@ int game::build_std_board(int size)
 		pieces[x_index[x]][y_index[x]].set_dice_roll(dice);
 	}
 	return(1);
+}
+
+int game::check_tile_resource_type(int tilenum)
+{
+	int xcoord = determine_x_index_from_tile(tilenum);
+	int ycoord = determine_y_index_from_tile(tilenum);
+	return(pieces[xcoord][ycoord].check_tile_resource_type());
 }
 
 int game::determine_tile_from_index(int x, int y)
@@ -388,6 +396,68 @@ int game::check_resources(int playernum, int type)
 	temp = player_ptr->check_resource_amount(type);
 	return(temp);
 }
+void game::initialize_dev_card_deck()
+{
+	DV_deck.qty_build_roads_left = START_BUILD_ROADS;
+	DV_deck.qty_knights_left = START_KNIGHTS;
+	DV_deck.qty_monopoly_left = START_MONOPOLY;
+	DV_deck.qty_victory_points_left = START_VICTORY_POINTS;
+	DV_deck.qty_year_of_plenty_left = START_YEAR_OF_PLENTY;
+	DV_deck.dev_card_deck.erase(DV_deck.dev_card_deck.begin(), DV_deck.dev_card_deck.end());
+	int flag_no_more_vp = 0;
+	int flag_no_more_year_plenty = 0;
+	int flag_no_more_monopoly = 0;
+	int flag_no_more_roads = 0;
+	int flag_no_more_knights = 0;
+	int tempcard = 0;
+	int cards_left[5] = { START_KNIGHTS, START_VICTORY_POINTS, START_YEAR_OF_PLENTY, START_MONOPOLY, START_BUILD_ROADS };
+	for (int x = 0; x < 5; x++)
+	{
+		for (int i = 0; i < cards_left[x]; i++)
+		{
+			DV_deck.dev_card_deck.push_back(x+1);
+		}
+	}
+	std::random_shuffle(DV_deck.dev_card_deck.begin(), DV_deck.dev_card_deck.end());
+/*
+	for (int x = 0; x < START_QTY_DEV_CARDS; x++)
+	{
+		if (!flag_no_more_year_plenty || !flag_no_more_vp || !flag_no_more_monopoly || !flag_no_more_roads)	//if any cards other than knights left, then do this.
+		{
+		loop_determine_next_card:
+			tempcard = (rand()*rand() * 100) % 5;	//generate temp card index for card array with qty left
+			if (cards_left[tempcard] > 0)	//if any more of this type of card, then we can add the card to the deck.
+			{
+				cards_left[tempcard] -= 1;
+				DV_deck.dev_card_deck.push_back(tempcard + 1);	//tempcard + 1 = the card type number!
+			}
+			else
+			{
+				switch (tempcard)
+				{
+				case 0:	flag_no_more_knights = 1;
+					break;
+				case 1: flag_no_more_vp = 1;
+					break;
+				case 2: flag_no_more_year_plenty = 1;
+					break;
+				case 3: flag_no_more_monopoly = 1;
+					break;
+				case 4:	flag_no_more_roads = 1;
+					break;
+				default: tempcard = 0;
+					break;
+				}
+				goto loop_determine_next_card;
+			}
+		}
+		else	//no more cards other than knights, so just push back a knight and let the loop finish
+		{
+			DV_deck.dev_card_deck.push_back(1);
+		}
+	}
+*/
+}
 
 int game::check_resources_devcard(int playernum)
 {
@@ -396,6 +466,43 @@ int game::check_resources_devcard(int playernum)
 
 }
 
+int game::purchase_DV_card(int playernum)
+{
+	int retval = -26;
+	if (DV_deck.dev_card_deck.size() > 0)
+	{
+		if (check_resources_devcard(playernum) > 0) //enough resources to do it!
+		{
+			player_ptr = player_list.begin() + (playernum % (players + 1));
+			//need some function to generate and manage the devcard deck!
+			retval = DV_deck.dev_card_deck.back();		//get next devcard.
+			player_ptr->purchase_dev_card(retval);
+			DV_deck.dev_card_deck.pop_back();
+			deduct_resources_devcard(playernum);
+		}
+	}
+	else
+		retval = -27;
+	return(retval);
+}
+
+int game::redeem_DV_card(int playernum, int dvcard)
+{
+	//this needs to handle all the fun dev card implementation crap...
+	cout << "make redeem_DC_card handle each dev card! in game.cpp" << endl;
+	return(0);
+}
+
+
+void game::get_current_dv_cards(int (&arrayarray)[5], int player_number)
+{
+	player_ptr = player_list.begin() + player_number;
+	arrayarray[0] = player_ptr->check_qty_devcard(1);
+	arrayarray[1] = player_ptr->check_qty_devcard(2);
+	arrayarray[2] = player_ptr->check_qty_devcard(3);
+	arrayarray[3] = player_ptr->check_qty_devcard(4);
+	arrayarray[4] = player_ptr->check_qty_devcard(5);
+}
 int game::check_resources_road(int playernum)
 {
 	player_ptr = player_list.begin() + playernum;
@@ -464,6 +571,8 @@ int game::upgrade_settlement(int tilenum, int playernum, int cornernum)
 	int retval = -99;
 	int xcoord = determine_x_index_from_tile(tilenum);
 	int ycoord = determine_y_index_from_tile(tilenum);
+	int xcoord1, xcoord2, ycoord1, ycoord2, corner1, corner2;
+	determine_if_neighbor_tile_occupied(cornernum, tilenum, playernum, xcoord1, ycoord1, corner1, xcoord2, ycoord2, corner2);
 	if (check_resources_city(playernum) && (check_number_cities_left(playernum) >= 1))
 	retval = check_corner_owner(cornernum, tilenum);
 	if (retval == playernum)	//if the player owns the corner in question, proceed!
@@ -474,8 +583,13 @@ int game::upgrade_settlement(int tilenum, int playernum, int cornernum)
 			if (check_resources_city(playernum))
 			{
 				retval = pieces[xcoord][ycoord].upgrade_settlement(cornernum, playernum);
+				if ((xcoord1 != xcoord) || (ycoord1 != ycoord))
+					pieces[xcoord1][ycoord1].upgrade_settlement(corner1, playernum);
+				if (((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1)))
+					pieces[xcoord2][ycoord2].upgrade_settlement(corner2, playernum);
 				deduct_resources_city(playernum);
 			}
+
 				//build the city
 			else
 				retval = -35;
@@ -625,6 +739,8 @@ int game::build_roads(int tile_number, int playernum, int road_numb)
 					localptr->players_connected.push_back(playernum);
 				}
 			}
+			else
+				cerr << "I cant build a road for you." << endl;		//if retval = or < 0, then road was unable to be built
 			if ((retval > 0) || (retval1 > 0))
 				deduct_resources_road(playernum);
 		}
@@ -739,7 +855,7 @@ int game::start_turn(int rollnumva)
 
 //this function sets up the board on the server side and adds players to the game (with their names)
 //the return value contains the number of players in a game
-int game::start_game(int size, vector<string> player_names)
+int game::start_game(int size)
 {//this needs to initialize the game. this function could also ahndle the initial placements, but for now ill have a higher level
 	//function handle that (one that can actually communicate with the clients)
 	int resource = 0;
@@ -748,6 +864,8 @@ int game::start_game(int size, vector<string> player_names)
 	int x = 1;
 	int temp_num_players = 0;
 	srand(time(0));
+	build_std_board(active_num_tiles);
+	initialize_dev_card_deck();
 	//must create tile, put it into pieces array, and update tile number in other array
 /*
 	for (int x = 0; x < size; x++)
@@ -765,7 +883,7 @@ int game::start_game(int size, vector<string> player_names)
 		pieces[x_index[x]][y_index[x]].set_dice_roll(dice);
 	}
 */
-	add_player(0, "", tempsock);		//make empty player so indexes are protected. player 0 is used as a null.
+//	add_player(0, "", tempsock);		//make empty player so indexes are protected. player 0 is used as a null.
 	//need to handle adding players here?
 	x = 1;
 	temp_num_players = players;
@@ -932,13 +1050,13 @@ int game::calculate_card_to_steal(int playernum)
 	card_to_steal = (rand()*100) % numcards + 1;
 	if (numcards > 0)
 	{
-		if (card_to_steal <= numwheat)
+		if ((numwheat > 0) && (card_to_steal <= numwheat))
 			card = WHEAT;
-		else if (card_to_steal <= (numwheat + numore))
+		else if ((numore > 0) && (card_to_steal <= (numwheat + numore)))
 			card = ORE;
-		else if (card_to_steal <= (numwheat + numore + numwood))
+		else if ((numwood > 0) && (card_to_steal <= (numwheat + numore + numwood)))
 			card = WOOD;
-		else if (card_to_steal <= (numwheat + numore + numwood + numsheep))
+		else if ((numsheep > 0) && (card_to_steal <= (numwheat + numore + numwood + numsheep)))
 			card = SHEEP;
 		else if ((numbrick > 0) && (card_to_steal > (numwheat + numore + numwood + numsheep)))
 			card = BRICK;
@@ -959,7 +1077,9 @@ int game::steal_random_card(int playernum, int player_to_steal_from)
 	//need to check how many cards the player to steal from has, generate a random # % #cards, and then take that card.	
 	//retval = deduct_resources_trade(trade, playernum, requested_player);		//checks if resources are sufficient and then deducts them if they are
 	card_to_steal = calculate_card_to_steal(playernum);
-	retval = deduct_resources_trade_low(player_to_steal_from, card_to_steal, -1);
+	if(card_to_steal > 0)	//if no error, steal card
+		retval = deduct_resources_trade_low(player_to_steal_from, card_to_steal, -1);
+/*	
 	if (retval < 0)
 	{
 		cout << "oh no! fatal error! the player stolen from has negative cards. adding one card back." << endl;
@@ -968,6 +1088,7 @@ int game::steal_random_card(int playernum, int player_to_steal_from)
 	}
 	else
 		retval = deduct_resources_trade_low(playernum, card_to_steal, 1);	
+*/
 	return(retval);
 }
 /*

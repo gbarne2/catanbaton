@@ -192,3 +192,47 @@ std::string playerClient::get_player_name()
 {
     return(Player_name);
 }
+
+int playerClient::update_dev_cards(int devcard, int qty)
+{
+    int retval = qty;
+    switch(devcard)
+    {
+    case 1: DC.qty_knights = qty;
+        break;
+    case 2: DC.qty_victory_points = qty;
+        break;
+    case 3: DC.qty_year_of_plenty = qty;
+        break;
+    case 4: DC.qty_monopoly = qty;
+        break;
+    case 5: DC.qty_build_roads = qty;
+        break;
+    default:
+        retval = -51;
+        break;
+    }
+    return(retval);
+}
+
+int playerClient::get_qty_dev_card(int card)
+{
+    int retval = 0;
+    switch(card)
+    {
+    case 1: retval = DC.qty_knights;
+        break;
+    case 2: retval = DC.qty_victory_points;
+        break;
+    case 3: retval = DC.qty_year_of_plenty;
+        break;
+    case 4: retval = DC.qty_monopoly;
+        break;
+    case 5: retval = DC.qty_build_roads;
+        break;
+    default:
+        retval = -51;
+        break;
+    }
+    return(retval);
+}

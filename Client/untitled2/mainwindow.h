@@ -33,7 +33,10 @@ class MainWindow : public QMainWindow
     string print_board();
     int droll(int);
     int corner_info(int corner, int tilenum);
+    void setDiceRoll(std::string nname, QPushButton *ptr);
+    void update_dev_cards_on_gui();
 public:
+    void setdicerolls();
     void set_button_color(std::string nname, QPushButton *ptr);
     explicit MainWindow(QWidget *parent = 0);
     int update_board_colors();

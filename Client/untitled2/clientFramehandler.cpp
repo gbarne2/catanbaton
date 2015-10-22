@@ -71,6 +71,7 @@ using namespace std;
 #define END_TURN						47
 #define END_GAME						48
 #define MAX_PACKET_VAL					51
+#define USE_DV_CARD                     52
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
 #define INVALID_PACKET_OR_SENDER        69
 
@@ -208,7 +209,36 @@ int clientFrameHandler(gameClient &session, char* datain)
 				retval = FAILED_TO_UPGRADE_SETTLEMENT;
 //			flag_rx_packet_needs_processing = 1;
 			break;
-		case BUY_DV_CARD:
+        case BUY_DV_CARD:
+            tempdata = datain[dataptr];
+            if((datain[dataptr] == -52) || (datain[dataptr] < 0))  //if the player tried to buy too many cards, this is the error
+            {
+                retval = -52;
+                cout << "requested too many cards!" << endl;
+            }
+            else
+            {	//data[0] = fail/success buying dev cards
+                //data[1] = number of dev cards bought
+                //data[2] = num knights
+                //data[3] = num vp
+                //data[4] = num year of plenty
+                //data[5] = num monopoly
+                //data[6] = num build roads
+                //process data.
+                dataptr += 1;       //increment past pass/fail byte.
+                if(debug_text)
+                    cout << "Number of dev cards purchased: " << +datain[dataptr] << endl;
+                dataptr += 1;
+                session.playerinfo.update_dev_cards(1, datain[dataptr++]-1);
+                session.playerinfo.update_dev_cards(2, datain[dataptr++]-1);
+                session.playerinfo.update_dev_cards(3, datain[dataptr++]-1);
+                session.playerinfo.update_dev_cards(4, datain[dataptr++]-1);
+                session.playerinfo.update_dev_cards(5, datain[dataptr++]-1);
+                if(num_dev_cards_bought > tempdata) //if less development cards were bought than requested, notify user
+                    cout << "Warning! User requested " << num_dev_cards_bought << " but only " << tempdata << " cards could be purchased" << endl;
+//                update_dev_cards_on_gui = 1;
+                retval = 1;
+            }
 			break;
 		case READ_RESOURCES:
 			session.playerinfo.update_resources(1, datain[dataptr++]);
@@ -276,7 +306,7 @@ int clientFrameHandler(gameClient &session, char* datain)
 			}
             tempchar[0] = datain[dataptr++];
 
-            session.update_dice_roll(atoi(tempchar));
+            session.update_dice_roll(tempchar[0]);
 			//this should maybe just update whose turn it is.
 //            if((flag_rx_packet_needs_processing == 0) || (session.update_flag(F_TURN_START, -1)))
 //            {
@@ -356,15 +386,16 @@ int update_board_info(gameClient &session, char* data, int datasize)
 		if (data[startindex] == 'S')
 		{
 			ptrchar[0] = data[startindex + 1];
-            size_corner = atoi(ptrchar);
+            size_corner = ptrchar[0];
             if ((startindex + size_corner) < datasize)
 			{
 				ptrchar[0] = data[startindex + 2];
-				tilenum = atoi(ptrchar);
+                tilenum = ptrchar[0];
 //				tilenum = data[startindex + 2];
-				retval = session.update_board(data, datasize, startindex, tilenum);
-//				retval = session.board[tilenum].update_board_info_from_server(data, datasize, startindex);
-				startindex += retval;
+//				retval = session.update_board(data, datasize, startindex, tilenum);
+//                session.board[tilenum].Clientcornersz = session.board[tilenum].update_board_info_from_server(data, datasize, startindex);
+                retval = session.board[tilenum].update_board_info_from_server(data, datasize, startindex);      //start index is passed by reference
+//                startindex += retval;
 			}
 		}
 		else

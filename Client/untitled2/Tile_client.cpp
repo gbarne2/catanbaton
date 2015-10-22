@@ -150,7 +150,8 @@ int tileclient::check_build_settlement_tile(int corner, int player)
 }
 */
 
-int tileclient::update_board_info_from_server(char* datain, int datasize, int start_index)
+//vector<ClientCorner> tileclient::update_board_info_from_server(char* datain, int datasize, int &start_index)
+int tileclient::update_board_info_from_server(char* datain, int datasize, int& start_index)
 {
 	int tempnum = 0;
 	int temp = 0;
@@ -169,7 +170,7 @@ int tileclient::update_board_info_from_server(char* datain, int datasize, int st
 		//"S"		-> beginning of each tile object.
 		//datasize
 		//tilenumber
-		//resource type
+        //resource type
 		//roll
 		//roads[0]
 		//roads[1]
@@ -200,35 +201,41 @@ int tileclient::update_board_info_from_server(char* datain, int datasize, int st
 		for (int x = 0; x < 6; x++)
 		{
 			tempchar[0] = datain[index++];
-			roads[x] = atoi(tempchar);
+            roads[x] = tempchar[0];
 		}
 
-		for (vector<ClientCorner>::iterator ctptr = Clientcornersz.begin(); ctptr < Clientcornersz.end(); ctptr++)
-		{
+//		for (vector<ClientCorner>::iterator ctptr = Clientcornersz.begin(); ctptr < Clientcornersz.end(); ctptr++)
+        vector<ClientCorner>::iterator ctptr;
+        for(int z = 0; z < 6; z++)  //6 corners...
+        {
+            ctptr = Clientcornersz.begin() + z;
 			tempchar1[0] = datain[index++];
 			tempchar2[0] = datain[index++];
 			tempchar3[0] = datain[index++];
 			tempchar4[0] = datain[index++];
 			tempchar5[0] = datain[index++];
 
-			ctptr->corner_index = atoi(tempchar1);
-			ctptr->road_connected = atoi(tempchar2);
-			ctptr->property_owner = atoi(tempchar3);
-			ctptr->property_type = atoi(tempchar4);
-			temp = atoi(tempchar5);
-			ctptr->players_connected.clear();	//clear out old data so it doesnt just keep getting bigger and bigger
+            ctptr->corner_index = tempchar1[0];
+            ctptr->road_connected = tempchar2[0];
+            ctptr->property_owner = tempchar3[0];
+            ctptr->property_type = tempchar4[0];
+            temp = tempchar5[0];
+            if(temp > 0) //if at least 1 new entry, clear the old data out.
+                ctptr->players_connected.clear();	//clear out old data so it doesnt just keep getting bigger and bigger
 			for (int x = 0; x < temp; x++)
 			{
 				tempchar[0] = datain[index++];
 //				tempnum = tempchar[0];
-				ctptr->players_connected.push_back(atoi(tempchar));		//add # players connected to each corner
+                ctptr->players_connected.push_back(tempchar[0]);		//add # players connected to each corner
 			}
 		}
 		retval = index - start_index;	//retval is how much to increment start_index by in calling function.
 	}
 	else
 		retval = INVALID_BOARD_INFO_HEADER;
-	return(retval);
+    start_index = index;
+//    return(Clientcornersz);
+    return(retval);
 }
 
 //for now, this function assumes it is legal to build a settlement! the calling function must make sure its legal.

@@ -70,6 +70,8 @@ public:
 	int update_cities(int);
 	void set_player_num(int);		//only updates 1 time!
 	int get_player_num();
-	~playerClient(void);
+    ~playerClient(void);
+    int update_dev_cards(int devcard, int qty);
+    int get_qty_dev_card(int card);
 };
 

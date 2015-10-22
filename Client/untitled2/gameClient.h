@@ -27,12 +27,12 @@
 #endif
 
 extern tcpclient clienttcp;
+extern int num_dev_cards_bought;
 
 class gameClient
 {
 	int players;
     int current_roll;
-	tileclient board[MAX_NUM_ACTIVE_TILES];
 	vector<playerClient> player_list;
 	int assign_resources();
 	int build_board();
@@ -45,6 +45,7 @@ class gameClient
 	int FLAG_BUILD_SETTLEMENT;
     int FLAG_PLACE_ROBBER;
 public:
+    tileclient board[MAX_NUM_ACTIVE_TILES];
 	playerClient playerinfo;
 	gameClient();
 	~gameClient();
@@ -75,6 +76,8 @@ public:
 	int get_road_owner(int road, int tilenum);
 	int rx_packet_checker(int packet_type);
 	int place_robber(int, int);
+    int buy_dv_cardd(int);
+    int get_qty_dv_cardd(int);
     int joinGame();
 };
 

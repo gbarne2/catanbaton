@@ -68,6 +68,8 @@ get_board_info		-> should just send info to client
 get_time_limit
 */
 
+#ifndef PACKET_TYPES
+#define PACKET_TYPES				1
 #define PROPOSE_TRADE				30
 #define ACCEPT_REJECT_TRADE			31
 #define GET_PLAYER_INFO				32
@@ -90,7 +92,10 @@ get_time_limit
 #define STEAL_CARD_ROBBER			49
 #define CONNECT						50
 #define START_TURN					51
+#define USE_DV_CARD					52
 #define INVALID_PACKET_OR_SENDER	69
+#define MAX_DEV_CARDS_PER_TRANSACTION 10
+#endif
 
 //Message format:
 /*
@@ -123,6 +128,7 @@ int send_dice_roll(game session, tcpserver servv);
 int send_resources(game session, int playernum, tcpserver servv);
 int join_game(game &session, int &player_number, string name, tcpserver servv, SOCKET sock);
 unsigned int read_dice_roll(game session);
+int send_dev_cards(game session, int playern, int numcards, int success, tcpserver servv);
 int place_robber(game &session, int tilenum, int playernum, tcpserver servv);
 int send_resources_all_players(game session, tcpserver servv);
 
@@ -315,10 +321,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					{
 						retval = session.build_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
 						if (retval >= 0)		//if a success, then send player new board layout!
-						{
 							send_board_info(session, servv);
-							cout << "Build settlement successful" << endl;
-						}
 						else
 							send_packet(session, player_number, -32, BUILD_SETTLEMENT, servv);
 					}
@@ -342,7 +345,25 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					invalid_sender = 1;
 				break;
 			case BUY_DV_CARD:		//should allow user to buy more than 1 at once?
-				cout << "Need to add ability to buy dev cards in game.cpp and in server_catan.cpp!" << endl;
+				if (session.check_current_player() == player_number)
+				{
+					temp = datain[dataptr++];
+					if (temp < MAX_DEV_CARDS_PER_TRANSACTION)
+					{
+						for (int x = 0; x < temp; x++)
+						{
+							retval = session.purchase_DV_card(player_number);
+							if (retval < 0)
+								break;
+							tempdata = x+1;
+						}
+						send_dev_cards(session, player_number, tempdata, retval, servv);
+					}
+					else
+						send_packet(session, player_number, -52, BUY_DV_CARD, servv);
+				}
+				else
+					invalid_sender = 1;
 				//data field:
 				//data[0]	=	number of DV cards to buy
 				break;
@@ -361,7 +382,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				if (game_status == 0)
 				{
 					game_status = 1;	//flag to show game is started
-					session.build_std_board(active_num_tiles);
+					session.start_game(active_num_tiles);
+//					session.build_std_board(active_num_tiles);
 					cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
 					send_packet(session, player_number, player_number, START_GAME, servv);
 				}
@@ -485,6 +507,40 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				cout << "Game not started, unable to process non-initiating pakcet" << endl;
 	}
 	return(0);
+}
+
+int send_dev_cards(game session, int playern, int numcards, int success, tcpserver servv)
+{
+	int arptr[5];
+	char datatosendar[7] = { 0, };
+	int tempval = 0;
+	session.get_current_dv_cards(arptr, playern);
+	if (debug_text)
+	{
+		cout << endl << "Current dev cards:" << endl;
+		cout << "Knights:        " << arptr[0] << endl;
+		cout << "Victory Points: " << arptr[1] << endl;
+		cout << "Year of plenty: " << arptr[2] << endl;
+		cout << "Monopoly:       " << arptr[3] << endl;
+		cout << "Build Roads:    " << arptr[4] << endl;
+	}
+	if (success > 0)	//if greater than 0, then a card was bought and no card buys failed
+		datatosendar[0] = 1;
+	datatosendar[1] = numcards;
+	datatosendar[2] = arptr[0] + 1;
+	datatosendar[3] = arptr[1] + 1;
+	datatosendar[4] = arptr[2] + 1;
+	datatosendar[5] = arptr[3] + 1;
+	datatosendar[6] = arptr[4] + 1;
+	return(send_packet(session, playern, datatosendar, BUY_DV_CARD, 7, servv));
+	//send message! data should be as follows
+	//data[0] = fail/success buying dev cards
+	//data[1] = number of dev cards bought
+	//data[2] = num knights
+	//data[3] = num vp
+	//data[4] = num year of plenty
+	//data[5] = num monopoly
+	//data[6] = num build roads
 }
 
 int steal_card(game &session, int player_taking_card, int player_giving)

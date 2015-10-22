@@ -771,8 +771,8 @@
    <widget class="QPushButton" name="road_4">
     <property name="geometry">
      <rect>
-      <x>542</x>
-      <y>675</y>
+      <x>546</x>
+      <y>681</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -1044,8 +1044,8 @@
    <widget class="QPushButton" name="road_25">
     <property name="geometry">
      <rect>
-      <x>792</x>
-      <y>205</y>
+      <x>797</x>
+      <y>200</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -1422,7 +1422,7 @@
     <property name="geometry">
      <rect>
       <x>302</x>
-      <y>535</y>
+      <y>541</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -1447,8 +1447,8 @@
    <widget class="QPushButton" name="road_56">
     <property name="geometry">
      <rect>
-      <x>192</x>
-      <y>545</y>
+      <x>182</x>
+      <y>540</y>
       <width>41</width>
       <height>21</height>
      </rect>
@@ -2618,7 +2618,566 @@
      </rect>
     </property>
     <property name="text">
-     <string>Start Game</string>
+     <string>Print Board</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_3">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>500</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_2">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>366</x>
+      <y>576</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_1">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>483</x>
+      <y>648</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_4">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>608</x>
+      <y>573</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_5">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>490</x>
+      <y>510</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_6">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>366</x>
+      <y>440</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_7">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>241</x>
+      <y>367</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_8">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>729</x>
+      <y>506</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_9">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>611</x>
+      <y>438</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_10">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>488</x>
+      <y>367</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_11">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>300</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_12">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>225</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_13">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>732</x>
+      <y>364</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_14">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>608</x>
+      <y>300</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_15">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>230</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_16">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>365</x>
+      <y>156</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_17">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>228</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_18">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>606</x>
+      <y>160</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="DICEROLL_19">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>484</x>
+      <y>90</y>
+      <width>51</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>diceroll</string>
+    </property>
+    <property name="default">
+     <bool>false</bool>
+    </property>
+    <property name="flat">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_INIT_DICE_ROLLS">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>460</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Init Dice Rolls</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_BUY_DEV_CARDS">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>370</y>
+      <width>111</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Buy Dev Card</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>689</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Build Roads</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>666</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Year of Plenty</string>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="card_DR">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>686</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="card_DV">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>732</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>713</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Monopoly</string>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="card_DY">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>663</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="card_DM">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>709</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="card_DK">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>640</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_9">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>736</y>
+      <width>131</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Victory Point Cards</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>80</x>
+      <y>644</y>
+      <width>81</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Knights</string>
     </property>
    </widget>
    <zorder>tile1_10</zorder>
@@ -2786,6 +3345,37 @@
    <zorder>label_4</zorder>
    <zorder>label_5</zorder>
    <zorder>B_PRINT_BOARD</zorder>
+   <zorder>DICEROLL_3</zorder>
+   <zorder>DICEROLL_2</zorder>
+   <zorder>DICEROLL_1</zorder>
+   <zorder>DICEROLL_4</zorder>
+   <zorder>DICEROLL_5</zorder>
+   <zorder>DICEROLL_6</zorder>
+   <zorder>DICEROLL_7</zorder>
+   <zorder>DICEROLL_8</zorder>
+   <zorder>DICEROLL_9</zorder>
+   <zorder>DICEROLL_10</zorder>
+   <zorder>DICEROLL_11</zorder>
+   <zorder>DICEROLL_12</zorder>
+   <zorder>DICEROLL_13</zorder>
+   <zorder>DICEROLL_14</zorder>
+   <zorder>DICEROLL_15</zorder>
+   <zorder>DICEROLL_16</zorder>
+   <zorder>DICEROLL_17</zorder>
+   <zorder>DICEROLL_18</zorder>
+   <zorder>DICEROLL_19</zorder>
+   <zorder>B_INIT_DICE_ROLLS</zorder>
+   <zorder>B_BUY_DEV_CARDS</zorder>
+   <zorder>label_6</zorder>
+   <zorder>label_7</zorder>
+   <zorder>card_DR</zorder>
+   <zorder>card_DV</zorder>
+   <zorder>label_8</zorder>
+   <zorder>card_DY</zorder>
+   <zorder>card_DM</zorder>
+   <zorder>card_DK</zorder>
+   <zorder>label_9</zorder>
+   <zorder>label_10</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
