@@ -97,6 +97,7 @@ private:
 	tile pieces[X_tiles][Y_tiles]; //data[x][y], invalid indexes will need to be checked against! ((0,3),(0,4),(1,3),(3,1),(4,0),(4,1) dont exist)
 //	vector<tile> pieces;
 	int players;
+	int which_player_can_place_robber;
 	int current_robber_tile;
 	unsigned int current_roll;
 	vector<player>::iterator player_ptr;
@@ -148,6 +149,7 @@ public:
 	int check_resources_devcard(int playernum);
 	int purchase_DV_card(int playernum);
 	int redeem_DV_card(int playernum, int dvcard);
+	int who_can_place_robber(int);
 	void get_current_dv_cards(int (&arrayarray)[5], int player_number);
 	int check_corner_building_type(int corner, int tilenum);
 	~game(void);

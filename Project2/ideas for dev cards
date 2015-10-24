@@ -1,0 +1,32 @@
+protocol:
+1) user sends a packet to server saying to use a dev card and tell the server which one they want to use
+2) server checks to make sure they have that card, and either returns an error code or the command to prompt for action
+
+actions user should take:
+
+knight:
+	user should be told to select a location to place the robber. this needs to set a flag saying that is what the next action must be.
+	clicking a tile should place the robber and send the command packet with tile info to server.
+	server will respond with who they can steal cards from
+	player will pick who to steal from
+	server will run the steal_card_function and then update the player's cards and the player who was stolen from cards (maybe just update everyone)
+	server should also uptick the count of how many knights this player has played
+	end
+
+build two roads:
+	server needs to prompt user to place 2 roads. if the build_to_roads flag is set then the game should wait to send the packet until the second road is placed.
+		->to make things easier might as well just prompt user for first road and build it for free. handle it like a normal road but with a special packet type. then server can verify the road is valid beofre the 2nd road is placed. otherwise the server would need to try to build a road, and if it failed it needs to try to build the second road. if that succeeds, then it needs to retry to build the first road. if that succeeds return success, otherwise return failure and tell client what road failed and let them try again.
+		OR, if its just one at a time and it fails, allow user to place the road again.
+
+year of plenty:
+	server should prompt user for two resource cards, and they can be of any type? Then they can select the two resources and respond with those. the two resources should be added back. if an invalid choice is entered somehow, prompt user to try again. This check can be done on the client side and server side.
+
+victory point:
+	nothing? maybe let the user do this to make the server calculate points for victory and display that to all the other players? But these can only be played when you win, so the server should just handle it? checkng each players VP each turn, and then if someone can win, display the VP dev card points as well. if no one can win, just display the number of points without dev cards.
+
+Monopoly:
+	server should prompt user what resource type to steal from every player. 
+	player responds with type and dev card is deducted.
+	server steals all cards of the specified type and returns them to the player who played the card
+	server updates everyone's resources.
+	end

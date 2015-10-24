@@ -18,6 +18,7 @@
 #include <QList>
 #include <QTimer>
 #include <QInputDialog>
+#include <QMessageBox>
 
 #define BRICK_ICON      "C:/Users/gtb/Documents/GitHub/Brick.png"
 #define SHEEP_ICON      "C:/Users/gtb/Documents/GitHub/Sheep.png"
@@ -43,6 +44,15 @@ static QPixmap* sheeppic;
 static QPixmap* forestpic;
 static QPixmap* desertpic;
 
+int devcardflag = 0;
+int dv_build_roads_flag = 0;
+int dv_play_knight_flag = 0;
+int dv_yop_flag = 0;
+int dv_monopoly_flag = 0;
+int dv_victory_point_flag = 0;
+int game_started = 0;
+int request_user_place_robber = 0;
+int waiting_on_robber = 0;
 string playercolors[5] = {NO_PLAYER_COLOR, PLAYER_1_COLOR, PLAYER_2_COLOR, PLAYER_3_COLOR, PLAYER_4_COLOR};
 /*
  *TODO:
@@ -321,6 +331,7 @@ void MainWindow::check_rx_packet()
 {
     static int busyflag = 0;
     timeval timeout;
+    int tempnum = 0;
     fd_set readSet;
     timeout.tv_sec = 0;
     timeout.tv_usec = 100;
@@ -339,8 +350,25 @@ void MainWindow::check_rx_packet()
                 for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
                     rxdatabuff[x] = clienttcp.read_receive_buff(x);
                 clientFrameHandler(Cgame, rxdatabuff);
+                if(game_started == 0)   //if game hasnt been started, but we get a start game packet, then request info!
+                {
+                   tempnum = last_packet_sent(0);
+                   if(tempnum == START_GAME)
+                   {
+                       if(debug_text)
+                           std::cout << "Game has been started by host!" << std::endl;
+                       Cgame.get_board_info();
+                       retval = clientFrameHandler(Cgame, rxdatabuff);
+                       updateboardcolors = 1;
+                       set_icons_and_rollvals_on_board();
+                       updatecolortile = 0;
+//                       check_packet_and_update(0);
+                   }
+                }
             }
         }
+        //also check for flags in this?
+        Check_and_process_flags();
         update_resources_display();
         update_board_colors();
         busyflag = 0;
@@ -361,6 +389,33 @@ void MainWindow::check_rx_packet()
 */
 }
 
+int MainWindow::Check_and_process_flags()
+{
+    /*
+int devcardflag = 0;
+int dv_build_roads_flag = 0;
+int dv_play_knight_flag = 0;
+int dv_yop_flag = 0;
+int dv_monopoly_flag = 0;
+int dv_victory_point_flag = 0;
+int game_started = 0;
+int request_user_place_robber = 0;
+     */
+    if(request_user_place_robber)
+    {
+        request_user_place_robber = 0;
+        QMessageBox msgBox;
+        msgBox.setText("Select a tile to place the robber on!");
+        msgBox.setInformativeText("To use dev card, press 'ok'. Otherwise press 'cancel'");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
+        ui->NotifyText->setText("Select tile to place robber on");
+        waiting_on_robber = 1;
+        int ret = msgBox.exec();
+    }
+    return(0);
+}
+
 MainWindow::~MainWindow()
 {
     delete ui;
@@ -374,6 +429,7 @@ void MainWindow::update_resources_display()
     ui->card_F->display(Cgame.check_player_resource_amt(3));
     ui->card_S->display(Cgame.check_player_resource_amt(4));
     ui->card_B->display(Cgame.check_player_resource_amt(5));
+    ui->CURR_DICE_ROLL->display(Cgame.Get_dice_roll());
             //1 wheat
             //2 ore
             //3 wood
@@ -589,174 +645,265 @@ void MainWindow::on_pushButton_clicked()
 {
     int retval = -1;
     static int i = 0;
-    int updatecolortile = 0;
-    int updateboardcolors = 0;
     int tile = 0;
     int corner = 0;
     string tempstr;
     const char* strtowrite;
+    vector<int> tempvec;
     int road = 0;
     i = 0;
     QPushButton *ptrobj = qobject_cast<QPushButton *>(sender());
     QObject *senderObj = sender(); // This will give Sender object
     // This will give obejct name for above it will give "A", "B", "C"
     QString senderObjName = senderObj->objectName();
-    QPixmap tempp("C:/Users/gtb/Documents/GitHub/Brick_pressed.png");
+//    QPixmap tempp("C:/Users/gtb/Documents/GitHub/Brick_pressed.png");
 //    senderObjName.toStdString().c_str()[0];
     if((senderObjName.toStdString().length() == 2) || (senderObjName.toStdString().length() == 3))
     {
         retval = get_tile_num_from_tile_name(senderObjName.toStdString());
         std::cout << "Tile pressed: " << retval << std::endl;
-        ptrobj->setIcon(tempp);
-    }
-    else if(senderObjName.toStdString()[0] == 'B')//if one of the control buttons was pressed (all start with B), process it here
-    {
-		if (senderObjName.toStdString() == "BUILD_CITY")
-		{
-			std::cout << "Make me build a city!" << std::endl;
-            ui->BUILD_A_ROAD->setChecked(FALSE);
-            ui->BUILD_SET->setChecked(FALSE);
-		}
-        else if(senderObjName.toStdString() == "BUILD_A_ROAD")
+//        ptrobj->setIcon(tempp);
+        if(waiting_on_robber)
         {
-            std::cout << "Make me build a road!" << std::endl;
-            ui->BUILD_CITY->setChecked(FALSE);
-            ui->BUILD_SET->setChecked(FALSE);
-        }
-        else if(senderObjName.toStdString() == "BUILD_SET")
-        {
-            std::cout << "Make me build a settlement!" << std::endl;
-            ui->BUILD_CITY->setChecked(FALSE);
-            ui->BUILD_A_ROAD->setChecked(FALSE);
-        }
-        else if(senderObjName.toStdString() == "B_START_TURN")
-        {
-            std::cout << "Start my turn!" << std::endl;
-            Cgame.start_turn();
-        }
-        else if(senderObjName.toStdString() == "B_CARDS_REF")
-        {
-            std::cout << "Refresh my cards!" << std::endl;
-            Cgame.refresh_cards();
-            update_resources_display();
-        }
-        else if(senderObjName.toStdString() == "B_DICE_ROLL")
-        {
-            std::cout << "Roll my dice!" << std::endl;
-            retval = Cgame.Get_dice_roll();
-        }
-        else if(senderObjName.toStdString() == "B_END_TURN")
-        {
-            updateboardcolors = 1;
-            std::cout << "End my turn!" << std::endl;
-            Cgame.end_turn();
-//            set_icons_and_rollvals_on_board();
-        }
-        else if(senderObjName.toStdString() == "B_UPDATE_BOARD")
-        {
-            std::cout << "Update board!" << std::endl;
-            Cgame.get_board_info();
-            updateboardcolors = 1;
-            check_rx_data_buff = 1;
-            if(update_board_icons == 0)
-                update_board_icons = 1;
-//            set_icons_and_rollvals_on_board();
-        }
-        else if(senderObjName.toStdString() == "B_START_GAME")
-        {
-            std::cout << "Start game!" << std::endl;
-            Cgame.startGame();
-            retval = clientFrameHandler(Cgame, rxdatabuff);
-            Cgame.get_board_info();
-            retval = clientFrameHandler(Cgame, rxdatabuff);
-            updateboardcolors = 1;
-            set_icons_and_rollvals_on_board();
-        }
-        else if(senderObjName.toStdString() == "B_PRINT_BOARD")
-        {
-            tempstr = print_board();
-            strtowrite = tempstr.c_str();
-            cout << strtowrite << endl;
-        }
-        else if(senderObjName.toStdString() == "B_INIT_DICE_ROLLS")
-        {
-            setdicerolls();
-        }
-        else if(senderObjName.toStdString() == "B_BUY_DEV_CARDS")
-        {
-            bool okayflag = FALSE;
-            int numcards = QInputDialog::getInt(this, tr("Purchase Development Card"),
-                                                tr("Qty. development cards to buy:"),
-                                                1,1,10,1,&okayflag);
-            if(okayflag)
+            ui->NotifyText->setText(" ");
+            ui->NotifyText->displayText();
+            tempvec = Cgame.check_players_on_tile(retval);
+            if(tempvec.size() == 0) //if empty, either no one was on tile or only this player was.
             {
-                Cgame.buy_dv_cardd(numcards);
-                //need to process what the server responds with, then request for updated resource cards
-                if(check_rx_data_buff == 1)
+                if(debug_text)
+                    std::cout << "No one available to steal from!" << std::endl;
+            }
+            else
+            {
+                tile = retval;
+                std::cout << "Make onbutton press handle selecting who to steal from when placing robber!" << std::endl;
+                retval = tempvec[0];
+                Cgame.place_robber(tile, retval);
+                clientFrameHandler(Cgame, rxdatabuff);
+                update_resources_display();
+            }
+            waiting_on_robber = 0;
+        }
+    }
+    else if(waiting_on_robber == 0)
+    {
+        if(senderObjName.toStdString()[0] == 'B')//if one of the control buttons was pressed (all start with B), process it here
+        {
+            if(senderObjName.toStdString() == "B_START_GAME")
+            {
+                std::cout << "Start game!" << std::endl;
+                game_started = 1;
+                Cgame.startGame();
+                retval = clientFrameHandler(Cgame, rxdatabuff);
+                Cgame.get_board_info();
+                retval = clientFrameHandler(Cgame, rxdatabuff);
+                updateboardcolors = 1;
+                set_icons_and_rollvals_on_board();
+            }
+            else if(!game_started)
+            {
+                std::cout << " " << std::endl;
+            }
+            else if (senderObjName.toStdString() == "BUILD_CITY")
+            {
+                std::cout << "Make me build a city!" << std::endl;
+                ui->BUILD_A_ROAD->setChecked(FALSE);
+                ui->BUILD_SET->setChecked(FALSE);
+            }
+            else if(senderObjName.toStdString() == "BUILD_A_ROAD")
+            {
+                std::cout << "Make me build a road!" << std::endl;
+                ui->BUILD_CITY->setChecked(FALSE);
+                ui->BUILD_SET->setChecked(FALSE);
+            }
+            else if(senderObjName.toStdString() == "BUILD_SET")
+            {
+                std::cout << "Make me build a settlement!" << std::endl;
+                ui->BUILD_CITY->setChecked(FALSE);
+                ui->BUILD_A_ROAD->setChecked(FALSE);
+            }
+            else if(senderObjName.toStdString() == "B_START_TURN")
+            {
+                std::cout << "Start my turn!" << std::endl;
+                Cgame.start_turn();
+            }
+            else if(senderObjName.toStdString() == "B_CARDS_REF")
+            {
+                std::cout << "Refresh my cards!" << std::endl;
+                Cgame.refresh_cards();
+                update_resources_display();
+            }
+            else if(senderObjName.toStdString() == "B_DICE_ROLL")
+            {
+                std::cout << "Roll my dice!" << std::endl;
+                retval = Cgame.Get_dice_roll();
+            }
+            else if(senderObjName.toStdString() == "B_END_TURN")
+            {
+                updateboardcolors = 1;
+                std::cout << "End my turn!" << std::endl;
+                Cgame.end_turn();
+    //            set_icons_and_rollvals_on_board();
+            }
+            else if(senderObjName.toStdString() == "B_UPDATE_BOARD")
+            {
+                std::cout << "Update board!" << std::endl;
+                Cgame.get_board_info();
+                updateboardcolors = 1;
+                check_rx_data_buff = 1;
+                if(update_board_icons == 0)
+                    update_board_icons = 1;
+    //            set_icons_and_rollvals_on_board();
+            }
+            else if(senderObjName.toStdString() == "B_PRINT_BOARD")
+            {
+                tempstr = print_board();
+                strtowrite = tempstr.c_str();
+                cout << strtowrite << endl;
+            }
+            else if(senderObjName.toStdString() == "B_INIT_DICE_ROLLS")
+            {
+                setdicerolls();
+            }
+            else if(senderObjName.toStdString() == "B_card_DKB")
+            {
+                if(Cgame.get_qty_dv_cardd(1) > 0)
                 {
-                    retval = clientFrameHandler(Cgame, rxdatabuff);
-                    update_dev_cards_on_gui();
-                    Cgame.refresh_cards();
+                    const QString msg = "Do you want to use a Knight Development Card? You have " + Cgame.get_qty_dv_cardd(1);
+                    devcardtouse = 1;
+                    use_dev_card_generic(msg);
+                }
+            }
+            else if(senderObjName.toStdString() == "B_card_DVB")
+            {
+                if(Cgame.get_qty_dv_cardd(2) > 0)
+                {
+                    const QString msg = "Do you want to use a Victory Point Development Card? You have " + Cgame.get_qty_dv_cardd(2);
+                    devcardtouse = 1;
+                    use_dev_card_generic(msg);
+                }
+            }
+            else if(senderObjName.toStdString() == "B_card_DYB")
+            {
+                if(Cgame.get_qty_dv_cardd(3) > 0)
+                {
+                    const QString msg = "Do you want to use a Year of plenty Development Card? You have " + Cgame.get_qty_dv_cardd(3);
+                    devcardtouse = 1;
+                    use_dev_card_generic(msg);
+                }
+            }
+            else if(senderObjName.toStdString() == "B_card_DMB")
+            {
+                if(Cgame.get_qty_dv_cardd(4) > 0)
+                    {
+                    const QString msg = "Do you want to use a Monopoly Development Card? You have " + Cgame.get_qty_dv_cardd(4);
+                    devcardtouse = 1;
+                    use_dev_card_generic(msg);
+                }
+            }
+            else if(senderObjName.toStdString() == "B_card_DRB")
+            {
+                if(Cgame.get_qty_dv_cardd(5) > 0)
+                {
+                    const QString msg = "Do you want to use a Build Roads Development Card? You have " + Cgame.get_qty_dv_cardd(5);
+                    devcardtouse = 1;
+                    use_dev_card_generic(msg);
+                }
+            }
+            else if(senderObjName.toStdString() == "B_BUY_DEV_CARDS")
+            {
+                bool okayflag = FALSE;
+                int numcards = QInputDialog::getInt(this, tr("Purchase Development Card"),
+                                                    tr("Qty. development cards to buy:"),
+                                                    1,1,10,1,&okayflag);
+                if(okayflag)
+                {
+                    Cgame.buy_dv_cardd(numcards);
+                    //need to process what the server responds with, then request for updated resource cards
                     if(check_rx_data_buff == 1)
                     {
                         retval = clientFrameHandler(Cgame, rxdatabuff);
-                        update_resources_display();
+                        update_dev_cards_on_gui();
+                        Cgame.refresh_cards();
+                        if(check_rx_data_buff == 1)
+                        {
+                            retval = clientFrameHandler(Cgame, rxdatabuff);
+                            update_resources_display();
+                        }
                     }
                 }
+            }
+            else
+            {
+                std::cout << "invalid action!" << std::endl;
+                retval = -1;
             }
         }
         else
         {
-            std::cout << "invalid action!" << std::endl;
-            retval = -1;
+            for(i = 0; i < buttonlist.size(); i++)
+            {
+                if(sender() == buttonlist[i])
+                {
+                    if(buttonlist[i]->objectName().toStdString()[0] == 's')
+                    {
+                        //if settlement button, do settlement stuff.
+                        get_settlement_corner_and_tile_from_name(buttonlist[i]->objectName().toStdString(), tile, corner);
+
+                        if(ui->BUILD_CITY->isChecked())
+                        {
+                            Cgame.build_city(tile, corner);
+                            updatecolortile = 1;
+                        }
+                        else if(ui->BUILD_SET->isChecked())
+                        {
+                            Cgame.build_settlement(tile, corner);
+                            updatecolortile = 1;
+                        }
+                        else
+                            std::cout << "Neither build city or build settlement options are selected!" << std::endl;
+                    }
+                    else if(buttonlist[i]->objectName().toStdString()[0] == 'r')
+                    {
+                        get_road_road_and_tile_from_name(buttonlist[i]->objectName().toStdString(), tile, road);
+                        if(ui->BUILD_A_ROAD->isChecked())
+                        {
+                            Cgame.build_road(tile, road);
+                            updatecolortile = 1;
+                        }
+                        else
+                            std::cout << "Build road not selected!" << std::endl;
+                    }
+                    else
+                        retval = -1;
+    //                buttonlist[i]->setStyleSheet(PLAYER_1_COLOR);
+                    break;
+                }
+            }
         }
     }
     else
     {
-        for(i = 0; i < buttonlist.size(); i++)
-        {
-            if(sender() == buttonlist[i])
-            {
-                if(buttonlist[i]->objectName().toStdString()[0] == 's')
-                {
-                    //if settlement button, do settlement stuff.
-                    get_settlement_corner_and_tile_from_name(buttonlist[i]->objectName().toStdString(), tile, corner);
-
-                    if(ui->BUILD_CITY->isChecked())
-                    {
-                        Cgame.build_city(tile, corner);
-                        updatecolortile = 1;
-                    }
-                    else if(ui->BUILD_SET->isChecked())
-                    {
-                        Cgame.build_settlement(tile, corner);
-                        updatecolortile = 1;
-                    }
-                    else
-                        std::cout << "Neither build city or build settlement options are selected!" << std::endl;
-                }
-                else if(buttonlist[i]->objectName().toStdString()[0] == 'r')
-                {
-                    get_road_road_and_tile_from_name(buttonlist[i]->objectName().toStdString(), tile, road);
-                    if(ui->BUILD_A_ROAD->isChecked())
-                    {
-                        Cgame.build_road(tile, road);
-                        updatecolortile = 1;
-                    }
-                    else
-                        std::cout << "Build road not selected!" << std::endl;
-                }
-                else
-                    retval = -1;
-//                buttonlist[i]->setStyleSheet(PLAYER_1_COLOR);
-                break;
-            }
-        }
+        QMessageBox msgB;
+        msgB.setText("You must select a tile to place the robber on!");
+        msgB.setInformativeText("To use dev card, press 'ok'. Otherwise press 'cancel'");
+        msgB.setStandardButtons(QMessageBox::Ok);
+        msgB.setDefaultButton(QMessageBox::Ok);
+        ui->NotifyText->setText("You must select a tile to place the robber on!");
+        ui->NotifyText->displayText();
+        waiting_on_robber = 1;
+        msgB.exec();
     }
 //    ptrobj->setIcon(tempp);
     std::cout << "clicked! Sender ID: " << this->senderSignalIndex() << std::endl << "        Sender name: " << senderObjName.toStdString() << std::endl;
 //        ui->tile1_1->setIcon(tempp);
         //>setIcon("C:/Users/gtb/Documents/GitHub/Brick.png");
+    check_packet_and_update(i);
+}
+
+void MainWindow::check_packet_and_update(int i)
+{
+    int retval = 0;
     if(check_rx_data_buff == 1)
     {
         retval = clientFrameHandler(Cgame, rxdatabuff);
@@ -794,4 +941,57 @@ void MainWindow::on_pushButton_released()
 void MainWindow::on_hover()
 {
     std::cout <<" HOVVVEERRR" << std::endl;
+}
+
+void MainWindow::prompt_dev_card_to_use()
+{
+    int qtyknight   = Cgame.get_qty_dv_cardd(1);
+    int qtyvp       = Cgame.get_qty_dv_cardd(2);
+    int qtyyear     = Cgame.get_qty_dv_cardd(3);
+    int qtymonopoly = Cgame.get_qty_dv_cardd(4);
+    int qtyroads    = Cgame.get_qty_dv_cardd(5);
+
+}
+
+void MainWindow::use_dev_card_generic(const QString msg)
+{
+    QMessageBox msgBox;
+    string tempstr = "";
+    if(devcardtouse == 1)
+        tempstr = "Knight";
+    else if(devcardtouse == 2)
+        tempstr = "Victory Point";
+    else if(devcardtouse == 3)
+        tempstr = "Year of Plenty";
+    else if(devcardtouse == 4)
+        tempstr = "Monopoly";
+    else if(devcardtouse == 5)
+        tempstr = "Build Roads";
+    else
+        tempstr = "INVALID DEV CARD SELECTION. ERROR. ERRRRORRR!";
+    msgBox.setText(msg);
+    msgBox.setInformativeText("To use dev card, press 'ok'. Otherwise press 'cancel'");
+    msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Ok);
+    int ret = msgBox.exec();
+    switch(ret)
+    {
+    case QMessageBox::Ok:
+        if((devcardtouse > 0) && (devcardtouse < 6))
+        {
+            devcardflag = 1;
+            if(debug_text)
+                std::cout << "about to use a dev card! Trying to use: " << tempstr << std::endl;
+            Cgame.use_dev_cardd(devcardtouse);
+        }
+        //call use dev card function for knight
+        break;
+    case QMessageBox::Cancel:
+        if(debug_text)
+            std::cout << "Cancelled! Not using a " << tempstr << " development card" << std::endl;
+        break;
+    default:
+        break;
+    }
+
 }

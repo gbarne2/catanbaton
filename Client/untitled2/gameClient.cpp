@@ -313,9 +313,35 @@ int gameClient::rx_packet_checker(int packet_type)
     return(1);
 }
 
-
-int gameClient::place_robber(int tile, int corner)
+vector<int> gameClient::check_players_on_tile(int tilenum)
 {
+    int count = 0;
+    int temp = 0;
+    int temp2 = 0;
+    vector<int> players_on_tile;
+        for (int i = 0; i < 6; i++)
+        {
+            temp = this->check_corner_owner(i, tilenum);
+            temp2 = temp;
+            for (int x = 0; x < count; x++)
+                if ((temp == players_on_tile[x % 3]) || (temp == get_player_num()))
+                    temp2 = 0;
+            if (temp2 != 0)
+            {
+                players_on_tile.push_back(temp2);
+                count += 1;
+                temp = 0;
+                temp2 = 0;
+            }
+        }
+    return(players_on_tile);
+}
+
+int gameClient::place_robber(int tile, int playertosteal)
+{
+    char datatosend[2] = {tile, playertosteal};
+    dv_play_knight_flag = 0;    //this will make the server return what card was stolen!
+    sendPacketTX(this->get_player_num(), datatosend, 2, STEAL_CARD_ROBBER);
     cout << "Make gameClient::place_robber function work! " << endl;
 	return(-1);
 }
@@ -329,6 +355,11 @@ int gameClient::buy_dv_cardd(int numcards)
 int gameClient::get_qty_dv_cardd(int devcard)
 {
     return(this->playerinfo.get_qty_dev_card(devcard));
+}
+
+int gameClient::use_dev_cardd(int devcardnum)
+{
+    return(sendPacketTX(get_player_num(), devcardnum, USE_DV_CARD));
 }
 
 int gameClient::joinGame()

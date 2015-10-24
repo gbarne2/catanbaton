@@ -39,6 +39,7 @@
 #define START_TURN						51
 #define MAX_PACKET_VAL					51
 #define USE_DV_CARD                     52
+#define PLACE_ROBBER_PACKET             53
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
 #define INVALID_PACKET_OR_SENDER        69
 

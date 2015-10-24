@@ -25,16 +25,32 @@ namespace Ui {
 class MainWindow;
 }
 
+extern int devcardflag;
+extern int dv_build_roads_flag;
+extern int dv_play_knight_flag;
+extern int dv_yop_flag;
+extern int dv_monopoly_flag;
+extern int dv_victory_point_flag;
+extern int game_started;
+extern int request_user_place_robber;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    int devcardtouse;
     void update_resources_display();
     string print_board();
+    int updatecolortile;
+    int updateboardcolors;
     int droll(int);
     int corner_info(int corner, int tilenum);
     void setDiceRoll(std::string nname, QPushButton *ptr);
     void update_dev_cards_on_gui();
+    void prompt_dev_card_to_use();
+    void use_dev_card_generic(const QString);
+    void check_packet_and_update(int);
+    int Check_and_process_flags();
+
 public:
     void setdicerolls();
     void set_button_color(std::string nname, QPushButton *ptr);

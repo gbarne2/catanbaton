@@ -37,6 +37,7 @@ What does the client need to define / do
 #include "gameClient.h"
 #include "clientTransmitHandler.h"
 #include <cmath>
+#include "mainwindow.h"
 
 using namespace std;
 
@@ -72,6 +73,7 @@ using namespace std;
 #define END_GAME						48
 #define MAX_PACKET_VAL					51
 #define USE_DV_CARD                     52
+#define PLACE_ROBBER_PACKET             53
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
 #define INVALID_PACKET_OR_SENDER        69
 
@@ -271,26 +273,43 @@ int clientFrameHandler(gameClient &session, char* datain)
                 session.set_player_number(datain[dataptr]);
             else if (debug_text)
                 cout << "cannot set the player number! it has already been set!" << endl;
-			//data[1] = ???
+            //data[1] = ???
 			//Not sure what this needs to do on the client side when received.
 			break;
 		case JOIN_GAME:
             tempchar[0] = datain[dataptr];
             session.playerinfo.set_player_num(player_number);
             cout << "My player number is: " << player_number << endl;
-			//maybe this wont ever be called?
-			break;
+            break;
 		case STEAL_CARD_ROBBER:
-			//data[0] = card that was stolen!
-			//	-> if data[0] > 0, it was obtained, < 0 it was stolen
-			retval = session.playerinfo.check_resource_amount(abs(datain[dataptr]));
-			session.playerinfo.update_resources(abs(retval), (1 * (retval / abs(retval))));
-			if (retval < 0)	//if card stolen, tell use!
-				cout << "replace this text, but yo bitch ass just got robbed" << endl;
-			else
-				cout << "You just stole a card, u thug masta G, card stolen: "  << retval << endl;
-			flag_rx_packet_needs_processing = 1;
-			break;
+            if(dv_play_knight_flag == 1)    //if this flag is set, then process it as the notification of which player to steal a card from
+            {
+                dv_play_knight_flag = 0;        //next one of these packets will just be the confirmation and stuff.
+                //notify user some how!
+                //data[0] = number of players on tile
+                //data[1] = player 1...
+                //data[2] = player 2 if there...
+                //.....
+            }
+            else
+            {
+                //data[0] = card that was stolen!
+                //	-> if data[0] > 0, it was obtained, < 0 it was stolen
+                retval = session.playerinfo.check_resource_amount(abs(datain[dataptr]));
+                session.playerinfo.update_resources(abs(retval), (1 * (retval / abs(retval))));
+                if (retval < 0)	//if card stolen, tell use!
+                    cout << "replace this text, but yo bitch ass just got robbed. retval = "<< retval << endl;
+                else
+                    cout << "You just stole a card, u thug masta G, card stolen: "  << retval << endl;
+                flag_rx_packet_needs_processing = 1;
+            }
+            break;
+        case PLACE_ROBBER_PACKET:
+            //this function should be called when a 7 is rolled.
+            dv_play_knight_flag = 1;
+            cout << "Make framehandler function notify user about robber placement" << endl;
+            //note, this packet shouldnt be sent from here. it should only be sent by the server when either a 7 is rolled or for a knight
+            break;
 		case START_TURN:
 		//datastructure:
 		//datain[0] = current_player -> whose turn it is
@@ -299,15 +318,26 @@ int clientFrameHandler(gameClient &session, char* datain)
 
             //after the first packet is received, another one should be received containing the resource info. This needs to receive a single packet and call clientframehandler recursively!
 			current_players_turn = datain[dataptr++];
-            if ((datain[dataptr++] == '1'))// && (current_players_turn == )
+            tempchar[0] = datain[dataptr++];
+            retval = atoi(tempchar);
+            if ((datain[dataptr++] == '1') && (current_players_turn == session.get_player_num()))
 			{
 				session.update_flag(F_TURN_START, 1);// FLAG_MY_TURN = 1;
-				cout << "It is my turn! End turn should actually handle starting turn. client needs to send this packet to 'roll' the dice" << endl;
+                if(debug_text)
+                    cout << "It is my turn! End turn should actually handle starting turn (sending this packet to client). client needs to send this packet to 'roll' the dice" << endl;
 			}
             tempchar[0] = datain[dataptr++];
 
             session.update_dice_roll(tempchar[0]);
-			//this should maybe just update whose turn it is.
+            if((tempchar[0] == 7) || (tempchar[0] == '7'))  //if a 7 was rolled, the next packet to update resources wont be sent.  need to check if its this players turn
+            {
+                if(current_players_turn == session.get_player_num())
+                {
+                    //do whateever I need to so that the GUI asks the player what tile to place robber on.
+                    request_user_place_robber = 1;
+                }
+            }
+
 //            if((flag_rx_packet_needs_processing == 0) || (session.update_flag(F_TURN_START, -1)))
 //            {
 

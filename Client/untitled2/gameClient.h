@@ -57,6 +57,7 @@ public:
     int build_city(int tile, int corner);
 	int check_current_player();
     int check_corner_owner(int corner, int tilenum) {return(board[tilenum].check_corner_owner(corner));}
+    vector<int> check_players_on_tile(int tilenum);
     int check_corner_building_type(int corner, int tilenum) { return(board[tilenum].check_corner_building_type(corner));}
     int get_dice_roll(int tilenum)  {return(board[tilenum].check_dice_roll());}
     int start_turn();
@@ -75,9 +76,10 @@ public:
     int get_corner_bldg_type(int tilenum, int corner);
 	int get_road_owner(int road, int tilenum);
 	int rx_packet_checker(int packet_type);
-	int place_robber(int, int);
+    int place_robber(int, int);
     int buy_dv_cardd(int);
     int get_qty_dv_cardd(int);
+    int use_dev_cardd(int);
     int joinGame();
 };
 

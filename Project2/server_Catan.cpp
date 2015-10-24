@@ -93,6 +93,7 @@ get_time_limit
 #define CONNECT						50
 #define START_TURN					51
 #define USE_DV_CARD					52
+#define PLACE_ROBBER_PACKET         53
 #define INVALID_PACKET_OR_SENDER	69
 #define MAX_DEV_CARDS_PER_TRANSACTION 10
 #endif
@@ -112,6 +113,7 @@ map<int, player> playermap;
 int game_status = 0;
 
 //function prototypes
+int send_start_game(game session, tcpserver servv);
 int get_qty_cities_left(game session, int player_number);
 int get_qty_settlements_left(game session, int player_number);
 int get_qty_roads_remaining(game session, int player_number);
@@ -131,6 +133,7 @@ unsigned int read_dice_roll(game session);
 int send_dev_cards(game session, int playern, int numcards, int success, tcpserver servv);
 int place_robber(game &session, int tilenum, int playernum, tcpserver servv);
 int send_resources_all_players(game session, tcpserver servv);
+int use_dev_card(game &session, int cardtype, int playernumm, int data, tcpserver servv);
 
 char txdatabuff[4096];
 //extern tcpserver serv(" ");
@@ -367,6 +370,12 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//data field:
 				//data[0]	=	number of DV cards to buy
 				break;
+			case USE_DV_CARD:
+				//data[0] = card type
+				//data[1] = data associated with it. will end up needing more than one int for this field...
+				use_dev_card(session, datain[dataptr], player_number, datain[dataptr + 1], servv);
+				cout << "Make me able to handle development cards!" << endl;
+				break;
 			case READ_RESOURCES:
 				send_resources(session, player_number, servv);
 				//data field:
@@ -385,7 +394,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					session.start_game(active_num_tiles);
 //					session.build_std_board(active_num_tiles);
 					cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
-					send_packet(session, player_number, player_number, START_GAME, servv);
+					send_start_game(session, servv);
+//					send_packet(session, player_number, player_number, START_GAME, servv);
 				}
 				else
 					invalid_sender = 1;
@@ -427,7 +437,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 			case STEAL_CARD_ROBBER:
 				//datain[0] = player to steal from
 				//datain[1] = tile to place robber
-				if ((last_player == player_number) && (read_dice_roll(session) == 7))
+				if ((last_player == player_number) && ((read_dice_roll(session) == 7) || (session.who_can_place_robber(-7) == player_number)))					
 				{
 					place_robber(session, datain[dataptr + 1], player_number, servv);
 					retval = steal_card(session, player_number, datain[dataptr]);
@@ -476,6 +486,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					{
 						//		place_robber(session, );
 						last_player = player_number;
+						session.who_can_place_robber(player_number);	//update who can place the robber. need to send packet to tell client to update 
 					}
 					else		//if not a 7, then send out all players resources
 					{
@@ -507,6 +518,16 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				cout << "Game not started, unable to process non-initiating pakcet" << endl;
 	}
 	return(0);
+}
+
+int send_start_game(game session, tcpserver servv)
+{
+	int num = session.check_number_of_players();
+	for (int x = 1; x < num + 1; x++)
+	{
+		send_packet(session, x, x, START_GAME, servv);
+	}
+	return(num);
 }
 
 int send_dev_cards(game session, int playern, int numcards, int success, tcpserver servv)
@@ -542,10 +563,41 @@ int send_dev_cards(game session, int playern, int numcards, int success, tcpserv
 	//data[5] = num monopoly
 	//data[6] = num build roads
 }
+int use_knight_dv_card(game &session, int playernum, int tilenum, tcpserver servv)
+{
+	//this needs to query the user about what player to steal from. The client side can handle selecting where to place the robber. then server can verify it
+	//data structure:
+	//data[0] = dev card type
+	//data[1] = tile to place robber on
+	//data[2] = 
 
+	//data struct to send
+	//data[0] = updated number of that type of dev card
+	//data[1] = number of players available to steal from
+	//data[2] = player 1
+	//data[3] = ....
+	//
+	//just call place_robber function and add a flag somewhere to indicate who is allowed to place the robber. update it to allow this player.
+	session.who_can_place_robber(playernum);	//update the player who can place robber.
+	return(place_robber(session, tilenum, playernum, servv));
+}
+
+int use_dev_card(game &session, int cardtype, int playernumm, int data, tcpserver servv)
+{
+	if ((cardtype > 0) && (cardtype < 6))
+	{
+		if (cardtype == 1)
+			use_knight_dv_card(session, playernumm, data, servv);
+
+	}
+	return(-1);
+}
 int steal_card(game &session, int player_taking_card, int player_giving)
 {
-	return(session.steal_random_card(player_taking_card, player_giving));
+	int retval = -1;
+	if (session.who_can_place_robber(-7) == player_taking_card)
+		retval = session.steal_random_card(player_taking_card, player_giving);
+	return(retval);
 }
 
 int place_robber(game &session, int tilenum, int playernum, tcpserver servv)
@@ -555,22 +607,35 @@ int place_robber(game &session, int tilenum, int playernum, tcpserver servv)
 	int temp = 0;
 	int temp2 = 0;
 	int players_on_tile[3] = { 0,0,0 };
-	retval = session.update_robber_position(tilenum);
-	for (int i = 0; i < 6; i++)
-	{
-		count = count % 3;
-		temp = session.check_corner_owner(i, tilenum);
-		temp2 = temp;
-		for (int x = 0; x < count; x++)
-			if (temp == players_on_tile[count])
-				temp2 = 0;
-		if (temp2 != 0)
+	char datatosend[10] = { 0, };
+	cout << "Need to make server catan check and make sure that this player is allowed ton place the robber" << endl;
+	if (session.who_can_place_robber(-7) == playernum)
+	{	//data struct to send
+		//data[0] = number of players available to steal from
+		//data[1] = player 1
+		//data[2] = ....
+		retval = session.update_robber_position(tilenum);
+/*		for (int i = 0; i < 6; i++)
 		{
-			players_on_tile[count] = temp2;
-			count += 1;
-			temp = 0;
-			temp2 = 0;
+			temp = session.check_corner_owner(i, tilenum);
+			temp2 = temp;
+			for (int x = 0; x < count; x++)
+				if (temp == players_on_tile[x % 3])
+					temp2 = 0;
+			if (temp2 != 0)
+			{
+				players_on_tile[count] = temp2;
+				datatosend[1 + count] = temp2;
+				count += 1;
+				temp = 0;
+				temp2 = 0;
+			}
 		}
+		datatosend[0] = count;
+		send_packet(session, playernum, datatosend, STEAL_CARD_ROBBER, count + 1, servv);
+*/
+
+//		send_packet(session, playernum, datatosend, PLACE_ROBBER_PACKET, count + 1, servv);
 	}
 	return(count);
 	cout << "need to make function place_robber in server_catan send a packet to current player to tell them to place the robber and what player to steal a resource card from" << endl;

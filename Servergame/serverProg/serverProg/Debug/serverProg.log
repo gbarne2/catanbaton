@@ -1,22 +1,33 @@
-﻿Build started 10/22/2015 1:19:27 AM.
+﻿Build started 10/23/2015 10:00:32 PM.
      1>Project "C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\serverProg\serverProg.vcxproj" on node 2 (Build target(s)).
      1>ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\..\Project2\game.cpp
+         C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /sdl /Od /Oy- /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Debug\\" /Fd"Debug\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt ..\..\..\Project2\game.cpp ..\..\..\Project2\player.cpp ..\..\..\Project2\serverMain.cpp ..\..\..\Project2\server_Catan.cpp ..\..\..\Project2\tcpserver.cpp ..\..\..\Project2\Tile.cpp
+         Tile.cpp
+     1>c:\users\gtb\documents\github\catanbaton\project2\tile.cpp(416): warning C4267: '=': conversion from 'size_t' to 'char', possible loss of data
+     1>c:\users\gtb\documents\github\catanbaton\project2\tile.cpp(424): warning C4018: '<': signed/unsigned mismatch
+         tcpserver.cpp
+         server_Catan.cpp
+     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(161): warning C4101: 'nulptr': unreferenced local variable
+     1>c:\users\gtb\documents\github\catanbaton\project2\server_catan.cpp(802): warning C4018: '<': signed/unsigned mismatch
+         serverMain.cpp
+         player.cpp
          game.cpp
      1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(135): warning C4551: function call missing argument list
      1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(123): warning C4102: 'start_player_order_again': unreferenced label
      1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(154): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(861): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(944): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(946): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(948): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(950): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(952): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(954): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(956): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(958): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(960): warning C4018: '<': signed/unsigned mismatch
-     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(962): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(498): warning C4018: '<=': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(872): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(955): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(957): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(959): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(961): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(963): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(965): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(967): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(969): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(971): warning C4018: '<': signed/unsigned mismatch
+     1>c:\users\gtb\documents\github\catanbaton\project2\game.cpp(973): warning C4018: '<': signed/unsigned mismatch
+         Generating Code...
        Link:
          C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.pdb" /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\gtb\Documents\GitHub\catanbaton\Servergame\serverProg\Debug\serverProg.lib" /MACHINE:X86 Debug\game.obj
          Debug\player.obj
@@ -29,4 +40,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:03.10
+Time Elapsed 00:00:08.31

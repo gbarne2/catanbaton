@@ -3100,6 +3100,18 @@
       <height>23</height>
      </rect>
     </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
    </widget>
    <widget class="QLCDNumber" name="card_DV">
     <property name="geometry">
@@ -3109,6 +3121,18 @@
       <width>61</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
     </property>
    </widget>
    <widget class="QLabel" name="label_8">
@@ -3133,6 +3157,18 @@
       <height>23</height>
      </rect>
     </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
    </widget>
    <widget class="QLCDNumber" name="card_DM">
     <property name="geometry">
@@ -3143,6 +3179,18 @@
       <height>23</height>
      </rect>
     </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
+    </property>
    </widget>
    <widget class="QLCDNumber" name="card_DK">
     <property name="geometry">
@@ -3152,6 +3200,18 @@
       <width>61</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="mouseTracking">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Sunken</enum>
+    </property>
+    <property name="midLineWidth">
+     <number>0</number>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
@@ -3178,6 +3238,131 @@
     </property>
     <property name="text">
      <string>Knights</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_card_DYB">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>663</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_card_DKB">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>640</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_card_DRB">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>686</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_card_DMB">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>709</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="B_card_DVB">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>732</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="flat">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="NotifyText">
+    <property name="geometry">
+     <rect>
+      <x>250</x>
+      <y>0</y>
+      <width>521</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frame">
+     <bool>false</bool>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+    <property name="clearButtonEnabled">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLCDNumber" name="CURR_DICE_ROLL">
+    <property name="geometry">
+     <rect>
+      <x>238</x>
+      <y>46</y>
+      <width>61</width>
+      <height>23</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>185</x>
+      <y>50</y>
+      <width>51</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Dice Roll</string>
     </property>
    </widget>
    <zorder>tile1_10</zorder>
@@ -3376,6 +3561,14 @@
    <zorder>card_DK</zorder>
    <zorder>label_9</zorder>
    <zorder>label_10</zorder>
+   <zorder>B_card_DRB</zorder>
+   <zorder>B_card_DYB</zorder>
+   <zorder>B_card_DKB</zorder>
+   <zorder>B_card_DMB</zorder>
+   <zorder>B_card_DVB</zorder>
+   <zorder>NotifyText</zorder>
+   <zorder>CURR_DICE_ROLL</zorder>
+   <zorder>label_11</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

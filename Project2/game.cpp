@@ -493,6 +493,12 @@ int game::redeem_DV_card(int playernum, int dvcard)
 	return(0);
 }
 
+int game::who_can_place_robber(int playernumm)
+{
+	if ((playernumm >= 0) && (playernumm <= player_list.size()+1))
+		which_player_can_place_robber = playernumm;
+	return(which_player_can_place_robber);
+}
 
 void game::get_current_dv_cards(int (&arrayarray)[5], int player_number)
 {
