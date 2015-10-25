@@ -137,7 +137,9 @@ public:
 	int check_tile_resource_type(int);
 	int next_player(void);
 	int check_current_player(void);
-	int check_number_of_players(void);
+	int check_number_of_players(void); 
+	int create_player_order(int);
+	int delete_player(int);
 	vector<player> player_list;			//,make this private!
 	int get_num_roads(int);
 	int get_num_settlements(int);

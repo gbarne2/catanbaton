@@ -113,6 +113,7 @@ map<int, player> playermap;
 int game_status = 0;
 
 //function prototypes
+int send_end_turn(game session, tcpserver servv);
 int send_start_game(game session, tcpserver servv);
 int get_qty_cities_left(game session, int player_number);
 int get_qty_settlements_left(game session, int player_number);
@@ -141,6 +142,19 @@ char txdatabuff[4096];
 static int debug_text = 1;
 static trade_cards_offer trade_to_process;
 //functions
+
+//add packets allowed before game is started here so that more packets can easily be added as needed.
+int check_valid_packets_before_game(int packet)
+{
+	int retval = 0;
+	if (packet == JOIN_GAME)
+		retval = 1;
+	else if (packet == START_GAME)
+		retval = 1;
+	else
+		retval = 0;
+	return(retval);
+}
 int framehandler(game &session, char *datain, int size_of_data, tcpserver servv, SOCKET tempsocket)
 {
 
@@ -160,17 +174,19 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 	int invalid_sender = 0;
 	char *nulptr;
 	int retval = 0;	
+	static int turn_started_already = 0;
+
 	if ((datain[0] == 'S') && (datain[1] == '8') && (datain[2] == 53) && (datain[3] == 'p'))
 	{
 		cout << "Valid packet received.... Processing" << endl;
-		if ((game_status != 0) || ((datatype == JOIN_GAME) || (datatype == START_GAME)))
+		if ((game_status != 0) || check_valid_packets_before_game(datatype))
 		{
 			switch (datatype)
 			{
 			case PROPOSE_TRADE:
 				if (!trade_in_progress)
 				{
-					if (session.check_current_player() == player_number)
+					if ((session.check_current_player() == player_number) && (turn_started_already == 1))
 					{
 						trade_in_progress = 1;
 						initiating_player_trade = player_number;
@@ -219,7 +235,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				break;
 			case ACCEPT_REJECT_TRADE:
 				//datafield
-				if (requested_player_trade == player_number)		//if this trade packet was sent by the correct player, then proceed
+				if ((requested_player_trade == player_number) && (turn_started_already == 1) && (trade_in_progress))	//if this trade packet was sent by the correct player, then proceed
 				{
 					if (datain[dataptr] == initiating_player_trade)	//if the player is requesting to trade with the original player...
 					{
@@ -228,22 +244,26 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 						//need to add return value handling! tell both users what happened with trade (accepted or denied, why)
 						send_packet(session, initiating_player_trade, retval, ACCEPT_REJECT_TRADE, servv);
 						send_packet(session, requested_player_trade, retval, ACCEPT_REJECT_TRADE, servv);	//may need to change these to not return retval, but something else so that the client wont be getting the real reason why (ex: if req player doesnt have enough cards, then retval will tell the initiating player that the other player doesnt have the cards.)
+						//need to zeroize all of the data because its all static variables. only do this for valid. things!
+						initiating_player_trade = 0;
+						requested_player_trade = 0;
+						trade_to_process.qty_wood_to_trade = 0;
+						trade_to_process.qty_wood_to_receive = 0;
+						trade_to_process.qty_ore_to_trade = 0;
+						trade_to_process.qty_ore_to_receive = 0;
+						trade_to_process.qty_brick_to_trade = 0;
+						trade_to_process.qty_brick_to_receive = 0;
+						trade_to_process.qty_wheat_to_trade = 0;
+						trade_to_process.qty_wheat_to_receive = 0;
+						trade_to_process.qty_sheep_to_trade = 0;
+						trade_to_process.qty_sheep_to_receive = 0;
+						trade_in_progress = 0;
 					}
+					else
+						invalid_sender = 1;	//throw an error flag since you cant trade with a different player while another trade is pending
 				}
 				else
 					invalid_sender = 1;
-				initiating_player_trade = 0;
-				requested_player_trade = 0;
-				trade_to_process.qty_wood_to_trade = 0;
-				trade_to_process.qty_wood_to_receive = 0;
-				trade_to_process.qty_ore_to_trade = 0;
-				trade_to_process.qty_ore_to_receive = 0;
-				trade_to_process.qty_brick_to_trade = 0;
-				trade_to_process.qty_brick_to_receive = 0;
-				trade_to_process.qty_wheat_to_trade = 0;
-				trade_to_process.qty_wheat_to_receive = 0;
-				trade_to_process.qty_sheep_to_trade = 0;
-				trade_to_process.qty_sheep_to_receive = 0;
 				//playernum should contain the requested player.
 				//the original trade should be used, and then deleted at the end of this case.
 				//this should make sure that a trade was proposed by the player in data[0] and the original trade object should be used, not the one send to the user for approval
@@ -293,7 +313,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//data field:
 				//data[0]	=	tile number
 				//data[1]	=	road index?
-				if (session.check_current_player() == player_number)
+				if ((session.check_current_player() == player_number) && (turn_started_already == 1))
 				{
 					retval = session.build_roads(datain[dataptr], player_number, datain[dataptr + 1]);
 					if (retval >= 0)		//if a success, then send player new board layout!
@@ -310,7 +330,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//data field:
 				//data[0]	=	tile number
 				//data[1]	=	corner index
-				if (session.check_current_player() == player_number)
+				if ((session.check_current_player() == player_number) && (turn_started_already == 1))
 				{
 					if (initial_placement_phase == 1)
 					{
@@ -336,7 +356,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//data field:
 				//data[0]	=	tile number
 				//data[1]	=	corner index
-				if (session.check_current_player() == player_number)
+				if ((session.check_current_player() == player_number) && (turn_started_already == 1))
 				{
 					retval = session.upgrade_settlement(datain[dataptr], player_number, datain[dataptr + 1]);
 					if (retval >= 0)		//if a success, then send player new board layout!
@@ -348,7 +368,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					invalid_sender = 1;
 				break;
 			case BUY_DV_CARD:		//should allow user to buy more than 1 at once?
-				if (session.check_current_player() == player_number)
+				if ((session.check_current_player() == player_number) && (turn_started_already == 1))
 				{
 					temp = datain[dataptr++];
 					if (temp < MAX_DEV_CARDS_PER_TRANSACTION)
@@ -371,10 +391,15 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//data[0]	=	number of DV cards to buy
 				break;
 			case USE_DV_CARD:
-				//data[0] = card type
-				//data[1] = data associated with it. will end up needing more than one int for this field...
-				use_dev_card(session, datain[dataptr], player_number, datain[dataptr + 1], servv);
-				cout << "Make me able to handle development cards!" << endl;
+				if ((session.check_current_player() == player_number) && (turn_started_already == 1))
+				{
+					//data[0] = card type
+					//data[1] = data associated with it. will end up needing more than one int for this field...
+					use_dev_card(session, datain[dataptr], player_number, datain[dataptr + 1], servv);
+					cout << "Make me able to handle development cards!" << endl;
+				}
+				else
+					invalid_sender = 1;
 				break;
 			case READ_RESOURCES:
 				send_resources(session, player_number, servv);
@@ -395,7 +420,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 //					session.build_std_board(active_num_tiles);
 					cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
 					send_start_game(session, servv);
-//					send_packet(session, player_number, player_number, START_GAME, servv);
+					send_start_game(session, servv);
+					//					send_packet(session, player_number, player_number, START_GAME, servv);
 				}
 				else
 					invalid_sender = 1;
@@ -424,12 +450,19 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				send_packet(session, player_number, player_number, JOIN_GAME, servv);
 				break;
 			case END_TURN:
-				if (session.check_current_player() == player_number)
+				if ((session.check_current_player() == player_number) && (turn_started_already == 1))
 				{
 					retval = session.next_player();
+					if (debug_text)
+					{
+						cout << "Player " << player_number << " has ended their turn." << endl;
+						cout << "The next player up is player " << retval << endl;
+					}
+					trade_in_progress = 0;	//reset this flag just in case a trade never went through. otherwise it would block other people from trading on their turns
 					send_board_info(session, servv);
-					send_packet(session, retval, 0, END_TURN, servv);		//make END_TURN be start turn when received from server?
+					send_end_turn(session, servv);
 					//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
+					turn_started_already = 0;
 				}
 				else
 					invalid_sender = 1;
@@ -456,8 +489,9 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//data[0] = current players turn
 				//data[1] = is it your turn?
 				//data[2] = dice roll
-				if (session.check_current_player() == player_number)
+				if ((session.check_current_player() == player_number) && (turn_started_already == 0))
 				{
+					turn_started_already = 1;
 					retval = session.start_turn(0);
 					if (debug_text)
 					{
@@ -518,6 +552,14 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				cout << "Game not started, unable to process non-initiating pakcet" << endl;
 	}
 	return(0);
+}
+
+int send_end_turn(game session, tcpserver servv)
+{
+	int num = session.check_number_of_players();
+	for (int x = 1; x < num + 1; x++)
+		send_packet(session, x, x, END_TURN, servv);		//make END_TURN be start turn when received from server?
+	return(num);
 }
 
 int send_start_game(game session, tcpserver servv)

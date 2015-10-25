@@ -146,6 +146,18 @@ int game::create_player_order()
 	return(1);
 }
 
+int game::delete_player(int playertoremove)
+{
+	int retval = 1;
+	if (player_list.size() >= playertoremove)	//if this player actually is in the game...
+	{
+		player_list.erase(player_list.begin() + playertoremove);
+		players -= 1;
+	}
+	else
+		retval = -1;
+	return(retval);
+}
 //this function needs to create the appropriate number of tiles and index them so that they can be easily manuvered around
 int game::build_std_board(int size)
 {
@@ -519,6 +531,7 @@ int game::check_number_of_players(void)
 {
 	return(players);
 }
+
 int game::deduct_resources_settlement(int playernum)
 {
 	int retval = 0;
@@ -872,6 +885,7 @@ int game::start_game(int size)
 	srand(time(0));
 	build_std_board(active_num_tiles);
 	initialize_dev_card_deck();
+	create_player_order();
 	//must create tile, put it into pieces array, and update tile number in other array
 /*
 	for (int x = 0; x < size; x++)

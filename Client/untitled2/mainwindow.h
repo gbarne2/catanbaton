@@ -36,6 +36,7 @@ extern int request_user_place_robber;
 
 class MainWindow : public QMainWindow
 {
+    QTimer *timer;
     Q_OBJECT
     int devcardtouse;
     void update_resources_display();
@@ -50,6 +51,9 @@ class MainWindow : public QMainWindow
     void use_dev_card_generic(const QString);
     void check_packet_and_update(int);
     int Check_and_process_flags();
+
+private slots:
+    int Init_game_and_connection();
 
 public:
     void setdicerolls();

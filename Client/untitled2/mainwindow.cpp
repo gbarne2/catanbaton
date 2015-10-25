@@ -37,6 +37,8 @@
 #define Yicon_size  150
 #define DICE_RADIUS 45
 
+#define max_connection_attempts 5
+
 static QPixmap* brickpic;
 static QPixmap* wheatpic;
 static QPixmap* mountainpic;
@@ -278,6 +280,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     QString tempstr = "";
+    int retval = 0;
+    QString detailmsg;
+    int attempt = 1;
+    int success = 0;
+    int count = 1;
     ui->setupUi(this);
     buttonlist = this->findChildren<QPushButton *> ();
     std::cout << "# buttons found: " << buttonlist.size() << std::endl;
@@ -298,7 +305,6 @@ MainWindow::MainWindow(QWidget *parent) :
 */
     for(int x = 0; x < buttonlist.size(); x++)
         connect(buttonlist[x],SIGNAL(pressed()), this, SLOT(on_pushButton_clicked()));
-    ClientSock = Cgame.initsocketthing();
     ui->tile1_1->setObjectName("t1");
     ui->tile1_2->setObjectName("t2");
     ui->tile1_3->setObjectName("t3");
@@ -320,11 +326,94 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tile1_19->setObjectName("t19");
 //    button->setMask(pixmap.createMaskFromColor(Qt::transparent,Qt::MaskInColor));
     connect(ui->tile1_1, SIGNAL(released()), this, SLOT(on_pushButton_released()));
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(check_rx_packet()));
-    timer->start(3000);
-    Cgame.joinGame();
-    clientFrameHandler(Cgame, rxdatabuff);
+    QTimer::singleShot(5000, this, SLOT(Init_game_and_connection()));
+//    retval = Init_game_and_connection();
+/*    ui->NotifyText->setText("Attempting to connect to server... Please wait");
+    while(attempt)
+    {
+        if(count > max_connection_attempts)
+            attempt = 0;
+        detailmsg = "Connection attempt: " + count;
+        ui->NotifyText->setText(detailmsg);
+        ClientSock = Cgame.initsocketthing();
+        if(ClientSock != INVALID_SOCKET)
+        {
+            success = 1;
+            attempt = 0;
+            ui->NotifyText->setText("Connection successful!");
+            break;
+        }
+        else
+            count += 1;
+    }
+    if(success)
+    {
+//        Sleep(5000);
+        Cgame.joinGame();
+        clientFrameHandler(Cgame, rxdatabuff);
+        retval = 1;
+    }
+    else
+    {
+        ui->NotifyText->setText("ERROR: UNABLE TO CONNECT TO SERVER");
+        Sleep(5000);
+        retval = -1;
+    }
+*/
+/*
+    if(retval >= 0)
+    {
+        timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(check_rx_packet()));       //this timer will periodically check if anyhting was received from server. if there was, it will process it.
+        timer->start(3000);
+    }
+*/
+}
+
+int MainWindow::Init_game_and_connection()
+{
+    ui->NotifyText->setText("Attempting to connect to server... Please wait");
+    QString detailmsg;
+    int attempt = 1;
+    int retval = 0;
+    int success = 0;
+    int count = 1;
+    while(attempt)
+    {
+        if(count > max_connection_attempts)
+            attempt = 0;
+        detailmsg = "Connection attempt: " + count;
+        ui->NotifyText->setText(detailmsg);
+        ClientSock = Cgame.initsocketthing();
+        if(ClientSock != INVALID_SOCKET)
+        {
+            success = 1;
+            attempt = 0;
+            ui->NotifyText->setText("Connection successful!");
+            break;
+        }
+        else
+            count += 1;
+    }
+    if(success)
+    {
+        Cgame.joinGame();
+        clientFrameHandler(Cgame, rxdatabuff);
+        retval = 1;
+    }
+    else
+    {
+        ui->NotifyText->setText("ERROR: UNABLE TO CONNECT TO SERVER");
+        Sleep(5000);
+        retval = -1;
+    }
+    if(retval >= 0)
+    {
+        timer = new QTimer(this);
+        connect(timer, SIGNAL(timeout()), this, SLOT(check_rx_packet()));       //this timer will periodically check if anyhting was received from server. if there was, it will process it.
+        timer->start(3000);
+    }
+    return(retval);
 }
 
 void MainWindow::check_rx_packet()
@@ -347,8 +436,8 @@ void MainWindow::check_rx_packet()
             if (retval > 0)
             {
                 check_rx_data_buff = 1;
-                for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
-                    rxdatabuff[x] = clienttcp.read_receive_buff(x);
+//                for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
+//                    rxdatabuff[x] = clienttcp.read_receive_buff(x);
                 clientFrameHandler(Cgame, rxdatabuff);
                 if(game_started == 0)   //if game hasnt been started, but we get a start game packet, then request info!
                 {
@@ -368,9 +457,12 @@ void MainWindow::check_rx_packet()
             }
         }
         //also check for flags in this?
-        Check_and_process_flags();
-        update_resources_display();
-        update_board_colors();
+        if(game_started > 1)
+        {
+            Check_and_process_flags();
+            update_resources_display();
+            update_board_colors();
+        }
         busyflag = 0;
     }
 /*    if(!busyflag)
@@ -429,7 +521,6 @@ void MainWindow::update_resources_display()
     ui->card_F->display(Cgame.check_player_resource_amt(3));
     ui->card_S->display(Cgame.check_player_resource_amt(4));
     ui->card_B->display(Cgame.check_player_resource_amt(5));
-    ui->CURR_DICE_ROLL->display(Cgame.Get_dice_roll());
             //1 wheat
             //2 ore
             //3 wood
@@ -692,13 +783,13 @@ void MainWindow::on_pushButton_clicked()
             if(senderObjName.toStdString() == "B_START_GAME")
             {
                 std::cout << "Start game!" << std::endl;
-                game_started = 1;
                 Cgame.startGame();
                 retval = clientFrameHandler(Cgame, rxdatabuff);
                 Cgame.get_board_info();
                 retval = clientFrameHandler(Cgame, rxdatabuff);
                 updateboardcolors = 1;
                 set_icons_and_rollvals_on_board();
+                game_started = 1;
             }
             else if(!game_started)
             {
@@ -731,12 +822,16 @@ void MainWindow::on_pushButton_clicked()
             {
                 std::cout << "Refresh my cards!" << std::endl;
                 Cgame.refresh_cards();
+                retval = clientFrameHandler(Cgame, rxdatabuff);
                 update_resources_display();
             }
             else if(senderObjName.toStdString() == "B_DICE_ROLL")
             {
                 std::cout << "Roll my dice!" << std::endl;
                 retval = Cgame.Get_dice_roll();
+                clientFrameHandler(Cgame, rxdatabuff);
+                retval = Cgame.update_dice_roll(0);
+                ui->CURR_DICE_ROLL->display(retval);
             }
             else if(senderObjName.toStdString() == "B_END_TURN")
             {

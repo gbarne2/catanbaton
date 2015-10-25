@@ -90,6 +90,8 @@ SOCKET tcpserver::initializeServer(SOCKET ClientSock)
 		}
 		std::cout << "Done with accept" << std::endl;
 	}
+	else
+		ClientSocket = INVALID_SOCKET;
 	ClientSock = ClientSocket;
 	// No longer need server socket
 //	closesocket(ListenSocket);
@@ -163,14 +165,13 @@ int tcpserver::receiveUntilDone(SOCKET ClientSock)
 		else if (iResult == 0)
 			printf("Connection closing...\n");
 		else {
-			printf("recv failed with error: %d\n", WSAGetLastError());
-			cleanup(ClientSock);
-			return -1;
+//			printf("recv failed with error: %d\n", WSAGetLastError());
+//			cleanup(ClientSock);
 		}
 	}
 
 //	} while (iResult == 0);
-	return(0);
+	return(iResult);
 }
 
 int tcpserver::shutDownClientSocket(SOCKET ClientSock)

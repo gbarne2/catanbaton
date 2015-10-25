@@ -1,0 +1,2 @@
+-get dev cards working
+-get create_player_order in game.cpp working. it needs to randomize the player order. 

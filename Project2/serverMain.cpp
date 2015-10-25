@@ -1,3 +1,4 @@
+#include <fcntl.h>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 #include <Windows.h>
@@ -16,9 +17,10 @@
 #include "server_Catan.h"
 #include "serverMain.h"
 
+
 #define setwval 1
 using namespace std;
-char* tempaddr = "192.168.0.103";
+char* tempaddr = "192.168.0.101";
 
 const int max_clients = 16;
 SOCKET socketarray[max_clients];
@@ -110,25 +112,91 @@ SOCKET srvinit(game session, tcpserver &tcpserv)
 char databuff[4096] = { 0, };
 static int connplayerf = 0;
 int current_num_clients = 0;
+int updating_session = 0;
 
-SOCKET connectPlayers(game session, tcpserver &tcpserv)
+void update_session(game &session, int copy)
 {
+	static game savesession;
+	if (copy == 0)
+		session = savesession;
+	else if (copy == 1)
+		savesession = session;
+	else
+		cout << "invalid input to update_session!" << endl;
+}
+
+SOCKET connectPlayers(game &session, tcpserver &tcpserv)
+{
+	vector<player>::iterator ptr;
+	SOCKET hostsocket = INVALID_SOCKET;
 	SOCKET tempsock;
 	int retval = 0;
 	while (game_status == 0)
 	{
-		tempsock = srvinit(session, tcpserv);
-		if (tempsock != INVALID_SOCKET)	//!lockrx)
+		while (updating_session)
+			Sleep(5);
+		if (!updating_session)
 		{
-			cout << "Player connected!" << endl;
-			socketarray[current_num_clients++] = tempsock;
-			lockrx = 1;
-			retval = tcpserv.receiveUntilDone(tempsock);
-			if (retval == 0)
-				retval = framehandler(catan, databuff, 4096, tcpserv, tempsock);		//join players and what not.
-			lockrx = 0;
-			Sleep(500);
+			updating_session = 1;
+			update_session(session, 0);
+
+			tempsock = srvinit(session, tcpserv);
+			if (tempsock != INVALID_SOCKET)	//!lockrx)
+			{
+				cout << "Player connected!" << endl;
+				socketarray[current_num_clients++] = tempsock;
+				lockrx = 1;
+				retval = tcpserv.receiveUntilDone(tempsock);
+				if (retval > 0)
+					retval = framehandler(session, databuff, 4096, tcpserv, tempsock);		//join players and what not.
+				else
+				{
+					//if retval < 0, then the connection was screwed up or something. delete this socket!
+					//if retval = 0, then connectin was closed. delete socket
+					current_num_clients -= 1;
+					socketarray[current_num_clients] = INVALID_SOCKET;
+				}
+				lockrx = 0;
+				Sleep(500);
+			}
+			update_session(session, 1);
+			updating_session = 0;
+			Sleep(10);
 		}
+		/*
+				if ((session.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
+				{
+					for (int i = 1; i < current_num_clients + 1; i++)		//currently player 0 is an empty place holder. dont check this or it will get deleted!
+					{
+						lockrx = 1;
+						ptr = session.player_list.begin() + i;
+						hostsocket = ptr->get_client_socket();
+						if (hostsocket != INVALID_SOCKET)
+						{
+							tcpserv.receiveUntilDone(hostsocket);
+							retval = framehandler(session, databuff, 4096, tcpserv, hostsocket);
+						}
+						else
+						{
+							session.delete_player(i);
+							cout << "Test text, socket invalid in process data thread" << endl;
+						}
+						lockrx = 0;
+					}
+				}
+				else
+				{
+					if (current_num_clients > session.check_number_of_players())	//if server thinks it has more players than it actually does at the top level, fix it. this can happen because the number of players in a game isnt sync'd to current_num_clients. players is updated when a client quits (i think)
+					{
+						//				while (current_num_clients > session.check_number_of_players())
+						//				{
+						//					current_num_clients -= 1;
+						//					socketarray[current_num_clients] = INVALID_SOCKET;
+						//				}
+						lockrx = 0;
+					}
+				}
+		*/
 	}
 	return(retval);
 }
@@ -140,21 +208,70 @@ int processData(game &session, tcpserver &tcpserv)
 	int retval = 0;
 	while (game_status == 0)
 	{
+		while (updating_session)
+			Sleep(1);
+		if (!updating_session)
+		{
+			updating_session = 1;
+			update_session(session, 0);	//update this functions game data to the latest version in this function
+			updating_session = 0;	//unblock the other function and search for incoming data
+		}
 		if ((session.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
 		{
-			for (int i = 0; i < current_num_clients + 1; i++)
+			for (int i = 1; i < current_num_clients + 1; i++)
 			{
 				lockrx = 1;
-				ptr = session.player_list.begin() + 1;
+				ptr = session.player_list.begin() + i;
 				hostsocket = ptr->get_client_socket();
 				if (hostsocket != INVALID_SOCKET)
 				{
-					tcpserv.receiveUntilDone(hostsocket);
-					retval = framehandler(session, databuff, 4096, tcpserv, hostsocket);
+					retval = tcpserv.receiveUntilDone(hostsocket);
+					if (retval > 0)
+					{
+						while (updating_session)
+							Sleep(1);
+						if (!updating_session)
+						{
+							updating_session = 1;
+							update_session(session, 0);	//update this functions game data to the latest version in this function
+							retval = framehandler(session, databuff, 4096, tcpserv, hostsocket);
+							update_session(session, 1);
+							updating_session = 0;
+						}
+					}
+				}
+				else
+				{
+					while (updating_session)
+						Sleep(1);
+					if (!updating_session)
+					{
+						updating_session = 1;
+						update_session(session, 0);	//update this functions game data to the latest version in this function
+						session.delete_player(i);
+						update_session(session, 1);
+						updating_session = 0;
+						cout << "Test text, socket invalid in process data thread" << endl;
+					}
 				}
 				lockrx = 0;
 			}
 		}
+		else
+		{
+			if (current_num_clients > session.check_number_of_players())	//if server thinks it has more players than it actually does at the top level, fix it. this can happen because the number of players in a game isnt sync'd to current_num_clients. players is updated when a client quits (i think)
+			{
+				//				while (current_num_clients > session.check_number_of_players())
+				//				{
+				//					current_num_clients -= 1;
+				//					socketarray[current_num_clients] = INVALID_SOCKET;
+				//				}
+				lockrx = 0;
+			}
+		}
+		//			update_session(session, 1);		//update the static copy in this function
+		updating_session = 0;
+		Sleep(10);
 	}
 	return(retval);
 }
@@ -199,29 +316,46 @@ int main()
 	int count = 0;
 	const char* strtowrite;
 	string tempstr;
+//	connectPlayers(catan, serv);
 	while(game_status == 0)
 		Sleep(500);
 	one.join();
 	two.join();
 	initial_placement_phase = 1;
 //	catan.build_std_board(19);
-	while ((game_status == 1) && (initial_placement_phase == 1) && (count < catan.check_number_of_players()))
+	update_session(catan, 0);
+	while ((game_status == 1) && (initial_placement_phase == 1))// && (count < catan.check_number_of_players()))
 	{
 		if ((catan.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
 		{
-			for (int i = 0; i < current_num_clients + 1; i++)
+			for (int i = 1; i < catan.check_number_of_players + 1; i++)
 			{
 				lockrx = 1;
-				ptr = catan.player_list.begin() + 1;
+				ptr = catan.player_list.begin() + i;
 				hostsocket = ptr->get_client_socket();
 				if (hostsocket != INVALID_SOCKET)
 				{
-					rxserv.receiveUntilDone(hostsocket);
-					retval = framehandler(catan, databuff, 4096, rxserv, hostsocket);
+					u_long iMode = 1;	//if = 1, then socket should be nonblocking. if = 0, it should be blocking.
+					ioctlsocket(hostsocket, FIONBIO, &iMode);
+					retval = rxserv.receiveUntilDone(hostsocket);
+					if (retval == 0)
+					{
+						catan.delete_player(i);
+						cout << "Player removed from game since connection closed" << endl;
+					}
+					else if (retval > 0)
+					{
+						framehandler(catan, databuff, 4096, rxserv, hostsocket);
+						tempstr = print_board();
+						strtowrite = tempstr.c_str();
+						cout << strtowrite << endl;
+					}
+					else
+					{
+						//if not >= 0, nothing was received!
+						Sleep(100);	//give it a break so it has time to receive something!
+					}
 				}
-				tempstr = print_board();
-				strtowrite = tempstr.c_str();
-				cout << strtowrite << endl;
 				lockrx = 0;
 			}
 		}
@@ -231,20 +365,30 @@ int main()
 	{
 		if ((catan.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
 		{
-			for (int i = 0; i < current_num_clients + 1; i++)
+			for (int i = 1; i < current_num_clients + 1; i++)
 			{
 				lockrx = 1;
-				ptr = catan.player_list.begin() + 1;
+				ptr = catan.player_list.begin() + i;
 				hostsocket = ptr->get_client_socket();
 				if (hostsocket != INVALID_SOCKET)
 				{
 					retval2 = rxserv.receiveUntilDone(hostsocket);
-					if (retval2 < 0)	//connection closed...
+					if (retval2 == 0)	//connection closed...
+					{
 						cerr << "connection closed! make this handle the situation!" << endl;
-					retval = framehandler(catan, databuff, 4096, rxserv, hostsocket);
-					tempstr = print_board();
-					strtowrite = tempstr.c_str();
-					cout << strtowrite << endl;
+						catan.delete_player(i);
+					}
+					else if (retval > 0)
+					{
+						retval = framehandler(catan, databuff, 4096, rxserv, hostsocket);
+						tempstr = print_board();
+						strtowrite = tempstr.c_str();
+						cout << strtowrite << endl;
+					}
+					else
+					{
+						Sleep(100);
+					}
 				}
 				lockrx = 0;
 			}
