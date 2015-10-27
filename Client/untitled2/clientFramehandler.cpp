@@ -85,7 +85,8 @@ using namespace std;
 //static client_trade_cards_offer trade_to_process;
 //static playerClient playerdata;
 static client_trade_cards_offer trade_to_process;
-
+int dice_roll_flag = 0;
+int resources_flag = 0;
 
 int clientFrameHandler(gameClient &session, char* datain)
 {
@@ -156,6 +157,7 @@ int clientFrameHandler(gameClient &session, char* datain)
             retval = dice_roll(datain[dataptr++]);
             session.update_dice_roll(retval);
             flag_rx_packet_needs_processing = 1;
+            dice_roll_flag = 1;
             break;
         case GET_QTY_ROADS_LEFT:
             retval = datain[dataptr];	//this should be the # of roads left to build
@@ -250,6 +252,7 @@ int clientFrameHandler(gameClient &session, char* datain)
             session.playerinfo.update_resources(4, datain[dataptr++]);
             session.playerinfo.update_resources(5, datain[dataptr++]);
             flag_rx_packet_needs_processing = 1;
+            resources_flag = 1;
             break;
         case GET_BOARD_INFO:
             nulptr = new char[datasize];
@@ -319,6 +322,7 @@ int clientFrameHandler(gameClient &session, char* datain)
 
             //after the first packet is received, another one should be received containing the resource info. This needs to receive a single packet and call clientframehandler recursively!
             current_players_turn = datain[dataptr++];
+            session.set_current_player(current_players_turn);
             tempchar[0] = datain[dataptr++];
             retval = atoi(tempchar);
             if ((tempchar[0] == '1') && (current_players_turn == session.get_player_num()))
@@ -327,8 +331,8 @@ int clientFrameHandler(gameClient &session, char* datain)
                 if(debug_text)
                     cout << "It is my turn! End turn should actually handle starting turn (sending this packet to client). client needs to send this packet to 'roll' the dice" << endl;
             }
-            tempchar[0] = datain[dataptr++];
-            retval = atoi(tempchar);
+            retval = datain[dataptr++];
+//            retval = atoi(tempchar);
             session.update_dice_roll(retval);
             if((tempchar[0] == 7) || (tempchar[0] == '7'))  //if a 7 was rolled, the next packet to update resources wont be sent.  need to check if its this players turn
             {
@@ -361,8 +365,20 @@ int clientFrameHandler(gameClient &session, char* datain)
                 if(session.check_current_player() == session.get_player_num())
                     cout << "You have ended your turn!" << endl;
                 else
-                    cout << "Player " << session.get_player_num() << " ended their turn!" << endl;
+                    cout << "Player " << +datain[dataptr + 1] << " ended their turn!" << endl;
+                if(session.get_player_num() == datain[dataptr])
+                    cout << "It is now your turn!" << endl;
             }
+            tempchar[0] = datain[dataptr++];
+            retval = atoi(tempchar);
+            if(retval > session.check_num_players())
+                retval = datain[dataptr - 1];
+            if(retval == session.get_player_num())
+            {
+                start_turn_flag = 1;
+                cout << "It is your turn!!!" << endl;
+            }
+            session.set_current_player(retval);
             break;
         case INVALID_PACKET_OR_SENDER:
             if(debug_text)

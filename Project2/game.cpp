@@ -55,11 +55,12 @@ int game::next_player()
 	current_player = (current_player + 1) % (players + 1);
 	if (current_player == 0)
 		current_player += 1;
-	return(current_player);
+	return(player_turn_array[current_player]);
 }
 
 int game::check_current_player()
 {
+//	return(player_turn_array[current_player]);
 	return(current_player);
 }
 
@@ -852,7 +853,9 @@ int game::start_turn(int rollnumva)
 //	int rollnumvalamt = 0;
 	int retval = 0;
 	int tempres = 0;
-	int rollnumvalamt = (rand()*rand()) % 11 + 2;
+	int rollnumvalamt = 0;
+	srand(time(0));
+	rollnumvalamt = (rand()*rand()) % 11 + 2;
 	current_roll = rollnumvalamt;				//save current_roll value. this is the only place that this variable should ever be changed!
 	player_ptr = player_list.begin();
 	for(int i = 0; i < players; i++)

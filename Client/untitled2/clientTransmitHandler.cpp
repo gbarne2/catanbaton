@@ -15,6 +15,7 @@
 using namespace std;
 #define playernum1	1
 int check_rx_data_buff = 0;
+int start_turn_flag = 0;
 extern char rxdatabuff [4096];
 
 int packetAssembler(char buffer[], int size)

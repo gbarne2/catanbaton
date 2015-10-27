@@ -154,13 +154,6 @@ void MainWindow::get_icon_file_rsrc_type_and_roll_from_tile_num(QString &filenam
 
 void MainWindow::set_icons_and_rollvals_on_board()
 {
-/*    static QPixmap brickpic(BRICK_ICON);
-    static QPixmap wheatpic(WHEAT_ICON);
-    static QPixmap mountainpic(MOUNTAIN_ICON);
-    static QPixmap sheeppic(SHEEP_ICON);
-    static QPixmap forestpic(FOREST_ICON);
-    static QPixmap desertpic(DESERT_ICON);
-*/
     char* charptr;
     int resrc = 0;
     int roll = 0;
@@ -373,6 +366,7 @@ MainWindow::MainWindow(QWidget *parent) :
 int MainWindow::Init_game_and_connection()
 {
     ui->NotifyText->setText("Attempting to connect to server... Please wait");
+    Sleep(100);
     QString detailmsg;
     int attempt = 1;
     int retval = 0;
@@ -384,12 +378,14 @@ int MainWindow::Init_game_and_connection()
             attempt = 0;
         detailmsg = "Connection attempt: " + count;
         ui->NotifyText->setText(detailmsg);
+        Sleep(100);
         ClientSock = Cgame.initsocketthing();
         if(ClientSock != INVALID_SOCKET)
         {
             success = 1;
             attempt = 0;
             ui->NotifyText->setText("Connection successful!");
+            Sleep(100);
             break;
         }
         else
@@ -404,6 +400,8 @@ int MainWindow::Init_game_and_connection()
     else
     {
         ui->NotifyText->setText("ERROR: UNABLE TO CONNECT TO SERVER");
+        Sleep(100);
+//        ui->NotifyText->setBackgroundRole("background-color: RED");
         Sleep(5000);
         retval = -1;
     }
@@ -411,7 +409,7 @@ int MainWindow::Init_game_and_connection()
     {
         timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(check_rx_packet()));       //this timer will periodically check if anyhting was received from server. if there was, it will process it.
-        timer->start(3000);
+        timer->start(1000);
     }
     return(retval);
 }
@@ -430,7 +428,7 @@ void MainWindow::check_rx_packet()
     if(!busyflag)
     {
         busyflag = 1;
-        if (select(ClientSock, &readSet, NULL, NULL, &timeout) == 1)
+        if (select(ClientSock, &readSet, NULL, NULL, &timeout) > 0)
         {
             retval = recv(ClientSock, rxdatabuff, 4096, 0);
             if (retval > 0)
@@ -457,11 +455,10 @@ void MainWindow::check_rx_packet()
             }
         }
         //also check for flags in this?
-        if(game_started > 1)
+        if(game_started >= 1)
         {
             Check_and_process_flags();
-            update_resources_display();
-            update_board_colors();
+//            update_board_colors();
         }
         busyflag = 0;
     }
@@ -492,6 +489,8 @@ int dv_monopoly_flag = 0;
 int dv_victory_point_flag = 0;
 int game_started = 0;
 int request_user_place_robber = 0;
+int check_rx_data_buff
+int start_turn_flag
      */
     if(request_user_place_robber)
     {
@@ -502,9 +501,36 @@ int request_user_place_robber = 0;
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         ui->NotifyText->setText("Select tile to place robber on");
+        Sleep(100);
         waiting_on_robber = 1;
-        int ret = msgBox.exec();
+        msgBox.exec();
     }
+    if(start_turn_flag)
+    {
+        start_turn_flag = 0;
+        if(Cgame.check_current_player() == Cgame.get_player_num()) //if next turn is our turn
+        {
+            ui->NotifyText->setText("It is your turn!");
+            Sleep(100);
+            std::cout << "It is your turn, check and see if notifytext was updated" << std::endl;
+            Cgame.start_turn();
+        }
+        else
+            ui->NotifyText->setText("It is not your turn, please wait");
+        Sleep(100);
+        update_board_colors();
+    }
+    if(dice_roll_flag)
+    {
+        dice_roll_flag = 0;
+        ui->CURR_DICE_ROLL->display(Cgame.update_dice_roll(0));
+    }
+    if(resources_flag)
+    {
+        resources_flag = 0;
+        update_resources_display();
+    }
+    //add ability to check for other player starting turn. need to update resources
     return(0);
 }
 
@@ -529,6 +555,7 @@ void MainWindow::update_resources_display()
             //6 desert
 
 }
+
 void MainWindow::setdicerolls()
 {
     for(int i = 0; i < buttonlist.size(); i++)
@@ -542,17 +569,20 @@ void MainWindow::setDiceRoll(std::string nname, QPushButton *ptr)
 {
     std::stringstream convert;
     int retval = 0;
+    int havntjumpedyet = 1;
     std::string tempstr = "";
     //DICEROLL_ = 9 lenght, if 11, then its 2 digits.
     int length = nname.length();
-    char tempchar[1] = {nname[9]};
+    char tempchar[1] = {0};
+    tempchar[0] = nname[9];
     int tilenum = atoi(tempchar);
-    if(length == 11)
+    if(length >= 11)
     {
         tempchar[0] = nname[10];
-        tilenum = tilenum*10 + atoi(tempchar);
+        tilenum = 10 + atoi(tempchar);
     }
     tilenum -= 1;
+jumptryagain:
     retval = droll(tilenum);
     convert.flush();
     convert << retval;
@@ -595,6 +625,15 @@ void MainWindow::setDiceRoll(std::string nname, QPushButton *ptr)
             tempstr += "\n*";
             break;
         default:
+            if(havntjumpedyet == 9)     //this should never happen, but it did a couple of times...
+            {                           //issue may have to do with invalid length number? changed the length comparison to be >=. it shouldnt be longer than 11 thouhg...
+                havntjumpedyet = 0;
+                tilenum = nname[9];
+                if(length >= 11)
+                    tilenum = tilenum*10 + nname[10];
+                goto jumptryagain;
+                tilenum = tilenum;      //nop?
+            }
             break;
         }
         if(tempstr == "DESERT")     //if its the desert tile, then
@@ -660,7 +699,6 @@ int MainWindow::update_board_colors()
     return(1);
 }
 
-
 int MainWindow::corner_info(int corner, int tilenum)
 {
     int retval = 0;
@@ -670,7 +708,7 @@ int MainWindow::corner_info(int corner, int tilenum)
 
 int MainWindow::droll(int tilenumb)
 {
-    return(Cgame.get_dice_roll(tilenumb));
+    return(Cgame.get_dice_roll(tilenumb % (active_num_tiles)));
 }
 
 string MainWindow::print_board()
@@ -723,6 +761,7 @@ string MainWindow::print_board()
 //	strStream << filein.rdbuf();
     return(strStream.str());
 }
+
 void MainWindow::update_dev_cards_on_gui()
 {
     ui->card_DK->display(Cgame.get_qty_dv_cardd(1));
@@ -757,7 +796,7 @@ void MainWindow::on_pushButton_clicked()
         if(waiting_on_robber)
         {
             ui->NotifyText->setText(" ");
-            ui->NotifyText->displayText();
+            Sleep(100);
             tempvec = Cgame.check_players_on_tile(retval);
             if(tempvec.size() == 0) //if empty, either no one was on tile or only this player was.
             {
@@ -985,7 +1024,7 @@ void MainWindow::on_pushButton_clicked()
         msgB.setStandardButtons(QMessageBox::Ok);
         msgB.setDefaultButton(QMessageBox::Ok);
         ui->NotifyText->setText("You must select a tile to place the robber on!");
-        ui->NotifyText->displayText();
+        Sleep(100);
         waiting_on_robber = 1;
         msgB.exec();
     }

@@ -31,51 +31,54 @@ extern int num_dev_cards_bought;
 
 class gameClient
 {
-	int players;
+    int current_player;
+    int players;
     int current_roll;
-	vector<playerClient> player_list;
-	int assign_resources();
-	int build_board();
+    vector<playerClient> player_list;
+    int assign_resources();
+    int build_board();
     int rolldice();
-	//Flag definitions
-	int FLAG_TURN_START;
-	int FLAG_MY_TURN;
-	int FLAG_BUILD_ROAD;
-	int FLAG_BUILD_CITY;
-	int FLAG_BUILD_SETTLEMENT;
+    //Flag definitions
+    int FLAG_TURN_START;
+    int FLAG_MY_TURN;
+    int FLAG_BUILD_ROAD;
+    int FLAG_BUILD_CITY;
+    int FLAG_BUILD_SETTLEMENT;
     int FLAG_PLACE_ROBBER;
 public:
     tileclient board[MAX_NUM_ACTIVE_TILES];
-	playerClient playerinfo;
-	gameClient();
-	~gameClient();
+    playerClient playerinfo;
+    gameClient();
+    ~gameClient();
     SOCKET initsocketthing();
     int startGame();
     int check_player_resource_amt(int);
-	int build_road(int tile, int corner);
-	int build_settlement(int tile, int corenr);
+    int build_road(int tile, int corner);
+    int build_settlement(int tile, int corenr);
     int build_city(int tile, int corner);
-	int check_current_player();
+    int check_current_player();
+    int set_current_player(int);
+    int check_num_players();
     int check_corner_owner(int corner, int tilenum) {return(board[tilenum].check_corner_owner(corner));}
     vector<int> check_players_on_tile(int tilenum);
     int check_corner_building_type(int corner, int tilenum) { return(board[tilenum].check_corner_building_type(corner));}
     int get_dice_roll(int tilenum)  {return(board[tilenum].check_dice_roll());}
     int start_turn();
-	int end_turn();
-	int get_player_num();
+    int end_turn();
+    int get_player_num();
     int check_tile_dice_roll(int tilenum);
     int Get_dice_roll();
     int update_dice_roll(int);
-	int refresh_cards();
-	int update_flag(int, int);
-	int update_board(char*, int, int, int);
+    int refresh_cards();
+    int update_flag(int, int);
+    int update_board(char*, int, int, int);
     int check_resource(int);
     int get_board_info();
-	int set_player_number(int);
+    int set_player_number(int);
     int get_corner_owner(int, int);
     int get_corner_bldg_type(int tilenum, int corner);
-	int get_road_owner(int road, int tilenum);
-	int rx_packet_checker(int packet_type);
+    int get_road_owner(int road, int tilenum);
+    int rx_packet_checker(int packet_type);
     int place_robber(int, int);
     int buy_dv_cardd(int);
     int get_qty_dv_cardd(int);

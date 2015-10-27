@@ -10,7 +10,7 @@
 #include "tcpclient.h"
 #include "mainwindow.h"
 
-char* tempaddr= "192.168.0.101";
+char* tempaddr= "192.168.0.102";
 //this will be the main game file for the client side, other than for the GUI.
 //All functionality on the client side will go through this function! the GUI will point to these functions do execute tasks
 tcpclient clienttcp(tempaddr);
@@ -190,8 +190,18 @@ int gameClient::build_city(int tile, int corner)
 
 int gameClient::check_current_player()
 {
-    cout << "make 'check_current_player()' actually work, in gameClient.cpp" << endl;
-    return(1);
+    return(current_player);
+}
+
+int gameClient::set_current_player(int playernew)
+{
+    current_player = playernew % (players+1);
+    return(current_player);
+}
+
+int gameClient::check_num_players()
+{
+    return(players);
 }
 
 int gameClient::start_turn()

@@ -13,3 +13,4 @@ int tx_start_turn(int);
 int tx_end_turn(int);
 
 extern int check_rx_data_buff;
+extern int start_turn_flag;

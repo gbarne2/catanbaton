@@ -50,19 +50,21 @@
 #endif
 struct client_trade_cards_offer
 {
-	unsigned int qty_wood_to_trade;
-	unsigned int qty_wood_to_receive;
-	unsigned int qty_ore_to_trade;
-	unsigned int qty_ore_to_receive;
-	unsigned int qty_brick_to_trade;
-	unsigned int qty_brick_to_receive;
-	unsigned int qty_wheat_to_trade;
-	unsigned int qty_wheat_to_receive;
-	unsigned int qty_sheep_to_trade;
-	unsigned int qty_sheep_to_receive;
+    unsigned int qty_wood_to_trade;
+    unsigned int qty_wood_to_receive;
+    unsigned int qty_ore_to_trade;
+    unsigned int qty_ore_to_receive;
+    unsigned int qty_brick_to_trade;
+    unsigned int qty_brick_to_receive;
+    unsigned int qty_wheat_to_trade;
+    unsigned int qty_wheat_to_receive;
+    unsigned int qty_sheep_to_trade;
+    unsigned int qty_sheep_to_receive;
 };
 
 static int flag_rx_packet_needs_processing = 0;		//when set to 1, this will indicate that something has been received that needs processing.
+extern int dice_roll_flag;
+extern int resources_flag;
 volatile static int debug_text = 1;
 
 /* Globals	*/

@@ -20,7 +20,7 @@
 
 #define setwval 1
 using namespace std;
-char* tempaddr = "192.168.0.101";
+char* tempaddr = "192.168.0.102";
 
 const int max_clients = 16;
 SOCKET socketarray[max_clients];
@@ -328,7 +328,7 @@ int main()
 	{
 		if ((catan.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
 		{
-			for (int i = 1; i < catan.check_number_of_players + 1; i++)
+			for (int i = 1; i < catan.check_number_of_players() + 1; i++)
 			{
 				lockrx = 1;
 				ptr = catan.player_list.begin() + i;

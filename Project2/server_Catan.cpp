@@ -113,7 +113,7 @@ map<int, player> playermap;
 int game_status = 0;
 
 //function prototypes
-int send_end_turn(game session, tcpserver servv);
+int send_end_turn(game session, tcpserver servv, int prev_player);
 int send_start_game(game session, tcpserver servv);
 int get_qty_cities_left(game session, int player_number);
 int get_qty_settlements_left(game session, int player_number);
@@ -420,7 +420,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 //					session.build_std_board(active_num_tiles);
 					cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
 					send_start_game(session, servv);
-					send_start_game(session, servv);
+//					send_start_game(session, servv);
 					//					send_packet(session, player_number, player_number, START_GAME, servv);
 				}
 				else
@@ -460,7 +460,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					}
 					trade_in_progress = 0;	//reset this flag just in case a trade never went through. otherwise it would block other people from trading on their turns
 					send_board_info(session, servv);
-					send_end_turn(session, servv);
+					send_end_turn(session, servv, player_number);
 					//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
 					turn_started_already = 0;
 				}
@@ -548,17 +548,30 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 			}
 		}
 		else
-			if(debug_text)
+		{
+			if (debug_text)
 				cout << "Game not started, unable to process non-initiating pakcet" << endl;
+			send_packet(session, player_number, INVALID_PACKET_OR_SENDER, INVALID_PACKET_OR_SENDER, servv);
+		}
 	}
 	return(0);
 }
 
-int send_end_turn(game session, tcpserver servv)
+int send_end_turn(game session, tcpserver servv, int prev_player)
 {
+	//data format:
+	//data[0] = next players turn?
+	//data[1] = player who ended their turn
+	//data[3] = your player number
 	int num = session.check_number_of_players();
+	char tempdata[3] = { 0, };
+	tempdata[0] = session.check_current_player();	//current player number
+	tempdata[1] = prev_player;
 	for (int x = 1; x < num + 1; x++)
-		send_packet(session, x, x, END_TURN, servv);		//make END_TURN be start turn when received from server?
+	{
+		tempdata[2] = x;		//the receipient's player number
+		send_packet(session, x, tempdata, END_TURN, 3, servv);		//make END_TURN be start turn when received from server?
+	}
 	return(num);
 }
 
