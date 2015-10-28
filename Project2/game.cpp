@@ -353,13 +353,13 @@ int game::determine_if_neighbor_tile_occupied(int corner_numbz, int tile_number,
 	}
 	//if invalid index, there is no neighboring tile!
 	//if no tile, then make the xcoord, ycoord, and corner the same as the original to be updated.
-	if((xcoord1 < 0) || (ycoord1 < 0))
+	if ((xcoord1 < 0) || (ycoord1 < 0) || (xcoord1 > max_x) || (ycoord1 > max_y))
 	{
 		xcoord1 = tempx;
 		ycoord1 = tempy;
 		corner1 = tempcorner;
 	}
-	if((xcoord2 < 0) || (ycoord2 < 0))
+	if((xcoord2 < 0) || (ycoord2 < 0) || (xcoord2 > max_x) || (ycoord2 > max_y))
 	{
 		xcoord2 = tempx;
 		ycoord2 = tempy;
@@ -746,11 +746,12 @@ int game::build_roads(int tile_number, int playernum, int road_numb)
 					localptr->road_connected += 1;
 					localptr->players_connected.push_back(playernum);
 				}
+
 				//build road on parallel tile? (only needed if one exists!)
-				if ((xcoord1 != tempx) || (ycoord1 != tempy))
+				if (((xcoord1 != tempx) || (ycoord1 != tempy)) && ((xcoord1 <= max_x) && (ycoord1 <= max_y)))
 				{
 					get_corners_from_road(road1, cornn1, cornn2);
-					retval1 = pieces[xcoord1][ycoord1].build_road(cornn1, cornn2, playernum);		//may need to go after the code below
+//					retval1 = pieces[xcoord1][ycoord1].build_road(cornn1, cornn2, playernum);		//may need to go after the code below
 					localptr = pieces[xcoord1][ycoord1].cornersz.begin() + cornn1;
 					localptr->road_connected += 1;
 					localptr->players_connected.push_back(playernum);		//update who is connected to each corner
@@ -758,6 +759,7 @@ int game::build_roads(int tile_number, int playernum, int road_numb)
 					localptr->road_connected += 1;
 					localptr->players_connected.push_back(playernum);
 				}
+
 			}
 			else
 				cerr << "I cant build a road for you." << endl;		//if retval = or < 0, then road was unable to be built

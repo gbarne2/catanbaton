@@ -315,7 +315,9 @@ int main()
 	thread one(connectPlayers, catan, serv);
 	int count = 0;
 	const char* strtowrite;
-	string tempstr;
+	string tempstr; 
+	u_long iMode = 1;	//if = 1, then socket should be nonblocking. if = 0, it should be blocking.
+
 //	connectPlayers(catan, serv);
 	while(game_status == 0)
 		Sleep(500);
@@ -324,7 +326,7 @@ int main()
 	initial_placement_phase = 1;
 //	catan.build_std_board(19);
 	update_session(catan, 0);
-	while ((game_status == 1) && (initial_placement_phase == 1))// && (count < catan.check_number_of_players()))
+	while ((game_status == 1))// && (initial_placement_phase == 1))// && (count < catan.check_number_of_players()))
 	{
 		if ((catan.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
 		{
@@ -335,20 +337,19 @@ int main()
 				hostsocket = ptr->get_client_socket();
 				if (hostsocket != INVALID_SOCKET)
 				{
-					u_long iMode = 1;	//if = 1, then socket should be nonblocking. if = 0, it should be blocking.
 					ioctlsocket(hostsocket, FIONBIO, &iMode);
 					retval = rxserv.receiveUntilDone(hostsocket);
 					if (retval == 0)
 					{
 						catan.delete_player(i);
-						cout << "Player removed from game since connection closed" << endl;
+						std::cout << "Player removed from game since connection closed" << endl;
 					}
 					else if (retval > 0)
 					{
 						framehandler(catan, databuff, 4096, rxserv, hostsocket);
 						tempstr = print_board();
 						strtowrite = tempstr.c_str();
-						cout << strtowrite << endl;
+						std::cout << strtowrite << endl;
 					}
 					else
 					{
@@ -361,6 +362,7 @@ int main()
 		}
 
 	}
+	/*
 	while (game_status == 1)
 	{
 		if ((catan.check_number_of_players() > 0))// && (!lockrx))	//if anyone has joined game, then allow them to send some stuff.
@@ -372,6 +374,7 @@ int main()
 				hostsocket = ptr->get_client_socket();
 				if (hostsocket != INVALID_SOCKET)
 				{
+					ioctlsocket(hostsocket, FIONBIO, &iMode);
 					retval2 = rxserv.receiveUntilDone(hostsocket);
 					if (retval2 == 0)	//connection closed...
 					{
@@ -394,6 +397,7 @@ int main()
 			}
 		}
 	}
+	*/
 /*
 	while (1)
 	{

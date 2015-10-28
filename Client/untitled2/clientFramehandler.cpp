@@ -74,6 +74,8 @@ using namespace std;
 #define MAX_PACKET_VAL					51
 #define USE_DV_CARD                     52
 #define PLACE_ROBBER_PACKET             53
+#define START_TURN_INIT_PLACEMENT       54
+#define END_INIT_PLACEMENT_PHASE        55
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
 #define INVALID_PACKET_OR_SENDER        69
 
@@ -86,7 +88,7 @@ using namespace std;
 //static playerClient playerdata;
 static client_trade_cards_offer trade_to_process;
 int dice_roll_flag = 0;
-int resources_flag = 0;
+//int resources_flag = 0;
 
 int clientFrameHandler(gameClient &session, char* datain)
 {
@@ -157,7 +159,7 @@ int clientFrameHandler(gameClient &session, char* datain)
             retval = dice_roll(datain[dataptr++]);
             session.update_dice_roll(retval);
             flag_rx_packet_needs_processing = 1;
-            dice_roll_flag = 1;
+            session.dice_roll_flag = 1;
             break;
         case GET_QTY_ROADS_LEFT:
             retval = datain[dataptr];	//this should be the # of roads left to build
@@ -252,7 +254,7 @@ int clientFrameHandler(gameClient &session, char* datain)
             session.playerinfo.update_resources(4, datain[dataptr++]);
             session.playerinfo.update_resources(5, datain[dataptr++]);
             flag_rx_packet_needs_processing = 1;
-            resources_flag = 1;
+            session.resources_flag = 1;
             break;
         case GET_BOARD_INFO:
             nulptr = new char[datasize];
@@ -272,6 +274,8 @@ int clientFrameHandler(gameClient &session, char* datain)
             flag_rx_packet_needs_processing = 1;
             break;
         case START_GAME:
+            session.begin_turn_init_placement = 1;
+            session.init_game_placement = 1;
             //data[0] = player number
             if (session.get_player_num() == 0)
                 session.set_player_number(datain[dataptr]);
@@ -319,45 +323,75 @@ int clientFrameHandler(gameClient &session, char* datain)
         //datain[0] = current_player -> whose turn it is
         //datain[1] = is current_player you? if 1, yes and go. if 0, not your turn.
         //datain[2] = dice roll
-
-            //after the first packet is received, another one should be received containing the resource info. This needs to receive a single packet and call clientframehandler recursively!
-            current_players_turn = datain[dataptr++];
-            session.set_current_player(current_players_turn);
-            tempchar[0] = datain[dataptr++];
-            retval = atoi(tempchar);
-            if ((tempchar[0] == '1') && (current_players_turn == session.get_player_num()))
+            if(!session.init_game_placement)
             {
-                session.update_flag(F_TURN_START, 1);// FLAG_MY_TURN = 1;
-                if(debug_text)
-                    cout << "It is my turn! End turn should actually handle starting turn (sending this packet to client). client needs to send this packet to 'roll' the dice" << endl;
-            }
-            retval = datain[dataptr++];
-//            retval = atoi(tempchar);
-            session.update_dice_roll(retval);
-            if((tempchar[0] == 7) || (tempchar[0] == '7'))  //if a 7 was rolled, the next packet to update resources wont be sent.  need to check if its this players turn
-            {
-                if(current_players_turn == session.get_player_num())
+                //after the first packet is received, another one should be received containing the resource info. This needs to receive a single packet and call clientframehandler recursively!
+                current_players_turn = datain[dataptr++];
+                session.set_current_player(current_players_turn);
+                tempchar[0] = datain[dataptr++];
+                retval = atoi(tempchar);
+                if ((tempchar[0] == '1') && (current_players_turn == session.get_player_num()))
                 {
-                    //do whateever I need to so that the GUI asks the player what tile to place robber on.
-                    request_user_place_robber = 1;
+                    session.update_flag(F_TURN_START, 1);// FLAG_MY_TURN = 1;
+                    if(debug_text)
+                        cout << "It is my turn! End turn should actually handle starting turn (sending this packet to client). client needs to send this packet to 'roll' the dice" << endl;
                 }
-            }
+                retval = datain[dataptr++];
+                //            retval = atoi(tempchar);
+                session.update_dice_roll(retval);
+                if((tempchar[0] == 7) || (tempchar[0] == '7'))  //if a 7 was rolled, the next packet to update resources wont be sent.  need to check if its this players turn
+                {
+                    if(current_players_turn == session.get_player_num())
+                    {
+                        //do whateever I need to so that the GUI asks the player what tile to place robber on.
+                        request_user_place_robber = 1;
+                    }
+                }
 
-//            if((flag_rx_packet_needs_processing == 0) || (session.update_flag(F_TURN_START, -1)))
-//            {
+                //            if((flag_rx_packet_needs_processing == 0) || (session.update_flag(F_TURN_START, -1)))
+                //            {
 
                 nulptr = new char[4096];
                 for(int x = 0; x < 4096; x++)
-                   nulptr[x] = 0;
+                    nulptr[x] = 0;
                 clienttcp.recieveSingle();
                 for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
                     nulptr[x] = clienttcp.read_receive_buff(x);
                 clientFrameHandler(session,nulptr);
-//            }
+                //            }
                 delete[] nulptr;
 
                 flag_rx_packet_needs_processing = 1;
-
+            }
+            break;
+        case START_TURN_INIT_PLACEMENT:
+            //datain[0] = current player
+            //datain[1] = are you the current player?
+            current_players_turn = datain[dataptr++];
+            session.set_current_player(current_players_turn);
+            tempchar[0] = datain[dataptr++];
+            retval = atoi(tempchar);
+            if((datain[dataptr] > 1) && (session.get_player_num() == current_players_turn)) //if it is this players turn...
+            {
+                //it is this players turn, set the flag to place a settlement and road, dont update resources yet!
+                session.begin_turn_init_placement = 1;
+            }
+            else
+                session.begin_turn_init_placement = 0;  //force to 0 just to be safe
+            if(debug_text)
+            {
+                cout << "Start turn init placement! It is ";
+                if(session.get_player_num() != current_players_turn)    //if it is not this players turn...
+                    cout << "NOT your turn!" << endl;
+                else
+                    cout << "your turn! Please place a settlement and then a road" << endl;
+            }
+            break;
+        case END_INIT_PLACEMENT_PHASE:
+            session.init_game_placement = 0;
+            session.begin_turn_init_placement = 0;
+            if(debug_text)
+                cout << "Initial placement phase has ended! Begin normal game play" << endl;
             break;
         case END_TURN:
             if(debug_text)
@@ -371,6 +405,7 @@ int clientFrameHandler(gameClient &session, char* datain)
             }
             tempchar[0] = datain[dataptr++];
             retval = atoi(tempchar);
+            session.begin_turn_init_placement = 0;
             if(retval > session.check_num_players())
                 retval = datain[dataptr - 1];
             if(retval == session.get_player_num())

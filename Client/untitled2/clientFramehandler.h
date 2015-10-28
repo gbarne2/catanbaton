@@ -40,6 +40,8 @@
 #define MAX_PACKET_VAL					51
 #define USE_DV_CARD                     52
 #define PLACE_ROBBER_PACKET             53
+#define START_TURN_INIT_PLACEMENT       54
+#define END_INIT_PLACEMENT_PHASE        55
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
 #define INVALID_PACKET_OR_SENDER        69
 
@@ -63,8 +65,8 @@ struct client_trade_cards_offer
 };
 
 static int flag_rx_packet_needs_processing = 0;		//when set to 1, this will indicate that something has been received that needs processing.
-extern int dice_roll_flag;
-extern int resources_flag;
+//extern int dice_roll_flag;
+//extern int resources_flag;
 volatile static int debug_text = 1;
 
 /* Globals	*/

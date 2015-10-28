@@ -3323,7 +3323,7 @@
    <widget class="QLineEdit" name="NotifyText">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>247</x>
       <y>0</y>
       <width>521</width>
       <height>22</height>

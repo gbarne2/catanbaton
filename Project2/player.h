@@ -6,13 +6,13 @@
 
 #ifndef START_CARD_VALUES
 #define START_CARD_VALUES
-#define START_ORE			50
-#define START_SHEEP			50
-#define START_BRICK			50
-#define START_WHEAT			50
-#define START_WOOD			50
-#define START_SETTLEMENTS	5
-#define START_ROADS			15
+#define START_ORE			500
+#define START_SHEEP			500
+#define START_BRICK			500
+#define START_WHEAT			500
+#define START_WOOD			500
+#define START_SETTLEMENTS	50
+#define START_ROADS			150
 #define START_CITIES		4
 #endif
 

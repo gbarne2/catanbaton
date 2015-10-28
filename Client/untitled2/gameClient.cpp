@@ -55,6 +55,27 @@ int gameClient::startGame()
     return(sendPacketTX(get_player_num(), 0, START_GAME));
 }
 
+int gameClient::place_initial_settlement_road(int tileset, int corner, int tileroad, int road)
+{
+    int retval = 0;
+    char temp[4] = {0,};
+    begin_turn_init_placement = 0;
+    if((tileset >= 0) && (corner >= 0) && (tileroad >= 0) && (road >= 0))
+    {   //if all values arer value
+        temp[0] = tileset + 1;  //make sure the value isnt = 0; add 1 to all values.
+        temp[1] = corner + 1;
+        temp[2] = tileroad + 1;
+        temp[3] = road + 1;
+        retval = sendPacketTX(get_player_num(), temp, 4, START_TURN_INIT_PLACEMENT);
+    }
+    else
+    {
+        //invalid tile, corner, or road values! something wasnt set properly. make the player try again.
+        retval = -80;
+    }
+    return(retval);
+}
+
 int gameClient::check_player_resource_amt(int type)
 {
     return(this->playerinfo.check_resource_amount(type));

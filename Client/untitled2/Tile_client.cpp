@@ -246,22 +246,10 @@ int tileclient::update_board_info_from_server(char* datain, int datasize, int& s
 int tileclient::check_dice_roll()
 {
     Sleep(100);
-    return(roll);
+    return(roll);       //segfault occurs here?
+    //seg fault actually is occuring because the tilenumber is invalid coming from the setDiceRoll function in mainewindow.cpp
 }
 
-
-/*
-void tileclient::build_settlement(int corner, int player)
-{
-    vector<Corner>::iterator ptr3 = cornersz.begin() + (corner)%6;
-    if(ptr3->property_type == 0)
-    {
-        ptr3->property_type = 1;
-        ptr3->property_owner = player;
-        ptr3->players_connected.push_back(player);
-    }
-}
-*/
 /*
 int tileclient::upgrade_settlement(int corner, int player)
 {

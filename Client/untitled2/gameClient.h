@@ -51,7 +51,16 @@ public:
     gameClient();
     ~gameClient();
     SOCKET initsocketthing();
+
+ //flags
+    int resources_flag;
+    int dice_roll_flag;
+    int init_game_placement;
+    int begin_turn_init_placement;
+
+ //functions
     int startGame();
+    int place_initial_settlement_road(int tileset, int corner, int tileroad, int road);
     int check_player_resource_amt(int);
     int build_road(int tile, int corner);
     int build_settlement(int tile, int corenr);

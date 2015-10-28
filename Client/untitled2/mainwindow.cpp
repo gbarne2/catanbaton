@@ -275,6 +275,11 @@ MainWindow::MainWindow(QWidget *parent) :
     QString tempstr = "";
     int retval = 0;
     QString detailmsg;
+    init_placement_corner = -7;
+    init_set_placement_tile = -7;
+    init_road_placement_road = -7;
+    init_road_placement_tile = -7;
+    init_set_ready = 0;
     int attempt = 1;
     int success = 0;
     int count = 1;
@@ -322,18 +327,21 @@ MainWindow::MainWindow(QWidget *parent) :
     QTimer::singleShot(5000, this, SLOT(Init_game_and_connection()));
 //    retval = Init_game_and_connection();
 /*    ui->NotifyText->setText("Attempting to connect to server... Please wait");
+            ui->NotifyText->repaint();
     while(attempt)
     {
         if(count > max_connection_attempts)
             attempt = 0;
         detailmsg = "Connection attempt: " + count;
         ui->NotifyText->setText(detailmsg);
+            ui->NotifyText->repaint();
         ClientSock = Cgame.initsocketthing();
         if(ClientSock != INVALID_SOCKET)
         {
             success = 1;
             attempt = 0;
             ui->NotifyText->setText("Connection successful!");
+            ui->NotifyText->repaint();
             break;
         }
         else
@@ -349,6 +357,7 @@ MainWindow::MainWindow(QWidget *parent) :
     else
     {
         ui->NotifyText->setText("ERROR: UNABLE TO CONNECT TO SERVER");
+            ui->NotifyText->repaint();
         Sleep(5000);
         retval = -1;
     }
@@ -366,6 +375,7 @@ MainWindow::MainWindow(QWidget *parent) :
 int MainWindow::Init_game_and_connection()
 {
     ui->NotifyText->setText("Attempting to connect to server... Please wait");
+    ui->NotifyText->repaint();
     Sleep(100);
     QString detailmsg;
     int attempt = 1;
@@ -378,6 +388,7 @@ int MainWindow::Init_game_and_connection()
             attempt = 0;
         detailmsg = "Connection attempt: " + count;
         ui->NotifyText->setText(detailmsg);
+        ui->NotifyText->repaint();
         Sleep(100);
         ClientSock = Cgame.initsocketthing();
         if(ClientSock != INVALID_SOCKET)
@@ -385,6 +396,7 @@ int MainWindow::Init_game_and_connection()
             success = 1;
             attempt = 0;
             ui->NotifyText->setText("Connection successful!");
+            ui->NotifyText->repaint();
             Sleep(100);
             break;
         }
@@ -400,8 +412,10 @@ int MainWindow::Init_game_and_connection()
     else
     {
         ui->NotifyText->setText("ERROR: UNABLE TO CONNECT TO SERVER");
+        ui->NotifyText->repaint();
         Sleep(100);
 //        ui->NotifyText->setBackgroundRole("background-color: RED");
+        ui->NotifyText->repaint();
         Sleep(5000);
         retval = -1;
     }
@@ -497,20 +511,21 @@ int start_turn_flag
         request_user_place_robber = 0;
         QMessageBox msgBox;
         msgBox.setText("Select a tile to place the robber on!");
-        msgBox.setInformativeText("To use dev card, press 'ok'. Otherwise press 'cancel'");
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.setDefaultButton(QMessageBox::Ok);
         ui->NotifyText->setText("Select tile to place robber on");
+        ui->NotifyText->repaint();
         Sleep(100);
         waiting_on_robber = 1;
         msgBox.exec();
     }
-    if(start_turn_flag)
+    if(start_turn_flag && !Cgame.begin_turn_init_placement)
     {
         start_turn_flag = 0;
         if(Cgame.check_current_player() == Cgame.get_player_num()) //if next turn is our turn
         {
             ui->NotifyText->setText("It is your turn!");
+            ui->NotifyText->repaint();
             Sleep(100);
             std::cout << "It is your turn, check and see if notifytext was updated" << std::endl;
             Cgame.start_turn();
@@ -520,14 +535,34 @@ int start_turn_flag
         Sleep(100);
         update_board_colors();
     }
-    if(dice_roll_flag)
+    if(Cgame.begin_turn_init_placement)
     {
-        dice_roll_flag = 0;
+        //need to place a road and a settlement!
+        if(debug_text)
+            std::cout << "Flags processed, please place a settlement and a road" << std::endl;
+        QMessageBox msgBox;
+        if(place_init_settlement == 0)
+        {
+            msgBox.setText("Initial placement phase has begun");
+            msgBox.setInformativeText("After closing this box, please select a location to build a settlement");
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.exec();
+            place_init_settlement = 1;
+        }
+//        else
+//        {
+            //if it is 1, then user has already been notified. just wait
+//        }
+    }
+    if(Cgame.dice_roll_flag)
+    {
+        Cgame.dice_roll_flag = 0;
         ui->CURR_DICE_ROLL->display(Cgame.update_dice_roll(0));
     }
-    if(resources_flag)
+    if(Cgame.resources_flag)
     {
-        resources_flag = 0;
+        Cgame.resources_flag = 0;
         update_resources_display();
     }
     //add ability to check for other player starting turn. need to update resources
@@ -574,12 +609,14 @@ void MainWindow::setDiceRoll(std::string nname, QPushButton *ptr)
     //DICEROLL_ = 9 lenght, if 11, then its 2 digits.
     int length = nname.length();
     char tempchar[1] = {0};
-    tempchar[0] = nname[9];
-    int tilenum = atoi(tempchar);
+    char *endptr;
+    tempchar[0] = +nname[9];
+    int tilenum = tempchar[0] - 48;     //atoi wasnt working for the single digit numbers, so just subtract 48 to get int value
     if(length >= 11)
     {
         tempchar[0] = nname[10];
-        tilenum = 10 + atoi(tempchar);
+        tilenum = tilenum*10 + tempchar[0]-48;
+//        tilenum = tilenum*10 + atoi(tempchar);
     }
     tilenum -= 1;
 jumptryagain:
@@ -708,7 +745,12 @@ int MainWindow::corner_info(int corner, int tilenum)
 
 int MainWindow::droll(int tilenumb)
 {
-    return(Cgame.get_dice_roll(tilenumb % (active_num_tiles)));
+    int retval = 0;
+    if((tilenumb >= active_num_tiles) || (tilenumb < 0))
+        retval = -70;
+    else
+        retval = Cgame.get_dice_roll(tilenumb); //protect against seg faults with invalid tile index!
+    return(retval);
 }
 
 string MainWindow::print_board()
@@ -780,6 +822,7 @@ void MainWindow::on_pushButton_clicked()
     string tempstr;
     const char* strtowrite;
     vector<int> tempvec;
+    QString tempstrrr = "";
     int road = 0;
     i = 0;
     QPushButton *ptrobj = qobject_cast<QPushButton *>(sender());
@@ -796,6 +839,7 @@ void MainWindow::on_pushButton_clicked()
         if(waiting_on_robber)
         {
             ui->NotifyText->setText(" ");
+            ui->NotifyText->repaint();
             Sleep(100);
             tempvec = Cgame.check_players_on_tile(retval);
             if(tempvec.size() == 0) //if empty, either no one was on tile or only this player was.
@@ -821,6 +865,7 @@ void MainWindow::on_pushButton_clicked()
         {
             if(senderObjName.toStdString() == "B_START_GAME")
             {
+                place_init_settlement = 0;
                 std::cout << "Start game!" << std::endl;
                 Cgame.startGame();
                 retval = clientFrameHandler(Cgame, rxdatabuff);
@@ -983,15 +1028,38 @@ void MainWindow::on_pushButton_clicked()
                     {
                         //if settlement button, do settlement stuff.
                         get_settlement_corner_and_tile_from_name(buttonlist[i]->objectName().toStdString(), tile, corner);
-
-                        if(ui->BUILD_CITY->isChecked())
+                        if((ui->BUILD_SET->isChecked()) || (Cgame.begin_turn_init_placement))
+                        {
+                            if(Cgame.begin_turn_init_placement)
+                            {
+                                if(!init_set_ready)
+                                {
+                                    //need to save these coords somewhere to send initial placement info.
+                                    init_placement_corner = corner;
+                                    init_set_placement_tile = tile;
+                                    init_road_placement_road = -7;
+                                    init_road_placement_tile = -7;
+                                    init_set_ready = 1;
+                                    tempstrrr = "";
+                                    tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
+                                    buttonlist[i]->setStyleSheet(tempstrrr);
+//                                    updatecolortile = 1;
+                                }
+                                else
+                                {
+                                    ui->NotifyText->setText("Settlement already selected!");
+                                    ui->NotifyText->repaint();
+                                }
+                            }
+                            else
+                            {
+                                Cgame.build_settlement(tile, corner);
+                                updatecolortile = 1;
+                            }
+                        }
+                        else if(ui->BUILD_CITY->isChecked())
                         {
                             Cgame.build_city(tile, corner);
-                            updatecolortile = 1;
-                        }
-                        else if(ui->BUILD_SET->isChecked())
-                        {
-                            Cgame.build_settlement(tile, corner);
                             updatecolortile = 1;
                         }
                         else
@@ -1000,10 +1068,34 @@ void MainWindow::on_pushButton_clicked()
                     else if(buttonlist[i]->objectName().toStdString()[0] == 'r')
                     {
                         get_road_road_and_tile_from_name(buttonlist[i]->objectName().toStdString(), tile, road);
-                        if(ui->BUILD_A_ROAD->isChecked())
+                        if((ui->BUILD_A_ROAD->isChecked()) || (Cgame.begin_turn_init_placement))
                         {
-                            Cgame.build_road(tile, road);
-                            updatecolortile = 1;
+                            if(Cgame.begin_turn_init_placement)
+                            {
+                                if(init_set_ready)
+                                {
+                                    //need to save these coords somewhere to send initial placement info.
+                                    init_road_placement_road = road;
+                                    init_road_placement_tile = tile;
+                                    init_set_ready = 0;
+//                                    updatecolortile = 1;
+                                    tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
+                                    buttonlist[i]->setStyleSheet(tempstrrr);
+                                    Sleep(50);
+                                    place_init_settlement = 0;
+                                    Cgame.place_initial_settlement_road(init_set_placement_tile, init_placement_corner, init_road_placement_tile, init_road_placement_road);
+                                }
+                                else
+                                {
+                                    ui->NotifyText->setText("You must place a settlement first!");
+                                    ui->NotifyText->repaint();
+                                }
+                            }
+                            else
+                            {
+                                Cgame.build_road(tile, road);
+                                updatecolortile = 1;
+                            }
                         }
                         else
                             std::cout << "Build road not selected!" << std::endl;
@@ -1024,6 +1116,7 @@ void MainWindow::on_pushButton_clicked()
         msgB.setStandardButtons(QMessageBox::Ok);
         msgB.setDefaultButton(QMessageBox::Ok);
         ui->NotifyText->setText("You must select a tile to place the robber on!");
+        ui->NotifyText->repaint();
         Sleep(100);
         waiting_on_robber = 1;
         msgB.exec();

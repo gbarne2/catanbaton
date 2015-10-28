@@ -200,7 +200,7 @@ int tile::check_roads(int corner1, int corner2, int player)
 	if(((corner1) < (corner2)) && !((corner1 == 0) && (corner2 == 5)))		//if corner1 has higher index than corner 2, then road index = corner 1 (going A->B, B->C, etc.). if corner2 > corner1, then road index = corner2, since its going B->A, A->F, etc
 		road_to_check = corner1;
 	else
-		road_to_check = corner2;
+		road_to_check = corner1;
 	ptr = cornersz.begin();
 	//if the player has any roads from another tile that connect to either of these corners, then you can build a road if other conditions are met.
 	for(temp_ptr = (ptr+corner1)->players_connected.begin(); temp_ptr < (ptr+corner1)->players_connected.end(); temp_ptr++)

@@ -438,7 +438,8 @@ int main()
 			else
 				cout << "invalid choice!" << endl;
 			break;
-		default:
+		
+
 			cin.clear();
 			break;
 		}

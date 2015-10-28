@@ -94,6 +94,8 @@ get_time_limit
 #define START_TURN					51
 #define USE_DV_CARD					52
 #define PLACE_ROBBER_PACKET         53
+#define START_TURN_INIT_PLACEMENT	54
+#define END_INIT_PLACEMENT_PHASE    55
 #define INVALID_PACKET_OR_SENDER	69
 #define MAX_DEV_CARDS_PER_TRANSACTION 10
 #endif
@@ -112,7 +114,9 @@ using namespace std;
 map<int, player> playermap;
 int game_status = 0;
 
-//function prototypes
+//function prototypes						
+int send_init_placement_start(game session, tcpserver servv);
+int send_end_init_placement(game session, tcpserver servv);
 int send_end_turn(game session, tcpserver servv, int prev_player);
 int send_start_game(game session, tcpserver servv);
 int get_qty_cities_left(game session, int player_number);
@@ -174,7 +178,9 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 	int invalid_sender = 0;
 	char *nulptr;
 	int retval = 0;	
-	static int turn_started_already = 0;
+	static int turn_started_already = 0; 
+	static int number_of_init_placements = 1;	// session.check_number_of_players() * 2;
+
 
 	if ((datain[0] == 'S') && (datain[1] == '8') && (datain[2] == 53) && (datain[3] == 'p'))
 	{
@@ -420,7 +426,9 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 //					session.build_std_board(active_num_tiles);
 					cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
 					send_start_game(session, servv);
-//					send_start_game(session, servv);
+					initial_placement_phase = 1; 
+					number_of_init_placements = 1;
+
 					//					send_packet(session, player_number, player_number, START_GAME, servv);
 				}
 				else
@@ -536,6 +544,43 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//retval = send_dice_roll(session);
 				//need to make this do a bunch more stuff probably. like update each user of their respective resources and what not.
 				break;
+			case START_TURN_INIT_PLACEMENT:
+				//receiving this packet means that the player is ending their turn. need to process their data, send out board info, and then move to next player.
+				//data[0] = tile for settlement
+				//data[1] = corner for settlement
+				//data[2] = tile for road
+				//data[3] = road
+				if ((player_number == session.check_current_player()) && (initial_placement_phase == 1))
+				{
+					retval = session.temp_build_settlement(datain[dataptr] - 1, player_number, datain[dataptr + 1] - 1);
+					if (debug_text)
+						cout << "Build settlement finished with status: " << retval << endl;
+					if (retval > 0)
+					{
+						Sleep(15);
+						retval = session.build_roads(datain[dataptr + 2] - 1, player_number, datain[dataptr + 3] - 1);
+						if (debug_text)
+							cout << "Build road finished with status: " << retval << endl;
+					}
+					if (retval > 0)
+						session.next_player();		//only go to next player if the settlement/road was successfully built
+					else
+						number_of_init_placements -= 1;	//if unable to build, reduce this by one to keep the count at the same value after increment.
+					Sleep(1000);	//give the clients a chance to update their side
+					send_board_info(session, servv);
+					Sleep(5000);	//give the clients a chance to update their side
+					if (number_of_init_placements >= session.check_number_of_players() * 2)	//if each player has been able to place twice, then end init placement phase
+					{
+						send_end_init_placement(session, servv);
+						initial_placement_phase = 0;
+					}
+					else
+						send_init_placement_start(session, servv);		
+					number_of_init_placements++;
+				}
+				else
+					invalid_sender = 1;
+				break;
 			default:
 				send_packet(session, player_number, INVALID_PACKET_OR_SENDER, INVALID_PACKET_OR_SENDER, servv);
 				cout << "ERROR: INVALID DATA TYPE! This should probably send an error back to the client saying something like please contact your system administrator" << endl;
@@ -555,6 +600,41 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 		}
 	}
 	return(0);
+}
+
+int send_init_placement_start(game session, tcpserver servv)
+{
+	//this needs to notify all players who turn it is to get the ball rolling.
+	//this should trigger the first player to begin their placement. they should build one settlement and one road, then the server should go to the next player
+	//packet should contain the current player and some data to indicate it is the initial placement phase.
+	//data[0]	=	current player
+	//data[1]	=	is current player you?
+
+	//START_TURN_INIT_PLACEMENT
+	int num = session.check_number_of_players();
+	char tempdata[2] = { 0, };
+	tempdata[0] = session.check_current_player();	//current player number
+	for (int x = 1; x < num + 1; x++)
+	{
+		if (x == session.check_current_player())
+			tempdata[1] = 2;		//this players turn
+		else
+			tempdata[1] = 1;		//not this players turn
+		send_packet(session, x, tempdata, START_TURN_INIT_PLACEMENT, 2, servv);		//make END_TURN be start turn when received from server?
+	}
+	return(num);
+}
+
+int send_end_init_placement(game session, tcpserver servv)
+{
+	int num = session.check_number_of_players();
+	char tempdata[2] = { 0, };
+	tempdata[0] = session.check_current_player();	//current player number
+	for (int x = 1; x < num + 1; x++)
+	{
+		send_packet(session, x, x, END_INIT_PLACEMENT_PHASE, servv);		//make END_TURN be start turn when received from server?
+	}
+	return(num);
 }
 
 int send_end_turn(game session, tcpserver servv, int prev_player)
