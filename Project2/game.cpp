@@ -275,7 +275,7 @@ int game::determine_neighbor_tile_road(int road_numb, int tile_number, int playe
 	
 	//if invalid index, there is no neighboring tile!
 	//if no tile, then make the xcoord, ycoord, and corner the same as the original to be updated.
-	if((xcoord1 < 0) || (ycoord1 < 0))
+	if((xcoord1 < 0) || (ycoord1 < 0) || (xcoord1 > max_x) || (ycoord1 > max_y))
 	{
 		xcoord1 = tempx;
 		ycoord1 = tempy;
