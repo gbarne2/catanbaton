@@ -237,6 +237,7 @@ int game::determine_neighbor_tile_road(int road_numb, int tile_number, int playe
 {
 	int tempx = 0;
 	int tempy = 0;
+	int retval = 0;
 	xcoord1 = determine_x_index_from_tile(tile_number);
 	ycoord1 = determine_y_index_from_tile(tile_number);
 	
@@ -281,8 +282,20 @@ int game::determine_neighbor_tile_road(int road_numb, int tile_number, int playe
 		ycoord1 = tempy;
 		road1 = road_numb%6;
 	}
-	return(pieces[xcoord1][ycoord1].get_road_owner(road1));		//if 0, a road is not currently here.
-		
+	//do a sanity check. if neighbor tile road owner != the specified road owner, make them equal to the nonzero value.
+	
+	retval = pieces[xcoord1][ycoord1].get_road_owner(road1);		//if 0, a road is not currently here.
+	if (retval != pieces[tempx][tempy].get_road_owner(road_numb))
+	{
+		if (retval == 0)	//if the other tile has no owner but the main one does, then update this one
+		{
+			pieces[xcoord1][ycoord1].roads[road_numb] = pieces[tempx][tempy].get_road_owner(road_numb);
+			retval = pieces[tempx][tempy].get_road_owner(road_numb);
+		}
+		else if (pieces[tempx][tempy].get_road_owner(road_numb) == 0)
+			pieces[tempx][tempy].roads[road_numb] = retval;
+	}
+	return(retval);
 		//check_neighbors(corner1, playernum) && pieces[xcoord2][ycoord1].check_neighbors(corner2, playernum));
 }
 SOCKET game::get_player_socket(int playernum)
@@ -365,7 +378,7 @@ int game::determine_if_neighbor_tile_occupied(int corner_numbz, int tile_number,
 		ycoord2 = tempy;
 		corner2 = tempcorner;
 	}
-	return(pieces[xcoord1][ycoord1].check_neighbors(corner1, playernum) && pieces[xcoord2][ycoord1].check_neighbors(corner2, playernum));
+	return(pieces[xcoord1][ycoord1].check_neighbors(corner1, playernum) && pieces[xcoord2][ycoord2].check_neighbors(corner2, playernum));
 }
 
 int game::get_num_roads(int player_num)
@@ -700,7 +713,6 @@ int game::build_roads(int tile_number, int playernum, int road_numb)
 	{
 		get_corners_from_road(road_numb, cornn1, cornn2);
 		retval = determine_neighbor_tile_road(road_numb, tile_number, playernum, xcoord1, ycoord1, road1);
-
 		//***A road touches 6 corners, not 2! (two of the main hex, two of the parallel hex, 1 of the hex on either end of road). 
 		//must update all four, not just two!
 		//if what im thinking is true, i should be able to build a settlement at 3.0 by building roads 0.4, 0.3, and 3.5
@@ -709,13 +721,13 @@ int game::build_roads(int tile_number, int playernum, int road_numb)
 			retval = pieces[tempx][tempy].build_road(cornn1, cornn2, playernum);
 			if (retval > 0)
 			{
-				localptr = pieces[tempx][tempy].cornersz.begin() + cornn1;
+/*				localptr = pieces[tempx][tempy].cornersz.begin() + cornn1;
 				localptr->road_connected += 1;
 				localptr->players_connected.push_back(playernum);		//update who is connected to each corner
 				localptr = pieces[tempx][tempy].cornersz.begin() + cornn2;
 				localptr->road_connected += 1;
 				localptr->players_connected.push_back(playernum);
-
+*/
 				//update the 2 other touching corners for the end of the road going to cornn1
 				determine_if_neighbor_tile_occupied(cornn1, tile_number, playernum, xcoord2, ycoord2, corner1, xcoord3, ycoord3, corner2);	//use this to get the three corners to update on either side of the road
 				if ((xcoord2 != tempx) || (ycoord2 != tempy))
@@ -730,17 +742,16 @@ int game::build_roads(int tile_number, int playernum, int road_numb)
 					localptr->road_connected += 1;
 					localptr->players_connected.push_back(playernum);
 				}
-
 				//update the other 2 touching corners for the end of the road going to cornn2
 				//only update if the touching corner is actually for a different tile...
 				determine_if_neighbor_tile_occupied(cornn2, tile_number, playernum, xcoord2, ycoord2, corner1, xcoord3, ycoord3, corner2);	//use this to get the three corners to update on either side of the road
-				if ((xcoord2 != tempx) || (ycoord2 != tempy))
+				if (((xcoord2 != tempx) || (ycoord2 != tempy)) && ((xcoord2 <= max_x) && (ycoord2 <= max_y)))
 				{
 					localptr = pieces[xcoord2][ycoord2].cornersz.begin() + corner1;
 					localptr->road_connected += 1;
 					localptr->players_connected.push_back(playernum);
 				}
-				if (((xcoord3 != tempx) || (ycoord3 != tempy)) && ((xcoord2 != xcoord3) || (ycoord2 != ycoord3)))
+				if (((xcoord3 != tempx) || (ycoord3 != tempy)) && ((xcoord2 != xcoord3) || (ycoord2 != ycoord3)) && (xcoord3 <= max_x) && (ycoord3 <= max_y))
 				{
 					localptr = pieces[xcoord3][ycoord3].cornersz.begin() + corner2;
 					localptr->road_connected += 1;
@@ -751,13 +762,13 @@ int game::build_roads(int tile_number, int playernum, int road_numb)
 				if (((xcoord1 != tempx) || (ycoord1 != tempy)) && ((xcoord1 <= max_x) && (ycoord1 <= max_y)))
 				{
 					get_corners_from_road(road1, cornn1, cornn2);
-//					retval1 = pieces[xcoord1][ycoord1].build_road(cornn1, cornn2, playernum);		//may need to go after the code below
-					localptr = pieces[xcoord1][ycoord1].cornersz.begin() + cornn1;
-					localptr->road_connected += 1;
-					localptr->players_connected.push_back(playernum);		//update who is connected to each corner
-					localptr = pieces[xcoord1][ycoord1].cornersz.begin() + cornn2;
-					localptr->road_connected += 1;
-					localptr->players_connected.push_back(playernum);
+					retval1 = pieces[xcoord1][ycoord1].build_road(cornn1, cornn2, playernum);		//may need to go after the code below
+//					localptr = pieces[xcoord1][ycoord1].cornersz.begin() + cornn1;
+//					localptr->road_connected += 1;
+//					localptr->players_connected.push_back(playernum);		//update who is connected to each corner
+//					localptr = pieces[xcoord2][ycoord2].cornersz.begin() + cornn2;
+//					localptr->road_connected += 1;
+//					localptr->players_connected.push_back(playernum);
 				}
 
 			}

@@ -246,7 +246,7 @@ int tile::build_road(int corner1, int corner2, int player)
 	corner2 = corner2%6;
 	retval = check_roads(corner1, corner2, player);
 	//if corners are adjacent, AB, BC, CD, DE, EF, FA, then its a valid road. if corner2 = corner1 + 1 OR corner2 == 5 AND corner1 = 0
-	if (((corner2 == (corner1 + 1)) || (corner2 == (corner1 - 1)) || ((corner2 == 5) && (corner1 == 0)) || ((corner2 == 0) && (corner1 == 5))) && retval)	//if valid road
+	if (((corner2 == (corner1 + 1)) || (corner2 == (corner1 - 1)) || ((corner2 == 5) && (corner1 == 0)) || ((corner2 == 0) && (corner1 == 5))) && retval || (retval == player))	//if valid road
 	{
 		if ((corner2 - corner1) == 1)	//if AB, BC, CD, DE, EF, then index = corner1. otherwise, its AF and index = corner2 = 5
 			road_index = corner1;

@@ -50,7 +50,6 @@ private:
 	int roadAB, roadBC, roadCD, roadDE, roadEF, roadFA;		//not used
 	int roll;
 	vector<Corner>::iterator ptr;
-	int roads[6];		//this will contain the status of all 6 possible roads around a tile, and which player owns them.
 	//	int corners[6];		//this will contain all of the corners, and their value will be used to determine which player owns them
 										//for now, lets make it be the function that checks if a corner is available (check neighboring corners and desired corner)
 	int check_roads_settlement(int corner, int player);
@@ -82,6 +81,7 @@ public:
 	void place_robber(void);
 	void remove_robber(void);
 	string get_tile_data_string(int);
+	int roads[6];		//this will contain the status of all 6 possible roads around a tile, and which player owns them.
 
 	//i really need corners to be a struct, and it needs to contain the following info
 	//if road is connectect to it from another tile (really just if a road is connected to that point)

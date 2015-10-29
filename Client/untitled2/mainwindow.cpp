@@ -62,7 +62,7 @@ string playercolors[5] = {NO_PLAYER_COLOR, PLAYER_1_COLOR, PLAYER_2_COLOR, PLAYE
  */
 static int update_board_icons = 0;
 char rxdatabuff [4096];
-const int road_array_tile_num[72] = {0,0,0,0,0,0,3,3,3,3,3,7,7,7,7,7,12,12,12,12,12,16,16,16,16,16,17,17,17,17,17,18,18,18,18,18,15,15,15,15,15,11,11,11,11,11,6,6,6,6,6,2,2,2,2,2,10,10,10,5,5,5,1,1,1,13,13,9,8,8,4,4};
+const int road_array_tile_num[72] = {0,0,0,0,0,0,3,3,3,3,3,7,7,7,7,7,12,12,12,12,12,16,16,16,16,16,17,17,17,17,17,18,18,18,18,18,15,15,15,15,15,11,11,11,11,11,6,6,6,6,6,2,2,2,2,2,10,10,10,5,5,5,1,1,1,14,14,9,8,8,4,4};
 const int road_array_road_num[72] = {0,1,2,3,4,5,0,1,2,3,4,0,1,2,3,4,0,1,2,3,5,5,0,1,2,3,0,1,2,4,5,0,1,2,4,5,0,1,3,4,5,0,1,3,4,5,0,2,3,4,5,0,2,3,4,5,2,3,4,2,3,4,2,4,5,3,4,2,1,0,1,2};
 const int settlement_array_tile_num[54] = {0,0,0,0,0,0,3,3,3,3,7,7,7,7,12,12,12,12,16,16,16,16,17,17,17,17,18,18,18,18,15,15,15,15,11,11,11,11,6,6,6,6,2,2,2,2,1,1,4,9,9,9,9,9};
 const int settlement_array_corner_num[54] = {0,1,2,3,4,5,1,2,3,4,1,2,3,4,0,1,2,3,0,1,2,3,0,1,2,5,5,0,1,2,1,4,5,0,1,0,5,4,3,0,5,4,0,3,4,5,5,2,1,0,1,2,3,4};
@@ -245,6 +245,10 @@ void get_road_road_and_tile_from_name(std::string name, int& tile, int& road)
 //    std::cout << "switch val: " << switchval << std::endl;
     tile = road_array_tile_num[(switchval-1)%72];
     road = road_array_road_num[(switchval-1)%72];
+    if(debug_text)
+    {
+        std::cout << "Tile to build on: " << tile << std::endl << "Road to build: " << road << std::endl;
+    }
 }
 
 int get_tile_num_from_tile_name(std::string name)
@@ -1098,7 +1102,11 @@ void MainWindow::on_pushButton_clicked()
                             }
                         }
                         else
+                        {
                             std::cout << "Build road not selected!" << std::endl;
+                            ui->NotifyText->setText("Build road not selected!");
+                            ui->NotifyText->repaint();
+                        }
                     }
                     else
                         retval = -1;
