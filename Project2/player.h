@@ -6,11 +6,11 @@
 
 #ifndef START_CARD_VALUES
 #define START_CARD_VALUES
-#define START_ORE			500
-#define START_SHEEP			500
-#define START_BRICK			500
-#define START_WHEAT			500
-#define START_WOOD			500
+#define START_ORE			50
+#define START_SHEEP			50
+#define START_BRICK			50
+#define START_WHEAT			50
+#define START_WOOD			50
 #define START_SETTLEMENTS	50
 #define START_ROADS			150
 #define START_CITIES		4
@@ -56,6 +56,8 @@ class player
 	int cities_to_build;
 	dev_cards DC;
 	int calculate_victory_points(int);
+	long int numRXbytes;
+	long int numTXbytes;
 
 public:
 	player(void);
@@ -76,5 +78,9 @@ public:
 	int use_dev_card(int);		//if retval >= 0, then it was deducted/valid. if -52, not enough of selected card. if -51, invalid card.
 	int get_victory_points(int);
 	~player(void);
+	void add_RX_bytes(int);
+	void add_TX_bytes(int);
+	long int check_num_rx_bytes();
+	long int check_num_tx_bytes();
 };
 

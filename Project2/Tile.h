@@ -71,6 +71,7 @@ public:
 	int check_build_settlement_tile(int corner, int player);
 	int upgrade_settlement(int corner, int player);
 	int build_road(int corner1, int corner2, int player);		//must call for both adjacent roads!
+	int remove_settlement(int corner, int player);		//1 if successfully removed, -1 if not.
 	void build_settlement(int corner, int player);
 	int check_tile_resource_type();
 	int check_corner_owner(int corner);

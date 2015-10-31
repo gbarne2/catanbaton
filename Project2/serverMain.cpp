@@ -22,10 +22,15 @@
 using namespace std;
 char* tempaddr = "192.168.0.102";
 
+
 const int max_clients = 16;
 SOCKET socketarray[max_clients];
 int initial_placement_phase = 0;
 game catan;
+char databuff[4096] = { 0, };
+static int connplayerf = 0;
+int current_num_clients = 0;
+int updating_session = 0;
 
 static tcpserver serv(" ");
 static tcpserver rxserv("");
@@ -68,7 +73,7 @@ string print_board()
 	//				\_______//	(2,3)  \\_______//	(3,2)  \\_______/" << endl;
 	strStream << setw(setwval) << "       /" << setw(2) << corner_info(cornB, 6) << "¯¯¯" << setw(2) << corner_info(cornC, 6) << "\\\\   10," << get_rsrc_type(10) << "  //" << setw(2) << corner_info(cornB, 9) << "¯¯¯" << setw(2) << corner_info(cornC, 9) << "\\\\  13," << get_rsrc_type(13) << "   //" << setw(2) << corner_info(cornB, 12) << "¯¯¯" << setw(2) << corner_info(cornC, 12) << "\\     " << endl;
 	//				/¯¯¯¯¯¯¯\\	 10	   //¯¯¯¯¯¯¯\\	 13    //¯¯¯¯¯¯¯\'" << endl;
-	strStream << setw(setwval) << "      /" << setw(2) << corner_info(cornA, 6) << " |" << setw(2) << droll(6) << "|" << setw(2) << corner_info(cornD, 6) << "\\\\" << setw(2) << corner_info(cornF, 5) << "___" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 9) << " |" << setw(2) << droll(9) << "|" << setw(2) << corner_info(cornD, 9) << "\\\\" << setw(2) << corner_info(cornF, 13) << "___" << setw(2) << corner_info(cornE, 13) << "//" << setw(2) << corner_info(cornA, 12) << " |" << setw(2) << droll(12) << "|" << setw(2) << corner_info(cornD, 12) << "\\     " << endl;
+	strStream << setw(setwval) << "      /" << setw(2) << corner_info(cornA, 6) << " |" << setw(2) << droll(6) << "|" << setw(2) << corner_info(cornD, 6) << "\\\\" << setw(2) << corner_info(cornF, 10) << "___" << setw(2) << corner_info(cornE, 10) << "//" << setw(2) << corner_info(cornA, 9) << " |" << setw(2) << droll(9) << "|" << setw(2) << corner_info(cornD, 9) << "\\\\" << setw(2) << corner_info(cornF, 13) << "___" << setw(2) << corner_info(cornE, 13) << "//" << setw(2) << corner_info(cornA, 12) << " |" << setw(2) << droll(12) << "|" << setw(2) << corner_info(cornD, 12) << "\\     " << endl;
 	//			   /  (1,3)	 \\_______//  (2,2)	 \\_______//  (3,1)	 \'" << endl;	//		B-D-F Navigation matrix:
 	strStream << setw(setwval) << "      \\   6," << get_rsrc_type(6) << "   //" << setw(2) << corner_info(cornB, 5) << "¯¯¯" << setw(2) << corner_info(cornC, 5) << "\\\\   9," << get_rsrc_type(9) << "   //" << setw(2) << corner_info(cornB, 8) << "¯¯¯" << setw(2) << corner_info(cornC, 8) << "\\\\   12," << get_rsrc_type(12) << "  /" << endl;
 	//			   \	6	 //¯¯¯¯¯¯¯\\	9	 //¯¯¯¯¯¯¯\\	12	 /" << endl;	//		B = (2,2)
@@ -108,11 +113,6 @@ SOCKET srvinit(game session, tcpserver &tcpserv)
 //	tcpserv.cleanup(tempsocket);
 	return(tempsocket);
 }
-
-char databuff[4096] = { 0, };
-static int connplayerf = 0;
-int current_num_clients = 0;
-int updating_session = 0;
 
 void update_session(game &session, int copy)
 {

@@ -19,6 +19,7 @@
 -36	maximum number of roads reached
 -37	maximum number of settlements reached
 -38	maximum number of cities reached
+-39	unable to delete settlement
 
 #trade codes
 -40   	The current player/player who started the trade does not have sufficient resources for the proposed trade

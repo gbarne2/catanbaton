@@ -39,3 +39,4 @@ LIBS += -lws2_32
 DISTFILES +=
 
 CONFIG += c++14
+

@@ -292,3 +292,28 @@ SOCKET player::get_client_socket(void)
 {
 	return(ClientSocket);
 }
+
+
+void player::add_RX_bytes(int bytes)
+{
+	if (bytes >= 0)
+	{
+		numRXbytes += bytes;
+	}
+}
+
+void player::add_TX_bytes(int bytes)
+{
+	if (bytes >= 0)
+		numTXbytes == bytes;
+}
+
+long int player::check_num_rx_bytes()
+{
+	return(numRXbytes);
+}
+
+long int player::check_num_tx_bytes()
+{
+	return(numTXbytes);
+}

@@ -38,6 +38,7 @@ class MainWindow : public QMainWindow
 {
     QTimer *timer;
     Q_OBJECT
+    int server_connected;
     int devcardtouse;
     int place_init_settlement;
     void update_resources_display();

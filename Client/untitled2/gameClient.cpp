@@ -140,6 +140,7 @@ gameClient::gameClient()
 {
     ClientCorner temps;
     vector<int> tempvec;
+    begin_normal_game_mode = 0;
 //    clienttcp.initWinsock(tempaddr);
 
     //	corner_index = xy;

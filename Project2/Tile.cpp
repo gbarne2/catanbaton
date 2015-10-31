@@ -159,8 +159,20 @@ int tile::check_dice_roll()
 	return(roll);
 }
 
-
-
+//this function will deleter the last player connected to a settlement/corner. this should only be used while doing the initial build phase when building settlements and roads together. if the road fails to build, call thiss
+int tile::remove_settlement(int corner, int player)
+{
+	int retval = -39;
+	vector<Corner>::iterator ptr3 = cornersz.begin() + (corner) % 6;
+	if (player == ptr3->property_owner)
+	{
+		ptr3->property_type = 0;
+		ptr3->property_owner = 0;
+		ptr3->players_connected.pop_back();	//delete the last player connected.
+		retval = 1;
+	}
+	return(retval);
+}
 void tile::build_settlement(int corner, int player)
 {	
 	vector<Corner>::iterator ptr3 = cornersz.begin() + (corner)%6;

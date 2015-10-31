@@ -159,6 +159,7 @@ public:
 	int verify_valid_coordinates(int x_coord, int y_coord);
 	int build_roads(int, int, int);
 	int build_settlement(int tile_number, int playernum, int corner_numbz);
+	int delete_settlement(int tilenum, int playernum, int corner_numbz);
 	int add_player(int player_num, string player_name, SOCKET);
 	int check_resources(int player, int type);
 	int steal_random_card(int playernum, int player_to_steal_from);
@@ -201,10 +202,17 @@ public:
 		if ((temp > 0) && (temp1 > 0))
 		{
 			pieces[xcoord][ycoord].build_settlement(corner_numbz, playernum);
+			Sleep(50);
 			if ((xcoord1 != xcoord) || (ycoord1 != ycoord))
+			{
 				pieces[xcoord1][ycoord1].build_settlement(corner1, playernum);
+				Sleep(50);
+			}
 			if (((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1)))
+			{
 				pieces[xcoord2][ycoord2].build_settlement(corner2, playernum);
+				Sleep(50);
+			}
 			temp = deduct_resources_settlement(playernum);
 			if (!start && (playernum == 1))
 			{

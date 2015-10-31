@@ -296,8 +296,18 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 				//data[2+data[1]] = player name
 
 				break;
-			case SEND_DICE_ROLL:
-				retval = send_dice_roll(session, servv);
+			case SEND_DICE_ROLL:		//this is going to become the new 'roll dice' function.
+				//if should only be able to be called by the current player after their turn has started.
+				if ((turn_started_already == 1) && (player_number == session.check_current_player()))
+				{
+					send_dice_roll(session, servv);
+					Sleep(50);
+					send_resources_all_players(session, servv);	//update players cards with resources from new turn
+				}
+				else
+					invalid_sender = 1;
+//old function
+//				retval = send_dice_roll(session, servv);
 				//maybe just send dice roll to every client?
 				break;
 			case GET_QTY_ROADS_LEFT:
@@ -532,7 +542,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					}
 					else		//if not a 7, then send out all players resources
 					{
-						send_resources_all_players(session, servv);
+						send_resources_all_players(session, servv);	//maybe dont do this yet, so that the player 'rolls' the dice to get this info.
 					}
 				}
 				else
@@ -568,7 +578,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 						number_of_init_placements -= 1;	//if unable to build, reduce this by one to keep the count at the same value after increment.
 					Sleep(1000);	//give the clients a chance to update their side
 					send_board_info(session, servv);
-					Sleep(5000);	//give the clients a chance to update their side
+					Sleep(3000);	//give the clients a chance to update their side
 					if (number_of_init_placements >= session.check_number_of_players() * 2)	//if each player has been able to place twice, then end init placement phase
 					{
 						send_end_init_placement(session, servv);
@@ -629,10 +639,12 @@ int send_end_init_placement(game session, tcpserver servv)
 {
 	int num = session.check_number_of_players();
 	char tempdata[2] = { 0, };
+	int tempnum = 0;
 	tempdata[0] = session.check_current_player();	//current player number
+	tempnum = session.check_current_player();
 	for (int x = 1; x < num + 1; x++)
 	{
-		send_packet(session, x, x, END_INIT_PLACEMENT_PHASE, servv);		//make END_TURN be start turn when received from server?
+		send_packet(session, x, tempnum, END_INIT_PLACEMENT_PHASE, servv);		//make END_TURN be start turn when received from server?
 	}
 	return(num);
 }

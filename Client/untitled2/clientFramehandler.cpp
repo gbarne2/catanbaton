@@ -367,6 +367,7 @@ int clientFrameHandler(gameClient &session, char* datain)
         case START_TURN_INIT_PLACEMENT:
             //datain[0] = current player
             //datain[1] = are you the current player?
+            session.flag_your_turn = 0;
             current_players_turn = datain[dataptr++];
             session.set_current_player(current_players_turn);
             tempchar[0] = datain[dataptr++];
@@ -390,6 +391,13 @@ int clientFrameHandler(gameClient &session, char* datain)
         case END_INIT_PLACEMENT_PHASE:
             session.init_game_placement = 0;
             session.begin_turn_init_placement = 0;
+            session.begin_normal_game_mode = 1;
+            retval = datain[dataptr] - 38;
+//            retval = atoi(tempchar);
+            if((retval > session.check_num_players()) || (retval <= 0))    //if too big to be a valid number
+                retval =datain[dataptr];
+            if(retval == session.get_player_num())  //if the data matches our player number, then it is our turn!
+                session.flag_your_turn = 1;
             if(debug_text)
                 cout << "Initial placement phase has ended! Begin normal game play" << endl;
             break;
@@ -406,11 +414,12 @@ int clientFrameHandler(gameClient &session, char* datain)
             tempchar[0] = datain[dataptr++];
             retval = atoi(tempchar);
             session.begin_turn_init_placement = 0;
-            if(retval > session.check_num_players())
+            if((retval > session.check_num_players()) || (retval <= 0))    //if i shouldnt use atoi, then automatically handle it.
                 retval = datain[dataptr - 1];
             if(retval == session.get_player_num())
             {
                 start_turn_flag = 1;
+                session.flag_your_turn = 1;
                 cout << "It is your turn!!!" << endl;
             }
             session.set_current_player(retval);

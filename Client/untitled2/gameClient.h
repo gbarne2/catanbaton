@@ -57,6 +57,8 @@ public:
     int dice_roll_flag;
     int init_game_placement;
     int begin_turn_init_placement;
+    int begin_normal_game_mode;
+    int flag_your_turn;
 
  //functions
     int startGame();

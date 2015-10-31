@@ -791,6 +791,12 @@ int game::check_number_settlements_left(int playernum)
 	return(player_ptr->settlements_left());
 }
 
+int game::delete_settlement(int tilenum, int playernum, int corner_numbz)
+{
+	pieces[determine_x_index_from_tile(tilenum)][determine_y_index_from_tile(tilenum)].remove_settlement(corner_numbz, playernum);
+	return(0);
+}
+
 int game::build_settlement(int tile_number, int playernum, int corner_numbz)
 {
 	//make this function check the neighboring tiles corresponding corner in addition to this tles ones. if tile x,y coord invalid, there is not a neighbor!
@@ -822,9 +828,9 @@ int game::build_settlement(int tile_number, int playernum, int corner_numbz)
 	if ((temp1 > 0) && (temp2 > 0) && (temp3 > 0) && (temp4 > 0))
 	{
 		pieces[xcoord][ycoord].build_settlement(corner_numbz, playernum);
-		if ((xcoord1 != xcoord) || (ycoord1 != ycoord))
+		if (((xcoord1 != xcoord) || (ycoord1 != ycoord)) && (xcoord1 <= max_x) && (ycoord1 <= max_y))
 			pieces[xcoord1][ycoord1].build_settlement(corner1, playernum);
-		if (((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1)))
+		if ((((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1))) && (xcoord2 <= max_x) && (ycoord2 <= max_y))
 			pieces[xcoord2][ycoord2].build_settlement(corner2, playernum);
 		temp = deduct_resources_settlement(playernum);
 	}
@@ -871,14 +877,14 @@ int game::start_turn(int rollnumva)
 	rollnumvalamt = (rand()*rand()) % 11 + 2;
 	current_roll = rollnumvalamt;				//save current_roll value. this is the only place that this variable should ever be changed!
 	player_ptr = player_list.begin();
-	for(int i = 0; i < players; i++)
+	for(int i = 1; i < players+1; i++)
 	{
 		for(int x = 0; x < active_num_tiles; x++)
 		{
 			if(rollnumvalamt == get_dice_roll(x))
 			{
 				temppppp = pieces[const_valid_x_index_array[x]][const_valid_y_index_array[x]].calculate_resources_from_roll_by_player(i, tempres);
-				tempres = pieces[const_valid_x_index_array[x]][const_valid_y_index_array[x]].check_tile_resource_type();
+//				tempres = pieces[const_valid_x_index_array[x]][const_valid_y_index_array[x]].check_tile_resource_type();	//not needed, previous function passes tempres by reference and gets this data
 				retval = player_ptr->update_resources(tempres, temppppp);
 			}
 		}

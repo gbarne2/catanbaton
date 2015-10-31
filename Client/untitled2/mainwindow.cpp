@@ -19,6 +19,7 @@
 #include <QTimer>
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QtPlugin>
 
 #define BRICK_ICON      "C:/Users/gtb/Documents/GitHub/Brick.png"
 #define SHEEP_ICON      "C:/Users/gtb/Documents/GitHub/Sheep.png"
@@ -277,16 +278,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     QString tempstr = "";
-    int retval = 0;
+//    int retval = 0;
     QString detailmsg;
     init_placement_corner = -7;
     init_set_placement_tile = -7;
     init_road_placement_road = -7;
     init_road_placement_tile = -7;
     init_set_ready = 0;
-    int attempt = 1;
-    int success = 0;
-    int count = 1;
+//    int attempt = 1;
+//    int success = 0;
+//    int count = 1;
     ui->setupUi(this);
     buttonlist = this->findChildren<QPushButton *> ();
     std::cout << "# buttons found: " << buttonlist.size() << std::endl;
@@ -326,9 +327,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tile1_17->setObjectName("t17");
     ui->tile1_18->setObjectName("t18");
     ui->tile1_19->setObjectName("t19");
+    Cgame.flag_your_turn = 0;
 //    button->setMask(pixmap.createMaskFromColor(Qt::transparent,Qt::MaskInColor));
     connect(ui->tile1_1, SIGNAL(released()), this, SLOT(on_pushButton_released()));
-    QTimer::singleShot(5000, this, SLOT(Init_game_and_connection()));
+    QTimer::singleShot(1000, this, SLOT(Init_game_and_connection()));
+    server_connected = 0;
+    Sleep(1000);
+    timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(check_rx_packet()));       //this timer will periodically check if anyhting was received from server. if there was, it will process it.
+    timer->start(1000);
+
 //    retval = Init_game_and_connection();
 /*    ui->NotifyText->setText("Attempting to connect to server... Please wait");
             ui->NotifyText->repaint();
@@ -412,6 +420,8 @@ int MainWindow::Init_game_and_connection()
         Cgame.joinGame();
         clientFrameHandler(Cgame, rxdatabuff);
         retval = 1;
+        Sleep(2000);
+        server_connected = 1;
     }
     else
     {
@@ -423,12 +433,13 @@ int MainWindow::Init_game_and_connection()
         Sleep(5000);
         retval = -1;
     }
-    if(retval >= 0)
+/*    if(retval >= 0)
     {
         timer = new QTimer(this);
         connect(timer, SIGNAL(timeout()), this, SLOT(check_rx_packet()));       //this timer will periodically check if anyhting was received from server. if there was, it will process it.
         timer->start(1000);
     }
+    */
     return(retval);
 }
 
@@ -443,7 +454,7 @@ void MainWindow::check_rx_packet()
     FD_ZERO(&readSet);
     FD_SET(ClientSock, &readSet);
     int retval = -1;
-    if(!busyflag)
+    if(!busyflag && server_connected)
     {
         busyflag = 1;
         if (select(ClientSock, &readSet, NULL, NULL, &timeout) > 0)
@@ -568,6 +579,18 @@ int start_turn_flag
     {
         Cgame.resources_flag = 0;
         update_resources_display();
+    }
+    if(Cgame.begin_normal_game_mode == 1)
+    {
+        ui->NotifyText->setText("Initial Placement phase has finished. Normal Game mode Starting");
+        ui->NotifyText->repaint();
+        Cgame.begin_normal_game_mode = 0;
+    }
+    if(Cgame.flag_your_turn == 1)   //this gets set in framehandler when end turn packet is received and we are named as the next player
+    {
+        ui->NotifyText->setText("It is your turn! Press 'Start Turn' when you're ready");
+        ui->NotifyText->repaint();
+        Cgame.flag_your_turn = 0;
     }
     //add ability to check for other player starting turn. need to update resources
     return(0);
@@ -710,7 +733,7 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
     {
         get_road_road_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_road_owner(road, tile);
-        if((retval > 0) || (ptr->styleSheet().toStdString() != playercolors[retval])) // && (retval < playercolors.size()))
+        if((retval > 0) || ((ptr->styleSheet().toStdString() != playercolors[retval]) && (retval > 0))) // && (retval < playercolors.size()))
         {
             tempstr = QString::fromUtf8(playercolors[retval].c_str());
             ptr->setStyleSheet(tempstr);
@@ -720,7 +743,7 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
     {
         get_settlement_corner_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_corner_owner(tile, road);
-        if((retval > 0) || (ptr->styleSheet().toStdString() != playercolors[retval]))// && (retval < playercolors.size()))
+        if((retval > 0) || ((ptr->styleSheet().toStdString() != playercolors[retval]) && (retval > 0)))// && (retval < playercolors.size()))
         {
             tempstr = QString::fromUtf8(playercolors[retval].c_str());
             ptr->setStyleSheet(tempstr);
@@ -780,7 +803,7 @@ string MainWindow::print_board()
     //				\_________//	(2,3)  \\_________//	(3,2)  \\_________/" << endl;
     strStream << setw(setwval) << "       /" <<  setw(2) << corner_info(cornB,6) << "'''''" << setw(2) << corner_info(cornC, 6) << "\\\\    10   //" << setw(2) << corner_info(cornB, 9) << "'''''" <<  setw(2) << corner_info(cornC, 9) << "\\\\    13   //" <<  setw(2) << corner_info(cornB,12) << "'''''" << setw(2) << corner_info(cornC, 12) << "\\     " << endl;
     //				/''''''''''¯\\	 10	   //''''''''''¯\\	 13    //''''''''''¯\'" << endl;
-    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,6) << " |" << setw(2) << droll(6) << "|" << setw(2) << corner_info(cornD, 6) << "\\\\" << setw(2) << corner_info(cornF, 5) << "____" << setw(2) << corner_info(cornE, 5) << "//" << setw(2) << corner_info(cornA, 9) << " |" << setw(2) << droll(9) << "|" <<  setw(2) << corner_info(cornD, 9) << "\\\\" << setw(2) << corner_info(cornF, 13) << "____" << setw(2) << corner_info(cornE, 13) << "//" <<  setw(2) << corner_info(cornA,12) << " |" << setw(2) << droll(12) << "|" << setw(2) << corner_info(cornD, 12) << "\\     " << endl;
+    strStream << setw(setwval) << "      /" <<  setw(2) << corner_info(cornA,6) << " |" << setw(2) << droll(6) << "|" << setw(2) << corner_info(cornD, 6) << "\\\\" << setw(2) << corner_info(cornF, 10) << "____" << setw(2) << corner_info(cornE, 10) << "//" << setw(2) << corner_info(cornA, 9) << " |" << setw(2) << droll(9) << "|" <<  setw(2) << corner_info(cornD, 9) << "\\\\" << setw(2) << corner_info(cornF, 13) << "____" << setw(2) << corner_info(cornE, 13) << "//" <<  setw(2) << corner_info(cornA,12) << " |" << setw(2) << droll(12) << "|" << setw(2) << corner_info(cornD, 12) << "\\     " << endl;
     //			   /  (1,3)	 \\_________//  (2,2)	 \\_________//  (3,1)	 \'" << endl;	//		B-D-F Navigation matrix:
     strStream << setw(setwval) << "      \\    6    //" << setw(2) << corner_info(cornB, 5) << "'''''" << setw(2) << corner_info(cornC, 5) << "\\\\    9    //" <<setw(2) << corner_info(cornB, 8) << "'''''" << setw(2) << corner_info(cornC, 8) << "\\\\   12    /     " << endl;
     //			   \	6	 //''''''''''¯\\	9	 //''''''''''¯\\	12	 /" << endl;	//		B = (2,2)
@@ -904,6 +927,12 @@ void MainWindow::on_pushButton_clicked()
             else if(senderObjName.toStdString() == "B_START_TURN")
             {
                 std::cout << "Start my turn!" << std::endl;
+                if(Cgame.check_current_player() == Cgame.get_player_num())
+                    ui->NotifyText->setText("Starting Turn");
+                else
+                    ui->NotifyText->setText("It is not your turn, please wait");
+                ui->NotifyText->repaint();
+                Sleep(50);
                 Cgame.start_turn();
             }
             else if(senderObjName.toStdString() == "B_CARDS_REF")
@@ -1085,7 +1114,8 @@ void MainWindow::on_pushButton_clicked()
 //                                    updatecolortile = 1;
                                     tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
                                     buttonlist[i]->setStyleSheet(tempstrrr);
-                                    Sleep(50);
+                                    buttonlist[i]->repaint();
+                                    Sleep(100);
                                     place_init_settlement = 0;
                                     Cgame.place_initial_settlement_road(init_set_placement_tile, init_placement_corner, init_road_placement_tile, init_road_placement_road);
                                 }
