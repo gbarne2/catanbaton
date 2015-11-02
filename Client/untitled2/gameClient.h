@@ -59,6 +59,7 @@ public:
     int begin_turn_init_placement;
     int begin_normal_game_mode;
     int flag_your_turn;
+    int flag_update_board;
 
  //functions
     int startGame();

@@ -268,19 +268,23 @@ int clientFrameHandler(gameClient &session, char* datain)
             retval = 1;
             delete[] nulptr;
             flag_rx_packet_needs_processing = 1;
+            session.flag_update_board = 1;
             break;
         case GET_TIME_LIMIT:
             retval = time_limit(datain[dataptr]);
             flag_rx_packet_needs_processing = 1;
             break;
         case START_GAME:
-            session.begin_turn_init_placement = 1;
+            //data[0] = current players turn
             session.init_game_placement = 1;
             //data[0] = player number
+            game_started = 1;
             if (session.get_player_num() == 0)
-                session.set_player_number(datain[dataptr]);
-            else if (debug_text)
+                session.set_player_number(datain[dataptr++]);
+            if (debug_text)
                 cout << "cannot set the player number! it has already been set!" << endl;
+            if(session.get_player_num() == (datain[dataptr] - 1))   //if it is our turn, then set this flag.
+                    session.begin_turn_init_placement = 1;
             //data[1] = ???
             //Not sure what this needs to do on the client side when received.
             break;

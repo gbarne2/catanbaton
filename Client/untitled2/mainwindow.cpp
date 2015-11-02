@@ -21,12 +21,12 @@
 #include <QMessageBox>
 #include <QtPlugin>
 
-#define BRICK_ICON      "C:/Users/gtb/Documents/GitHub/Brick.png"
-#define SHEEP_ICON      "C:/Users/gtb/Documents/GitHub/Sheep.png"
-#define FOREST_ICON     "C:/Users/gtb/Documents/GitHub/forest.png"
-#define MOUNTAIN_ICON   "C:/Users/gtb/Documents/GitHub/Mountain.png"
-#define WHEAT_ICON      "C:/Users/gtb/Documents/GitHub/Wheat.png"
-#define DESERT_ICON     "C:/Users/gtb/Documents/GitHub/Desert.png"
+#define BRICK_ICON      "/release/Icons/Brick.png"
+#define SHEEP_ICON      "/release/Icons/Sheep.png"
+#define FOREST_ICON     "/release/Icons/forest.png"
+#define MOUNTAIN_ICON   "/release/Icons/Mountain.png"
+#define WHEAT_ICON      "/release/Icons/Wheat.png"
+#define DESERT_ICON     "/release/Icons/Desert.png"
 
 #define NO_PLAYER_COLOR "background-color: rgb(175,175,175)"
 #define PLAYER_1_COLOR  "background-color: rgb(0,255,0)"
@@ -156,9 +156,9 @@ void MainWindow::get_icon_file_rsrc_type_and_roll_from_tile_num(QString &filenam
 void MainWindow::set_icons_and_rollvals_on_board()
 {
     char* charptr;
-    int resrc = 0;
     int roll = 0;
     int temp = 0;
+    int resrc = 0;
     int temp2 = 0;
     char tempchar[1];
     string tempstr;
@@ -291,13 +291,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     buttonlist = this->findChildren<QPushButton *> ();
     std::cout << "# buttons found: " << buttonlist.size() << std::endl;
-
-    brickpic = new QPixmap(BRICK_ICON);
-    wheatpic = new QPixmap(WHEAT_ICON);
-    mountainpic = new QPixmap(MOUNTAIN_ICON);
-    sheeppic = new QPixmap(SHEEP_ICON);
-    forestpic = new QPixmap(FOREST_ICON);
-    desertpic = new QPixmap(DESERT_ICON);
+    QString curr_path_icon = QDir::currentPath();
+    std::cout << curr_path_icon.toStdString() << std::endl;
+    brickpic = new QPixmap(curr_path_icon + BRICK_ICON);
+    wheatpic = new QPixmap(curr_path_icon + WHEAT_ICON);
+    mountainpic = new QPixmap(curr_path_icon + MOUNTAIN_ICON);
+    sheeppic = new QPixmap(curr_path_icon + SHEEP_ICON);
+    forestpic = new QPixmap(curr_path_icon + FOREST_ICON);
+    desertpic = new QPixmap(curr_path_icon + DESERT_ICON);
 
 /*    brickpic = QPixmap(BRICK_ICON);
     wheatpic = QPixmap(WHEAT_ICON);
@@ -591,6 +592,11 @@ int start_turn_flag
         ui->NotifyText->setText("It is your turn! Press 'Start Turn' when you're ready");
         ui->NotifyText->repaint();
         Cgame.flag_your_turn = 0;
+    }
+    if(Cgame.flag_update_board == 1)
+    {
+        Cgame.flag_update_board = 0;
+        update_board_colors();
     }
     //add ability to check for other player starting turn. need to update resources
     return(0);

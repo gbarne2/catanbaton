@@ -477,8 +477,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 						cout << "The next player up is player " << retval << endl;
 					}
 					trade_in_progress = 0;	//reset this flag just in case a trade never went through. otherwise it would block other people from trading on their turns
-					send_board_info(session, servv);
 					send_end_turn(session, servv, player_number);
+					send_board_info(session, servv);
 					//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
 					turn_started_already = 0;
 				}
@@ -544,6 +544,8 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					{
 						send_resources_all_players(session, servv);	//maybe dont do this yet, so that the player 'rolls' the dice to get this info.
 					}
+					Sleep(1000);
+//					send_resources_all_players(session, servv);
 				}
 				else
 					invalid_sender = 1;
@@ -670,9 +672,13 @@ int send_end_turn(game session, tcpserver servv, int prev_player)
 int send_start_game(game session, tcpserver servv)
 {
 	int num = session.check_number_of_players();
+	int num1 = session.check_current_player();
+	char temp[2] = { 0, };
+	temp[1] = num1 + 1;	//ensure its a valid player number.
 	for (int x = 1; x < num + 1; x++)
 	{
-		send_packet(session, x, x, START_GAME, servv);
+		temp[0] = x;
+		send_packet(session, x, temp, START_GAME, 2, servv);
 	}
 	return(num);
 }
