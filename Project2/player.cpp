@@ -305,7 +305,7 @@ void player::add_RX_bytes(int bytes)
 void player::add_TX_bytes(int bytes)
 {
 	if (bytes >= 0)
-		numTXbytes == bytes;
+		numTXbytes += bytes;
 }
 
 long int player::check_num_rx_bytes()

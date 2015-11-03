@@ -166,66 +166,95 @@ void MainWindow::set_icons_and_rollvals_on_board()
     QString folderpath;// = QDir::currentPath();
     QString iconpath;
     QSize size(Xicon_size, Yicon_size);
-    for(int x = 0; x < buttonlist.size(); x++)
+//    if(already_printed_board == 0)  //double check this just to make sure...
     {
-        //folderpath = QDir::currentPath();
-        tempstr = buttonlist[x]->objectName().toStdString();
-        charptr = new char[tempstr.length()+1];
-        strcpy(charptr, tempstr.c_str());
-        if(charptr[0] == 't')   //if a tile object, then get the number of the object name
+        for(int x = 0; x < buttonlist.size(); x++)
         {
-            tempchar[0] = charptr[1];
-            temp = atoi(tempchar);
-            if(buttonlist[x]->objectName().length() == 3)   //if 3 chars long, then it will be
+            //folderpath = QDir::currentPath();
+            tempstr = buttonlist[x]->objectName().toStdString();
+            charptr = new char[tempstr.length()+1];
+            strcpy(charptr, tempstr.c_str());
+            if(charptr[0] == 't')   //if a tile object, then get the number of the object name
             {
-                tempchar[0] = charptr[2];
-                temp2 = atoi(tempchar);
-                temp = temp*10;
-                temp += temp2;
-            }
-            temp2 = tile_mapping_array[(temp-1)%19];        //real tile number.
-            get_icon_file_rsrc_type_and_roll_from_tile_num(qstr, resrc, roll, temp2);
-            folderpath.append(qstr);
-            switch(resrc)
+                tempchar[0] = charptr[1];
+                temp = atoi(tempchar);
+                if(buttonlist[x]->objectName().length() == 3)   //if 3 chars long, then it will be
                 {
-                case 1: //Wheat
-                buttonlist[x]->setIcon(*wheatpic);
-                    break;
-                case 2: //Ore
-                buttonlist[x]->setIcon(*mountainpic);
-                    break;
-                case 3: //Wood
-                buttonlist[x]->setIcon(*forestpic);
-                    break;
-                case 4: //Sheep
-                buttonlist[x]->setIcon(*sheeppic);
-                    break;
-                case 5: //Brick
-                buttonlist[x]->setIcon(*brickpic);
-                    break;
-                case 6: //Desert
-                buttonlist[x]->setIcon(*desertpic);
-                    break;
-                default:
-                buttonlist[x]->setIcon(*desertpic);
-                    if(debug_text)
-                        std::cout << "Invalid resource type in get_icon_file_rsrc_type_and_roll_from_tile_num(...)" << std::endl;
+                    tempchar[0] = charptr[2];
+                    temp2 = atoi(tempchar);
+                    temp = temp*10;
+                    temp += temp2;
                 }
+                temp2 = tile_mapping_array[(temp-1)%19];        //real tile number.
+                get_icon_file_rsrc_type_and_roll_from_tile_num(qstr, resrc, roll, temp2);
+                folderpath.append(qstr);
+                ui->NotifyText->setText(folderpath);
+                ui->NotifyText->repaint();
+                switch(resrc)
+                    {
+                    case 1: //Wheat
+                    if(buttonstatus[x] != 1)
+                    {
+                        buttonlist[x]->setIcon(*wheatpic);
+                        buttonstatus[x] = 1;
+                    }
+                    break;
+                    case 2: //Ore
+                    if(buttonstatus[x] != 2)
+                    {
+                        buttonlist[x]->setIcon(*mountainpic);
+                        buttonstatus[x] = 2;
+                    }
+                        break;
+                    case 3: //Wood
+                    if(buttonstatus[x] != 3)
+                    {
+                        buttonlist[x]->setIcon(*forestpic);
+                        buttonstatus[x] = 3;
+                    }
+                        break;
+                    case 4: //Sheep
+                    if(buttonstatus[x] != 4)
+                    {
+                        buttonlist[x]->setIcon(*sheeppic);
+                        buttonstatus[x] = 4;
+                    }
+                        break;
+                    case 5: //Brick
+                    if(buttonstatus[x] != 5)
+                    {
+                        buttonlist[x]->setIcon(*brickpic);
+                        buttonstatus[x] = 5;
+                    }
+                        break;
+                    case 6: //Desert
+                    if(buttonstatus[x] != 6)
+                    {
+                        buttonlist[x]->setIcon(*desertpic);
+                        buttonstatus[x] = 6;
+                    }
+                    break;
+                    default:
+    //                buttonlist[x]->setIcon(*desertpic);
+                        if(debug_text)
+                            std::cout << "Invalid resource type in get_icon_file_rsrc_type_and_roll_from_tile_num(...)" << std::endl;
+                    }
 
-            std::cout << "File path to set icon to: " << folderpath.toStdString() << std::endl;
-//            QPixmap temppix(folderpath);//
-//            temppix.load(folderpath);
-//            buttonlist[x]->setIcon(temppix);
-            buttonlist[x]->setIconSize(size);
-            folderpath.clear();
-                    //    get_tile_resource(3, tempstr);
-                    //    temppix.load(tempstr);
-                    //    ui->tile1_4->setIcon(temppix);
-                    //    ui->tile1_4->setIconSize(size);
-        }
-        else if(charptr[0] == 'D')   //if a tile object, then get the number of the object name
-        {
-            setDiceRoll(buttonlist[x]->objectName().toStdString(), buttonlist[x]);
+                std::cout << "File path to set icon to: " << folderpath.toStdString() << std::endl;
+    //            QPixmap temppix(folderpath);//
+    //            temppix.load(folderpath);
+    //            buttonlist[x]->setIcon(temppix);
+                buttonlist[x]->setIconSize(size);
+                folderpath.clear();
+                        //    get_tile_resource(3, tempstr);
+                        //    temppix.load(tempstr);
+                        //    ui->tile1_4->setIcon(temppix);
+                        //    ui->tile1_4->setIconSize(size);
+            }
+            else if(charptr[0] == 'D')   //if a tile object, then get the number of the object name
+            {
+                setDiceRoll(buttonlist[x]->objectName().toStdString(), buttonlist[x], x);
+            }
         }
     }
 }
@@ -299,7 +328,7 @@ MainWindow::MainWindow(QWidget *parent) :
     sheeppic = new QPixmap(curr_path_icon + SHEEP_ICON);
     forestpic = new QPixmap(curr_path_icon + FOREST_ICON);
     desertpic = new QPixmap(curr_path_icon + DESERT_ICON);
-
+    already_printed_board = 0;
 /*    brickpic = QPixmap(BRICK_ICON);
     wheatpic = QPixmap(WHEAT_ICON);
     mountainpic = QPixmap(MOUNTAIN_ICON);
@@ -309,6 +338,9 @@ MainWindow::MainWindow(QWidget *parent) :
 */
     for(int x = 0; x < buttonlist.size(); x++)
         connect(buttonlist[x],SIGNAL(pressed()), this, SLOT(on_pushButton_clicked()));
+    buttonstatus = new int[buttonlist.size()];
+    for(int x = 0; x < buttonlist.size(); x++)
+        buttonstatus[x] = 0;
     ui->tile1_1->setObjectName("t1");
     ui->tile1_2->setObjectName("t2");
     ui->tile1_3->setObjectName("t3");
@@ -447,8 +479,8 @@ int MainWindow::Init_game_and_connection()
 void MainWindow::check_rx_packet()
 {
     static int busyflag = 0;
-    timeval timeout;
     int tempnum = 0;
+    timeval timeout;
     fd_set readSet;
     timeout.tv_sec = 0;
     timeout.tv_usec = 100;
@@ -461,6 +493,7 @@ void MainWindow::check_rx_packet()
         if (select(ClientSock, &readSet, NULL, NULL, &timeout) > 0)
         {
             retval = recv(ClientSock, rxdatabuff, 4096, 0);
+            numbytesreceived += retval;
             if (retval > 0)
             {
                 check_rx_data_buff = 1;
@@ -472,6 +505,7 @@ void MainWindow::check_rx_packet()
                    tempnum = last_packet_sent(0);
                    if(tempnum == START_GAME)
                    {
+                       game_started = 1;
                        if(debug_text)
                            std::cout << "Game has been started by host!" << std::endl;
                        Cgame.get_board_info();
@@ -549,27 +583,17 @@ int start_turn_flag
         else
             ui->NotifyText->setText("It is not your turn, please wait");
         Sleep(100);
-        update_board_colors();
+//        update_board_colors();
     }
-    if(Cgame.begin_turn_init_placement)
+    if(Cgame.flag_update_board == 1)
     {
-        //need to place a road and a settlement!
-        if(debug_text)
-            std::cout << "Flags processed, please place a settlement and a road" << std::endl;
-        QMessageBox msgBox;
-        if(place_init_settlement == 0)
+        Cgame.flag_update_board = 0;
+        update_board_colors();
+        if(already_printed_board == 0)
         {
-            msgBox.setText("Initial placement phase has begun");
-            msgBox.setInformativeText("After closing this box, please select a location to build a settlement");
-            msgBox.setStandardButtons(QMessageBox::Ok);
-            msgBox.setDefaultButton(QMessageBox::Ok);
-            msgBox.exec();
-            place_init_settlement = 1;
+            set_icons_and_rollvals_on_board();
+            already_printed_board = 1;
         }
-//        else
-//        {
-            //if it is 1, then user has already been notified. just wait
-//        }
     }
     if(Cgame.dice_roll_flag)
     {
@@ -593,10 +617,25 @@ int start_turn_flag
         ui->NotifyText->repaint();
         Cgame.flag_your_turn = 0;
     }
-    if(Cgame.flag_update_board == 1)
+    if(Cgame.begin_turn_init_placement)
     {
-        Cgame.flag_update_board = 0;
-        update_board_colors();
+        //need to place a road and a settlement!
+        if(debug_text)
+            std::cout << "Flags processed, please place a settlement and a road" << std::endl;
+        QMessageBox msgBox;
+        if(place_init_settlement == 0)
+        {
+            msgBox.setText("Initial placement phase has begun");
+            msgBox.setInformativeText("After closing this box, please select a location to build a settlement");
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
+            msgBox.exec();
+            place_init_settlement = 1;
+        }
+//        else
+//        {
+            //if it is 1, then user has already been notified. just wait
+//        }
     }
     //add ability to check for other player starting turn. need to update resources
     return(0);
@@ -629,11 +668,11 @@ void MainWindow::setdicerolls()
     for(int i = 0; i < buttonlist.size(); i++)
     {
         if(buttonlist[i]->objectName().toStdString()[0] == 'D')
-            setDiceRoll(buttonlist[i]->objectName().toStdString(), buttonlist[i]);
+            setDiceRoll(buttonlist[i]->objectName().toStdString(), buttonlist[i], i);
     }
 }
 
-void MainWindow::setDiceRoll(std::string nname, QPushButton *ptr)
+void MainWindow::setDiceRoll(std::string nname, QPushButton *ptr, int x)
 {
     std::stringstream convert;
     int retval = 0;
@@ -714,22 +753,26 @@ jumptryagain:
         {
             if(ptr->isHidden())
                 ptr->show();
-            QString qstr = QString::fromStdString(tempstr);
-            ptr->setText(qstr);
-            ptr->setFixedHeight(DICE_RADIUS);
-            ptr->setFixedWidth(DICE_RADIUS);
-            QRect *rect = new QRect(0,0,DICE_RADIUS,DICE_RADIUS);
-     //       qDebug() << rect->size();
-     //       qDebug() << ptr->size();
-            QRegion* region = new QRegion(*rect, QRegion::Ellipse);
-     //       qDebug() << region->boundingRect().size();
-            ptr->setMask(*region);
-            ptr->setStyleSheet("color: white;background-color: rgba(255,255,255,125);");
+            if(buttonstatus[x] != retval)
+            {
+                buttonstatus[x] = retval;
+                QString qstr = QString::fromStdString(tempstr);
+                ptr->setText(qstr);
+                ptr->setFixedHeight(DICE_RADIUS);
+                ptr->setFixedWidth(DICE_RADIUS);
+                QRect *rect = new QRect(0,0,DICE_RADIUS,DICE_RADIUS);
+         //       qDebug() << rect->size();
+         //       qDebug() << ptr->size();
+                QRegion* region = new QRegion(*rect, QRegion::Ellipse);
+         //       qDebug() << region->boundingRect().size();
+                ptr->setMask(*region);
+                ptr->setStyleSheet("color: grey;background-color: rgba(255,255,255,75);");
+            }
         }
     }
 }
 
-void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
+void MainWindow::set_button_color(std::string nname, QPushButton *ptr, int x)
 {
     int tile = 0;
     QString tempstr = "";
@@ -739,8 +782,10 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
     {
         get_road_road_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_road_owner(road, tile);
-        if((retval > 0) || ((ptr->styleSheet().toStdString() != playercolors[retval]) && (retval > 0))) // && (retval < playercolors.size()))
+        if((buttonstatus[x] != retval) && (retval >= 0) && (retval <= Cgame.check_num_players()))
+//        if(/*(retval > 0) ||*/ ((ptr->styleSheet().toStdString() != playercolors[retval]) && (retval >= 0))) // && (retval < playercolors.size()))
         {
+            buttonstatus[x] = retval;
             tempstr = QString::fromUtf8(playercolors[retval].c_str());
             ptr->setStyleSheet(tempstr);
         }
@@ -749,8 +794,10 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
     {
         get_settlement_corner_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_corner_owner(tile, road);
-        if((retval > 0) || ((ptr->styleSheet().toStdString() != playercolors[retval]) && (retval > 0)))// && (retval < playercolors.size()))
+        //        if(/*(retval > 0) ||*/ ((ptr->styleSheet().toStdString() != playercolors[retval]) && (retval >= 0)))// && (retval < playercolors.size()))
+        if((buttonstatus[x] != retval) && (retval >= 0))// && (retval <= Cgame.check_num_players()))
         {
+            buttonstatus[x] = retval;
             tempstr = QString::fromUtf8(playercolors[retval].c_str());
             ptr->setStyleSheet(tempstr);
         }
@@ -765,7 +812,7 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr)
 int MainWindow::update_board_colors()
 {
     for(int i = 0; i < buttonlist.size(); i++)
-        set_button_color(buttonlist[i]->objectName().toStdString(), buttonlist[i]);
+        set_button_color(buttonlist[i]->objectName().toStdString(), buttonlist[i], i);
     return(1);
 }
 
@@ -902,33 +949,41 @@ void MainWindow::on_pushButton_clicked()
                 std::cout << "Start game!" << std::endl;
                 Cgame.startGame();
                 retval = clientFrameHandler(Cgame, rxdatabuff);
-                Cgame.get_board_info();
-                retval = clientFrameHandler(Cgame, rxdatabuff);
-                updateboardcolors = 1;
-                set_icons_and_rollvals_on_board();
-                game_started = 1;
+//                Cgame.get_board_info();
+//                retval = clientFrameHandler(Cgame, rxdatabuff);
+//                updateboardcolors = 1;
+//                set_icons_and_rollvals_on_board();
+//                game_started = 1;
             }
             else if(!game_started)
             {
                 std::cout << " " << std::endl;
+                ui->NotifyText->setText("The game must be started before you can do that!");
+                ui->NotifyText->repaint();
             }
             else if (senderObjName.toStdString() == "BUILD_CITY")
             {
                 std::cout << "Make me build a city!" << std::endl;
                 ui->BUILD_A_ROAD->setChecked(FALSE);
                 ui->BUILD_SET->setChecked(FALSE);
+                ui->NotifyText->setText("Select the settlement you want to upgrade to a city");
+                ui->NotifyText->repaint();
             }
             else if(senderObjName.toStdString() == "BUILD_A_ROAD")
             {
                 std::cout << "Make me build a road!" << std::endl;
                 ui->BUILD_CITY->setChecked(FALSE);
                 ui->BUILD_SET->setChecked(FALSE);
+                ui->NotifyText->setText("Select the road you wish to build");
+                ui->NotifyText->repaint();
             }
             else if(senderObjName.toStdString() == "BUILD_SET")
             {
                 std::cout << "Make me build a settlement!" << std::endl;
                 ui->BUILD_CITY->setChecked(FALSE);
                 ui->BUILD_A_ROAD->setChecked(FALSE);
+                ui->NotifyText->setText("Select the settlement you wish to build");
+                ui->NotifyText->repaint();
             }
             else if(senderObjName.toStdString() == "B_START_TURN")
             {
@@ -944,9 +999,13 @@ void MainWindow::on_pushButton_clicked()
             else if(senderObjName.toStdString() == "B_CARDS_REF")
             {
                 std::cout << "Refresh my cards!" << std::endl;
+                ui->NotifyText->setText("Refreshing resource cards... Please wait");
+                ui->NotifyText->repaint();
                 Cgame.refresh_cards();
                 retval = clientFrameHandler(Cgame, rxdatabuff);
                 update_resources_display();
+                ui->NotifyText->setText("Resources updated!");
+                ui->NotifyText->repaint();
             }
             else if(senderObjName.toStdString() == "B_DICE_ROLL")
             {
@@ -958,19 +1017,23 @@ void MainWindow::on_pushButton_clicked()
             }
             else if(senderObjName.toStdString() == "B_END_TURN")
             {
+                ui->NotifyText->setText("Your turn has ended");
+                ui->NotifyText->repaint();
                 updateboardcolors = 1;
                 std::cout << "End my turn!" << std::endl;
                 Cgame.end_turn();
+                ui->NotifyText->setText("Your turn has ended...");
+                ui->NotifyText->repaint();
     //            set_icons_and_rollvals_on_board();
             }
             else if(senderObjName.toStdString() == "B_UPDATE_BOARD")
             {
                 std::cout << "Update board!" << std::endl;
                 Cgame.get_board_info();
-                updateboardcolors = 1;
-                check_rx_data_buff = 1;
-                if(update_board_icons == 0)
-                    update_board_icons = 1;
+//                updateboardcolors = 1;
+//                check_rx_data_buff = 1;
+//                if(update_board_icons == 0)
+//                    update_board_icons = 1;
     //            set_icons_and_rollvals_on_board();
             }
             else if(senderObjName.toStdString() == "B_PRINT_BOARD")
@@ -997,7 +1060,7 @@ void MainWindow::on_pushButton_clicked()
                 if(Cgame.get_qty_dv_cardd(2) > 0)
                 {
                     const QString msg = "Do you want to use a Victory Point Development Card? You have " + Cgame.get_qty_dv_cardd(2);
-                    devcardtouse = 1;
+                    devcardtouse = 2;
                     use_dev_card_generic(msg);
                 }
             }
@@ -1006,7 +1069,7 @@ void MainWindow::on_pushButton_clicked()
                 if(Cgame.get_qty_dv_cardd(3) > 0)
                 {
                     const QString msg = "Do you want to use a Year of plenty Development Card? You have " + Cgame.get_qty_dv_cardd(3);
-                    devcardtouse = 1;
+                    devcardtouse = 3;
                     use_dev_card_generic(msg);
                 }
             }
@@ -1015,7 +1078,7 @@ void MainWindow::on_pushButton_clicked()
                 if(Cgame.get_qty_dv_cardd(4) > 0)
                     {
                     const QString msg = "Do you want to use a Monopoly Development Card? You have " + Cgame.get_qty_dv_cardd(4);
-                    devcardtouse = 1;
+                    devcardtouse = 4;
                     use_dev_card_generic(msg);
                 }
             }
@@ -1024,7 +1087,7 @@ void MainWindow::on_pushButton_clicked()
                 if(Cgame.get_qty_dv_cardd(5) > 0)
                 {
                     const QString msg = "Do you want to use a Build Roads Development Card? You have " + Cgame.get_qty_dv_cardd(5);
-                    devcardtouse = 1;
+                    devcardtouse = 5;
                     use_dev_card_generic(msg);
                 }
             }
@@ -1082,6 +1145,7 @@ void MainWindow::on_pushButton_clicked()
                                     tempstrrr = "";
                                     tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
                                     buttonlist[i]->setStyleSheet(tempstrrr);
+                                    buttonstatus[i] = Cgame.get_player_num();
 //                                    updatecolortile = 1;
                                 }
                                 else
@@ -1092,14 +1156,19 @@ void MainWindow::on_pushButton_clicked()
                             }
                             else
                             {
+                                tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
+                                buttonlist[i]->setStyleSheet(tempstrrr);
+                                buttonlist[i]->repaint();
+                                buttonstatus[i] = Cgame.get_player_num();
+                                Sleep(100);
                                 Cgame.build_settlement(tile, corner);
-                                updatecolortile = 1;
+//                                updatecolortile = 1;
                             }
                         }
                         else if(ui->BUILD_CITY->isChecked())
                         {
                             Cgame.build_city(tile, corner);
-                            updatecolortile = 1;
+//                            updatecolortile = 1;
                         }
                         else
                             std::cout << "Neither build city or build settlement options are selected!" << std::endl;
@@ -1121,6 +1190,7 @@ void MainWindow::on_pushButton_clicked()
                                     tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
                                     buttonlist[i]->setStyleSheet(tempstrrr);
                                     buttonlist[i]->repaint();
+                                    buttonstatus[i] = Cgame.get_player_num();
                                     Sleep(100);
                                     place_init_settlement = 0;
                                     Cgame.place_initial_settlement_road(init_set_placement_tile, init_placement_corner, init_road_placement_tile, init_road_placement_road);
@@ -1133,8 +1203,13 @@ void MainWindow::on_pushButton_clicked()
                             }
                             else
                             {
+                                tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
+                                buttonlist[i]->setStyleSheet(tempstrrr);
+                                buttonlist[i]->repaint();
+                                buttonstatus[i] = Cgame.get_player_num();
+                                Sleep(100);
                                 Cgame.build_road(tile, road);
-                                updatecolortile = 1;
+//                                updatecolortile = 1;
                             }
                         }
                         else
@@ -1181,7 +1256,7 @@ void MainWindow::check_packet_and_update(int i)
         if(updatecolortile > 0)
         {
             updatecolortile = 0;
-            set_button_color(buttonlist[i]->objectName().toStdString(), buttonlist[i]);
+            set_button_color(buttonlist[i]->objectName().toStdString(), buttonlist[i], i);
         }
         else if((updateboardcolors > 0))// || (rx_packet_needs_processing > 0))
         {

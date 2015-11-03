@@ -20,6 +20,7 @@ extern char rxdatabuff [4096];
 
 int packetAssembler(char buffer[], int size)
 {
+    char localdatabuff[4096] = {0,};
     int retval = 0;
     cout << "make packetAssembler format all packets to be sent how they should be!" << endl;
     cout << "Data to send: ";
@@ -39,10 +40,10 @@ int packetAssembler(char buffer[], int size)
     for (int x = 0; x < size + 6; x++)
     {
         cout << +temp[x] << " ";
-        rxdatabuff[x] = temp[x];
+        localdatabuff[x] = temp[x];
     }
 //    retval = clienttcp.sendData(rxdatabuff, size+6);
-    retval = clienttcp.sendThenReceive(rxdatabuff, size+6);
+    retval = clienttcp.sendThenReceive(localdatabuff, size+6);
 //    ZeroMemory(rxdatabuff, )
     for(int x = 0; x < DEFAULT_BUFLEN; x++)
         rxdatabuff[x] = 0;

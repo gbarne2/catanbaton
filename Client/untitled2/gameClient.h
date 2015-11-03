@@ -28,6 +28,7 @@
 
 extern tcpclient clienttcp;
 extern int num_dev_cards_bought;
+extern int numbytesreceived;
 
 class gameClient
 {
@@ -48,9 +49,6 @@ class gameClient
 public:
     tileclient board[MAX_NUM_ACTIVE_TILES];
     playerClient playerinfo;
-    gameClient();
-    ~gameClient();
-    SOCKET initsocketthing();
 
  //flags
     int resources_flag;
@@ -62,8 +60,11 @@ public:
     int flag_update_board;
 
  //functions
-    int startGame();
     int place_initial_settlement_road(int tileset, int corner, int tileroad, int road);
+    gameClient();
+    ~gameClient();
+    SOCKET initsocketthing();
+    int startGame();
     int check_player_resource_amt(int);
     int build_road(int tile, int corner);
     int build_settlement(int tile, int corenr);

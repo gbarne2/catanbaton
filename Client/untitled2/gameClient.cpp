@@ -15,6 +15,7 @@ char* tempaddr= "192.168.0.102";
 //All functionality on the client side will go through this function! the GUI will point to these functions do execute tasks
 tcpclient clienttcp(tempaddr);
 int num_dev_cards_bought = 0;
+int numbytesreceived = 0;
 
 //need to be able to do the following
 /*

@@ -434,11 +434,13 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					game_status = 1;	//flag to show game is started
 					session.start_game(active_num_tiles);
 //					session.build_std_board(active_num_tiles);
+					Sleep(500);
+					send_board_info(session, servv);
+					Sleep(2000);
 					cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
 					send_start_game(session, servv);
 					initial_placement_phase = 1; 
 					number_of_init_placements = 1;
-
 					//					send_packet(session, player_number, player_number, START_GAME, servv);
 				}
 				else
@@ -542,7 +544,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					}
 					else		//if not a 7, then send out all players resources
 					{
-						send_resources_all_players(session, servv);	//maybe dont do this yet, so that the player 'rolls' the dice to get this info.
+//						send_resources_all_players(session, servv);	//maybe dont do this yet, so that the player 'rolls' the dice to get this info.
 					}
 					Sleep(1000);
 //					send_resources_all_players(session, servv);
@@ -577,10 +579,13 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					if (retval > 0)
 						session.next_player();		//only go to next player if the settlement/road was successfully built
 					else
+					{
+						session.delete_settlement(datain[dataptr] - 1, player_number, datain[dataptr + 1] - 1);
 						number_of_init_placements -= 1;	//if unable to build, reduce this by one to keep the count at the same value after increment.
+					}
 					Sleep(1000);	//give the clients a chance to update their side
 					send_board_info(session, servv);
-					Sleep(3000);	//give the clients a chance to update their side
+					Sleep(5000);	//give the clients a chance to update their side
 					if (number_of_init_placements >= session.check_number_of_players() * 2)	//if each player has been able to place twice, then end init placement phase
 					{
 						send_end_init_placement(session, servv);
@@ -891,6 +896,7 @@ int join_game(game &session, int &player_number, string name, tcpserver servv, S
 int packetHandler(SOCKET tempsock, char buffer[], int size, tcpserver servv)
 {
 	char *temp = new char [4096];
+	int retval = 0;
 	int tempsize = ((size & 0x07F80) >> 7);
 	temp[0] = 'S';
 	temp[1] = 8;
@@ -901,6 +907,7 @@ int packetHandler(SOCKET tempsock, char buffer[], int size, tcpserver servv)
 	cout << "Size & 0x0FF: " << (size & 0x0FF) << endl << "Size - (tempsize * 256): " << (size - (tempsize * 256)) << endl;
 	for (int x = 0; x < size; x++)
 		temp[x + 6] = buffer[x];
+	temp[size + 6] = 0;
 //	strcat(temp, buffer);
 	if (debug_text)
 	{
@@ -911,10 +918,10 @@ int packetHandler(SOCKET tempsock, char buffer[], int size, tcpserver servv)
 	}
 	for (int x = 0; x < size+6; x++)
 		txdatabuff[x] = temp[x];
-	return(servv.sendPacket(tempsock, temp, size+6));
+	retval = servv.sendPacket(tempsock, temp, size+7);
 	delete[] temp;
 	Sleep(100);
-	return(0);
+	return(retval);
 }
 
 int send_packet(game session, int player_num, int data_to_send, int packet_type, tcpserver servv)

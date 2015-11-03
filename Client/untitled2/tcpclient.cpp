@@ -4,6 +4,7 @@
 #include <winsock2.h>
 #include <ws2tcpip.h>
 #include <windows.h>
+#include "gameClient.h"
 
 //comment
 // Need to link with Ws2_32.lib, Mswsock.lib, and Advapi32.lib
@@ -138,6 +139,13 @@ int tcpclient::sendThenReceive(char *tempbuff, int size)
 {
     // Send an initial buffer
 //    initWinsock(tempaddrr);
+    timeval timeout;
+    fd_set readSet;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 100;
+    FD_ZERO(&readSet);
+    FD_SET(ConnectSocket, &readSet);
+
     iResult = send(ConnectSocket, tempbuff, size, 0);
     if (iResult == SOCKET_ERROR) {
         printf("send failed with error: %d\n", WSAGetLastError());
@@ -160,15 +168,19 @@ int tcpclient::sendThenReceive(char *tempbuff, int size)
 */
     // Receive until the peer closes the connection
 //	do {
-
+    if (select(ConnectSocket, &readSet, NULL, NULL, &timeout) > 0)
+    {
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
         if (iResult > 0)
+        {
             printf("Bytes received: %d\n", iResult);
+            numbytesreceived += iResult;
+        }
         else if (iResult == 0)
             printf("Connection closed\n");
         else
             printf("recv failed with error: %d\n", WSAGetLastError());
-
+    }
 //	} while (iResult > 0);
 
     // cleanup
@@ -251,11 +263,25 @@ int tcpclient::recieveSingle()
     Sleep(100);
     ioctlsocket(ConnectSocket, FIONBIO, &iMode);
 */
-    iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
-    if (iResult > 0)
-        printf("Bytes received: %d\n", iResult);
+    timeval timeout;
+    fd_set readSet;
+    timeout.tv_sec = 1;
+    timeout.tv_usec = 0;
+    FD_ZERO(&readSet);
+    FD_SET(ConnectSocket, &readSet);
+    if (select(ConnectSocket, &readSet, NULL, NULL, &timeout) > 0)
+    {
+        iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
+        if (iResult > 0)
+        {
+            printf("Bytes received: %d\n", iResult);
+            numbytesreceived += iResult;
+        }
+        else
+            printf("recv failed with error: %d\n", WSAGetLastError());
+    }
     else
-        printf("recv failed with error: %d\n", WSAGetLastError());
+        iResult = 0;
     return(iResult);
 }
 
@@ -265,7 +291,10 @@ int tcpclient::recieveUntilDone()
 
         iResult = recv(ConnectSocket, recvbuf, recvbuflen, 0);
         if (iResult > 0)
+        {
             printf("Bytes received: %d\n", iResult);
+            numbytesreceived += iResult;
+        }
         else if (iResult == 0)
             printf("Connection closed\n");
         else

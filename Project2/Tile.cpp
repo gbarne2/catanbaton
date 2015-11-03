@@ -169,6 +169,8 @@ int tile::remove_settlement(int corner, int player)
 		ptr3->property_type = 0;
 		ptr3->property_owner = 0;
 		ptr3->players_connected.pop_back();	//delete the last player connected.
+		if(ptr3->road_connected > 0)
+			ptr3->road_connected -= 1;
 		retval = 1;
 	}
 	return(retval);

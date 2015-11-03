@@ -22,7 +22,7 @@
 using namespace std;
 char* tempaddr = "192.168.0.102";
 
-
+const int vp_to_win = 10;
 const int max_clients = 16;
 SOCKET socketarray[max_clients];
 int initial_placement_phase = 0;
@@ -335,6 +335,8 @@ int main()
 				lockrx = 1;
 				ptr = catan.player_list.begin() + i;
 				hostsocket = ptr->get_client_socket();
+				if (ptr->get_victory_points(1) >= vp_to_win)	//if true, the player wins!
+					std::cout << "Player " << i << " has won. you should probably tell the players this..." << std::endl;
 				if (hostsocket != INVALID_SOCKET)
 				{
 					ioctlsocket(hostsocket, FIONBIO, &iMode);

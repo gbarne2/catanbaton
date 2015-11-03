@@ -94,25 +94,34 @@ int clientFrameHandler(gameClient &session, char* datain)
 {
     int dataptr = 8;		//use this to grab data from datain buffer.
     int tempdata = 0;
-    char datatype = datain[6];
-    int player_number = datain[7];
+    char datatype = 0;
+    int player_number = 0;
+    int datasize = 0;
     string tempstring;
-    int datasize = datain[4];
-    datasize = datasize << 7;
-    datasize += datain[5];
     static int requested_player = 0;
     static int current_players_turn = 0;
     char *nulptr;
     char tempchar[1] = {0};
     int retval = 0;
+    int offset = 0;
+
+jumpheretoprocessmultiplepackets:
+
+    datatype = datain[offset + 6];
+    player_number = datain[offset + 7];
+    datasize = datain[offset + 4];
     check_rx_data_buff = 0;
+    datasize = datasize << 7;
+    datasize += datain[5];
+    dataptr = 8 + offset;
+
     if(debug_text)
     {
         cout << "Player number: " << +player_number << endl;
         cout << "Data type:     " << +datatype << endl;
         cout << "Data size:     " << +datasize << endl;
     }
-    if ((datain[0] == 'S') && (datain[1] == 8) && (datain[2] == 53) && (datain[3] == 'p'))
+    if ((datain[offset] == 'S') && (datain[offset + 1] == 8) && (datain[offset + 2] == 53) && (datain[offset + 3] == 'p'))
     {
         cout << "Valid packet received.... Processing" << endl;
         last_packet_sent(datatype);
@@ -183,6 +192,7 @@ int clientFrameHandler(gameClient &session, char* datain)
                 retval = 1;
                 delete[] nulptr;
                 flag_rx_packet_needs_processing = 1;
+                session.refresh_cards();
             }
             else
                 retval = FAILED_TO_BUILD_ROAD;
@@ -197,6 +207,7 @@ int clientFrameHandler(gameClient &session, char* datain)
                 retval = 1;
                 delete[] nulptr;
                 flag_rx_packet_needs_processing = 1;
+                session.refresh_cards();
             }
             else
                 retval = FAILED_TO_BUILD_SETTLEMENT;
@@ -211,6 +222,7 @@ int clientFrameHandler(gameClient &session, char* datain)
                 retval = 1;
                 delete[] nulptr;
                 flag_rx_packet_needs_processing = 1;
+                session.refresh_cards();
             }
             else
                 retval = FAILED_TO_UPGRADE_SETTLEMENT;
@@ -245,6 +257,7 @@ int clientFrameHandler(gameClient &session, char* datain)
                     cout << "Warning! User requested " << num_dev_cards_bought << " but only " << tempdata << " cards could be purchased" << endl;
 //                update_dev_cards_on_gui = 1;
                 retval = 1;
+                session.refresh_cards();
             }
             break;
         case READ_RESOURCES:
@@ -266,26 +279,31 @@ int clientFrameHandler(gameClient &session, char* datain)
             }
             update_board_info(session, nulptr, datasize);
             retval = 1;
+            dataptr = datasize - 1;
+            session.flag_update_board = 1;
             delete[] nulptr;
             flag_rx_packet_needs_processing = 1;
-            session.flag_update_board = 1;
             break;
         case GET_TIME_LIMIT:
             retval = time_limit(datain[dataptr]);
             flag_rx_packet_needs_processing = 1;
             break;
         case START_GAME:
-            //data[0] = current players turn
-            session.init_game_placement = 1;
+//            if(game_started == 0)
+            {
             //data[0] = player number
-            game_started = 1;
-            if (session.get_player_num() == 0)
-                session.set_player_number(datain[dataptr++]);
-            if (debug_text)
-                cout << "cannot set the player number! it has already been set!" << endl;
-            if(session.get_player_num() == (datain[dataptr] - 1))   //if it is our turn, then set this flag.
+                //data[1] = current players turn
+                session.init_game_placement = 1;
+                game_started = 1;
+                session.set_current_player(datain[dataptr+1] - 1);
+                if (session.get_player_num() == 0)
+                    session.set_player_number(datain[dataptr]);
+                else if (debug_text)
+                    cout << "cannot set the player number! it has already been set!" << endl;
+                if(session.get_player_num() == (datain[dataptr+1] - 1))   //if it is our turn, then set this flag.
                     session.begin_turn_init_placement = 1;
-            //data[1] = ???
+                //data[1] = ???
+            }
             //Not sure what this needs to do on the client side when received.
             break;
         case JOIN_GAME:
@@ -358,13 +376,13 @@ int clientFrameHandler(gameClient &session, char* datain)
                 nulptr = new char[4096];
                 for(int x = 0; x < 4096; x++)
                     nulptr[x] = 0;
-                clienttcp.recieveSingle();
+/*                clienttcp.recieveSingle();
                 for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
                     nulptr[x] = clienttcp.read_receive_buff(x);
                 clientFrameHandler(session,nulptr);
                 //            }
                 delete[] nulptr;
-
+*/
                 flag_rx_packet_needs_processing = 1;
             }
             break;
@@ -374,7 +392,7 @@ int clientFrameHandler(gameClient &session, char* datain)
             session.flag_your_turn = 0;
             current_players_turn = datain[dataptr++];
             session.set_current_player(current_players_turn);
-            tempchar[0] = datain[dataptr++];
+            tempchar[0] = datain[dataptr];
             retval = atoi(tempchar);
             if((datain[dataptr] > 1) && (session.get_player_num() == current_players_turn)) //if it is this players turn...
             {
@@ -439,6 +457,15 @@ int clientFrameHandler(gameClient &session, char* datain)
     }
     else
         retval = INVALID_PACKET_HEADER;
+    if(dataptr < numbytesreceived)   //if more than 1 packet was received, then this function needs to process all of the packets.
+    {
+//        if((datasize + 8 + offset) < numbytesreceived)  //if not
+        cout  << endl << "make framehandler be able to handle multiple packets being received at once!" << endl << endl;
+        dataptr += 1;       //increment dataptr to look at next byte and scan through array.
+        offset = dataptr;
+        goto jumpheretoprocessmultiplepackets;
+    }
+    numbytesreceived = 0;
     return(retval);
 }
 
@@ -486,7 +513,7 @@ int update_board_info(gameClient &session, char* data, int datasize)
 //	int numtiles = 0;
     vector<int>::iterator p = numtiles.begin();
     tilenum = *p;		//?  pretty sure this is how to get the value!
-    while (startindex < datasize)
+    while (startindex < datasize - 1)
     {
         if (data[startindex] == 'S')
         {

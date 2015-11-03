@@ -38,6 +38,7 @@ class MainWindow : public QMainWindow
 {
     QTimer *timer;
     Q_OBJECT
+    int* buttonstatus;
     int server_connected;
     int devcardtouse;
     int place_init_settlement;
@@ -46,13 +47,14 @@ class MainWindow : public QMainWindow
     int updatecolortile;
     int updateboardcolors;
     int droll(int);
+    int already_printed_board;
     int init_set_ready;
     int init_placement_corner;
     int init_set_placement_tile;
     int init_road_placement_road;
     int init_road_placement_tile;
     int corner_info(int corner, int tilenum);
-    void setDiceRoll(std::string nname, QPushButton *ptr);
+    void setDiceRoll(std::string nname, QPushButton *ptr, int x);
     void update_dev_cards_on_gui();
     void prompt_dev_card_to_use();
     void use_dev_card_generic(const QString);
@@ -64,7 +66,7 @@ private slots:
 
 public:
     void setdicerolls();
-    void set_button_color(std::string nname, QPushButton *ptr);
+    void set_button_color(std::string nname, QPushButton *ptr, int x);
     explicit MainWindow(QWidget *parent = 0);
     int update_board_colors();
     void set_icons_and_rollvals_on_board();

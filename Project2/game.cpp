@@ -793,7 +793,25 @@ int game::check_number_settlements_left(int playernum)
 
 int game::delete_settlement(int tilenum, int playernum, int corner_numbz)
 {
-	pieces[determine_x_index_from_tile(tilenum)][determine_y_index_from_tile(tilenum)].remove_settlement(corner_numbz, playernum);
+	int xcoord = 0;
+	int ycoord = 0;
+	int xcoord1 = 0;
+	int ycoord1 = 0;
+	int corner1 = -1;
+	int xcoord2 = 0;			//2nd neighbor to check
+	int ycoord2 = 0;			//2nd neighbor to check
+	int corner2 = -1;
+	int temp = 0;
+
+	xcoord = determine_x_index_from_tile(tilenum);
+	ycoord = determine_y_index_from_tile(tilenum);
+	temp = determine_if_neighbor_tile_occupied(corner_numbz, tilenum, playernum, xcoord1, ycoord1, corner1, xcoord2, ycoord2, corner2);
+
+	pieces[xcoord][ycoord].remove_settlement(corner_numbz, playernum);
+	if (((xcoord1 != xcoord) || (ycoord1 != ycoord)) && (xcoord1 <= max_x) && (ycoord1 <= max_y))
+		pieces[xcoord1][ycoord1].remove_settlement(corner1, playernum);
+	if ((((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1))) && (xcoord2 <= max_x) && (ycoord2 <= max_y))
+		pieces[xcoord2][ycoord2].remove_settlement(corner2, playernum);
 	return(0);
 }
 
@@ -876,9 +894,10 @@ int game::start_turn(int rollnumva)
 	srand(time(0));
 	rollnumvalamt = (rand()*rand()) % 11 + 2;
 	current_roll = rollnumvalamt;				//save current_roll value. this is the only place that this variable should ever be changed!
-	player_ptr = player_list.begin();
+	
 	for(int i = 1; i < players+1; i++)
 	{
+		player_ptr = player_list.begin() + i;
 		for(int x = 0; x < active_num_tiles; x++)
 		{
 			if(rollnumvalamt == get_dice_roll(x))
