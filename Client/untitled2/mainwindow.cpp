@@ -328,6 +328,9 @@ MainWindow::MainWindow(QWidget *parent) :
     sheeppic = new QPixmap(curr_path_icon + SHEEP_ICON);
     forestpic = new QPixmap(curr_path_icon + FOREST_ICON);
     desertpic = new QPixmap(curr_path_icon + DESERT_ICON);
+    ui->NotifyText->setText(curr_path_icon);
+    ui->NotifyText->repaint();
+    Sleep(10);
     already_printed_board = 0;
 /*    brickpic = QPixmap(BRICK_ICON);
     wheatpic = QPixmap(WHEAT_ICON);
@@ -505,7 +508,7 @@ void MainWindow::check_rx_packet()
                    tempnum = last_packet_sent(0);
                    if(tempnum == START_GAME)
                    {
-                       game_started = 1;
+//                       game_started = 1;
                        if(debug_text)
                            std::cout << "Game has been started by host!" << std::endl;
                        Cgame.get_board_info();
@@ -766,7 +769,7 @@ jumptryagain:
                 QRegion* region = new QRegion(*rect, QRegion::Ellipse);
          //       qDebug() << region->boundingRect().size();
                 ptr->setMask(*region);
-                ptr->setStyleSheet("color: grey;background-color: rgba(255,255,255,75);");
+                ptr->setStyleSheet("color: grey;background-color: rgba(255,255,255,175);");
             }
         }
     }
@@ -778,6 +781,7 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr, int x)
     QString tempstr = "";
     int road = 0;
     int retval = 0;
+    Sleep(5);
     if(nname[0] == 'r')  //if road, then find the road info!
     {
         get_road_road_and_tile_from_name(nname, tile, road);
@@ -794,6 +798,8 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr, int x)
     {
         get_settlement_corner_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_corner_owner(tile, road);
+        std::cout << "settlement data: " << ptr->styleSheet().toStdString() << std::endl;
+        std::cout << "Cplayer color data: " << playercolors[retval] << std::endl;
         //        if(/*(retval > 0) ||*/ ((ptr->styleSheet().toStdString() != playercolors[retval]) && (retval >= 0)))// && (retval < playercolors.size()))
         if((buttonstatus[x] != retval) && (retval >= 0))// && (retval <= Cgame.check_num_players()))
         {
@@ -802,6 +808,7 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr, int x)
             ptr->setStyleSheet(tempstr);
         }
     }
+    Sleep(5);
 //    else if(nname[0] == 'D')
 //        setDiceRoll(nname, ptr);
 //    else
@@ -839,6 +846,11 @@ string MainWindow::print_board()
 
     std::stringstream strStream;
     strStream.flush();
+    fstream filetowrite;
+    string tempstrs = "board printout.txt";
+    QString folderpath = QDir::currentPath();
+    tempstrs = folderpath.toStdString() + tempstrs;
+    filetowrite.open(tempstrs, fstream::out);
 
 //    strStream = std::stringstream();	//flush string stream...
 //	strStream.open("tempfile.secret");
@@ -881,6 +893,8 @@ string MainWindow::print_board()
 //	filein.open("tempfile.secret");
 //	filein.rdbuf() >> s;
 //	strStream << filein.rdbuf();
+    filetowrite << strStream;
+    filetowrite.close();
     return(strStream.str());
 }
 
@@ -1029,6 +1043,8 @@ void MainWindow::on_pushButton_clicked()
             else if(senderObjName.toStdString() == "B_UPDATE_BOARD")
             {
                 std::cout << "Update board!" << std::endl;
+                for(int xx = 0; xx < buttonlist.size(); xx++)       //flush out status array to force update all buttons
+                    buttonstatus[xx] = 0;
                 Cgame.get_board_info();
 //                updateboardcolors = 1;
 //                check_rx_data_buff = 1;
@@ -1145,7 +1161,7 @@ void MainWindow::on_pushButton_clicked()
                                     tempstrrr = "";
                                     tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
                                     buttonlist[i]->setStyleSheet(tempstrrr);
-                                    buttonstatus[i] = Cgame.get_player_num();
+                                    //buttonstatus[i] = Cgame.get_player_num();
 //                                    updatecolortile = 1;
                                 }
                                 else
@@ -1159,7 +1175,7 @@ void MainWindow::on_pushButton_clicked()
                                 tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
                                 buttonlist[i]->setStyleSheet(tempstrrr);
                                 buttonlist[i]->repaint();
-                                buttonstatus[i] = Cgame.get_player_num();
+//                                buttonstatus[i] = Cgame.get_player_num();
                                 Sleep(100);
                                 Cgame.build_settlement(tile, corner);
 //                                updatecolortile = 1;
@@ -1190,7 +1206,7 @@ void MainWindow::on_pushButton_clicked()
                                     tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
                                     buttonlist[i]->setStyleSheet(tempstrrr);
                                     buttonlist[i]->repaint();
-                                    buttonstatus[i] = Cgame.get_player_num();
+//                                    buttonstatus[i] = Cgame.get_player_num();
                                     Sleep(100);
                                     place_init_settlement = 0;
                                     Cgame.place_initial_settlement_road(init_set_placement_tile, init_placement_corner, init_road_placement_tile, init_road_placement_road);
@@ -1206,7 +1222,7 @@ void MainWindow::on_pushButton_clicked()
                                 tempstrrr = QString::fromUtf8(playercolors[Cgame.get_player_num()].c_str());
                                 buttonlist[i]->setStyleSheet(tempstrrr);
                                 buttonlist[i]->repaint();
-                                buttonstatus[i] = Cgame.get_player_num();
+//                                buttonstatus[i] = Cgame.get_player_num();
                                 Sleep(100);
                                 Cgame.build_road(tile, road);
 //                                updatecolortile = 1;

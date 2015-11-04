@@ -131,9 +131,11 @@ private:
 	int calculate_card_to_steal(int playernum);
 	int deduct_resources_trade_low(int, int, int);
 	void initialize_dev_card_deck();
+	int placements_per_player = 0;
 
 public:
-	game(void);
+	game(void); 
+	int reset_placements_per_player() { placements_per_player = 1; return(placements_per_player); }
 	int check_tile_resource_type(int);
 	int next_player(void);
 	int check_current_player(void);
@@ -179,7 +181,7 @@ public:
 	{
 		//make this function check the neighboring tiles corresponding corner in addition to this tles ones. if tile x,y coord invalid, there is not a neighbor!
 		//need to come up with way to check neighboring tile!!
-		static int placements_per_player = 0;
+//		static int placements_per_player = 0;
 		static int max_player_number = 0;
 		int retval	= 0;
 		int xcoord	= 0;
@@ -194,7 +196,11 @@ public:
 		int corner2	= -1;
 		static int start = 1;
 		if (playernum > max_player_number)
+		{	//if this is true, then we havnt heard from all players and placements_per_player cant be 2
 			max_player_number = playernum;
+			placements_per_player = 1;
+			start = 1;
+		}
 		xcoord = determine_x_index_from_tile(tile_number);
 		ycoord = determine_y_index_from_tile(tile_number);
 		temp = determine_if_neighbor_tile_occupied(corner_numbz, tile_number,playernum,xcoord1,ycoord1,corner1,xcoord2,ycoord2,corner2);

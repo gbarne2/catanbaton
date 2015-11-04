@@ -580,12 +580,13 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 						session.next_player();		//only go to next player if the settlement/road was successfully built
 					else
 					{
+						session.reset_placements_per_player();
 						session.delete_settlement(datain[dataptr] - 1, player_number, datain[dataptr + 1] - 1);
 						number_of_init_placements -= 1;	//if unable to build, reduce this by one to keep the count at the same value after increment.
 					}
 					Sleep(1000);	//give the clients a chance to update their side
 					send_board_info(session, servv);
-					Sleep(5000);	//give the clients a chance to update their side
+					Sleep(2000);	//give the clients a chance to update their side
 					if (number_of_init_placements >= session.check_number_of_players() * 2)	//if each player has been able to place twice, then end init placement phase
 					{
 						send_end_init_placement(session, servv);

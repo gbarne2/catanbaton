@@ -289,7 +289,7 @@ jumpheretoprocessmultiplepackets:
             flag_rx_packet_needs_processing = 1;
             break;
         case START_GAME:
-//            if(game_started == 0)
+            if(game_started == 0)
             {
             //data[0] = player number
                 //data[1] = current players turn
@@ -466,6 +466,7 @@ jumpheretoprocessmultiplepackets:
         goto jumpheretoprocessmultiplepackets;
     }
     numbytesreceived = 0;
+    Sleep(100);
     return(retval);
 }
 
