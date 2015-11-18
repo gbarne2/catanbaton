@@ -1,2 +1,8 @@
 -get dev cards working
+	->able to buy dev cards, but using them needs to get implemented. knights have been implemented but not tested!
+	->Also need to decide how to do this. it would be fewer exchanges to have the client gather the info needed to use the dev card (like what resources or what roads to build) and then send the request, but it may be better to send the request and have the server initiate the action.
 -get create_player_order in game.cpp working. it needs to randomize the player order. 
+-make using docks done by clicking on the icons!
+-figure out why all players must click start_game button. it should be that the host hits it and a
+ll the other players games automatically start!
+-finsih/test/debug trading (clientside looks like it may not be done? specifically in clientTransmitHandler.cpp line 127)

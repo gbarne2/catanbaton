@@ -47,7 +47,7 @@ int packetAssembler(char buffer[], int size)
 //    ZeroMemory(rxdatabuff, )
     for(int x = 0; x < DEFAULT_BUFLEN; x++)
         rxdatabuff[x] = 0;
-;;    for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
+    for(int x = 0; x < clienttcp.get_rxbuffsize(); x++)
         rxdatabuff[x] = clienttcp.read_receive_buff(x);
     check_rx_data_buff = 1;
     cout << endl << endl;

@@ -10,7 +10,7 @@
 #include "tcpclient.h"
 #include "mainwindow.h"
 
-char* tempaddr= "192.168.0.102";
+char* tempaddr= "192.168.0.105";
 //this will be the main game file for the client side, other than for the GUI.
 //All functionality on the client side will go through this function! the GUI will point to these functions do execute tasks
 tcpclient clienttcp(tempaddr);
@@ -54,6 +54,70 @@ int gameClient::update_dice_roll(int newroll)
 int gameClient::startGame()
 {
     return(sendPacketTX(get_player_num(), 0, START_GAME));
+}
+
+string gameClient::get_tile_board_string(int tilenum)
+{
+    std::stringstream strStream;
+    strStream.flush();
+    string retstr = "";
+    strStream << "Tile number:   ";
+    strStream << tilenum;
+    strStream << "\nResource Type: ";
+    strStream << board[tilenum].check_tile_resource_type();
+    strStream << "\nRoll number: ";
+    strStream << board[tilenum].check_dice_roll();
+    strStream << "\nRoad data: \n";
+    for(int x = 0; x < 6; x++)
+    {
+        strStream << "Road num: ";
+        strStream << x;
+        strStream << "     Road owner: ";
+        strStream << board[tilenum].get_road_owner(x);
+        strStream << endl;
+    }
+    strStream << "\n\nCorner info:\n";
+    for(int x = 0; x < 6; x++)
+    {
+        strStream << "Corner ";
+        strStream << x;
+        strStream << "    owner: ";
+        strStream << board[tilenum].check_corner_owner(x);
+        strStream << "\n";
+    }
+    strStream << "\n\n\n";
+    cout << "retstr: " << strStream.str() << endl;
+
+    /*
+    retstr += "Tile number:   ";
+    retstr += tilenum;
+    retstr += "\nResource Type: ";
+    retstr += board[tilenum].check_tile_resource_type();
+    retstr += "\nRoll number: ";
+    retstr += board[tilenum].check_dice_roll();
+    retstr += "\nRoad data: \n";
+    for(int x = 0; x < 6; x++)
+    {
+        retstr += "Road num: ";
+        retstr += x;
+        retstr += "     Road owner: ";
+        retstr += board[tilenum].get_road_owner(x);
+        retstr += "\n";
+    }
+    retstr += "\n\nCorner info:\n";
+    for(int x = 0; x < 6; x++)
+    {
+        retstr += "Corner ";
+        retstr += x;
+        retstr += "owner: ";
+        retstr += board[tilenum].check_corner_owner(x);
+        retstr += "\n";
+    }
+    retstr += "\n\n\n";
+    cout << "retstr: " << retstr << endl;
+
+    */
+    return(strStream.str());
 }
 
 int gameClient::place_initial_settlement_road(int tileset, int corner, int tileroad, int road)
@@ -398,6 +462,16 @@ int gameClient::get_qty_dv_cardd(int devcard)
 int gameClient::use_dev_cardd(int devcardnum)
 {
     return(sendPacketTX(get_player_num(), devcardnum, USE_DV_CARD));
+}
+
+void gameClient::update_docks(int docktype)
+{
+    playerinfo.update_docks(docktype);
+}
+
+vector<int> gameClient::get_docks_now()
+{
+    return(playerinfo.check_docks());
 }
 
 int gameClient::joinGame()

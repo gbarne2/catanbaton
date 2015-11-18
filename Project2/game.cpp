@@ -167,6 +167,7 @@ int game::build_std_board(int size)
 	srand(time(0));
 	current_player = 1;
 	//must create tile, put it into pieces array, and update tile number in other array
+	set_docks();
 	for(int x = 0; x < active_num_tiles; x++)
 	{
 		x_index[x] = const_valid_x_index_array[x];
@@ -174,8 +175,11 @@ int game::build_std_board(int size)
 		tile_number[x_index[x]][y_index[x]] = x;
 //		temptile.
 		resource = assign_resources();
-		if(resource == DESERT)
+		if (resource == DESERT)
+		{
 			dice = 1;
+			current_robber_tile = x;
+		}
 		else
 			dice = rolldice();
 		pieces[x_index[x]][y_index[x]].set_resource_type(resource);
@@ -519,6 +523,24 @@ int game::redeem_DV_card(int playernum, int dvcard)
 	return(0);
 }
 
+int game::use_port_to_trade_cards(int playernum, int type, int qty, int requested_card)
+{
+	player_ptr = player_list.begin() + playernum;
+	return(player_ptr->use_dock_to_trade(type, qty, requested_card));
+}
+
+int game::check_num_docks_by_player(int playernum)
+{
+	player_ptr = player_list.begin() + (playernum % (players + 1));
+	return(player_ptr->get_number_of_docks());
+}
+
+int game::get_dock_by_index(int playernum, int index)
+{
+	player_ptr = player_list.begin() + (playernum % (players + 1));
+	return(player_ptr->get_dock_by_index(index));
+}
+
 int game::who_can_place_robber(int playernumm)
 {
 	if ((playernumm >= 0) && (playernumm <= player_list.size()+1))
@@ -846,10 +868,29 @@ int game::build_settlement(int tile_number, int playernum, int corner_numbz)
 	if ((temp1 > 0) && (temp2 > 0) && (temp3 > 0) && (temp4 > 0))
 	{
 		pieces[xcoord][ycoord].build_settlement(corner_numbz, playernum);
+		if ((pieces[xcoord][ycoord].get_dock_type(corner_numbz) != 0) && (pieces[xcoord][ycoord].get_dock_type(corner_numbz) != NO_DOCK))	//if there is a dock on this tile, then update the player object.
+		{
+			player_ptr = player_list.begin() + playernum % (players + 1);
+			player_ptr->add_dock_to_player(pieces[xcoord][ycoord].get_dock_type(corner_numbz));
+		}
 		if (((xcoord1 != xcoord) || (ycoord1 != ycoord)) && (xcoord1 <= max_x) && (ycoord1 <= max_y))
+		{
 			pieces[xcoord1][ycoord1].build_settlement(corner1, playernum);
+			if ((pieces[xcoord1][ycoord1].get_dock_type(corner1) != 0) && (pieces[xcoord1][ycoord1].get_dock_type(corner1) != NO_DOCK))	//if there is a dock on this tile, then update the player object.
+			{
+				player_ptr = player_list.begin() + playernum % (players + 1);
+				player_ptr->add_dock_to_player(pieces[xcoord1][ycoord1].get_dock_type(corner1));
+			}
+		}
 		if ((((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1))) && (xcoord2 <= max_x) && (ycoord2 <= max_y))
+		{
 			pieces[xcoord2][ycoord2].build_settlement(corner2, playernum);
+			if ((pieces[xcoord2][ycoord2].get_dock_type(corner2) != 0) && (pieces[xcoord2][ycoord2].get_dock_type(corner2) != NO_DOCK))	//if there is a dock on this tile, then update the player object.
+			{
+				player_ptr = player_list.begin() + playernum % (players + 1);
+				player_ptr->add_dock_to_player(pieces[xcoord2][ycoord2].get_dock_type(corner2));
+			}
+		}
 		temp = deduct_resources_settlement(playernum);
 	}
 	else if (temp4 == 0)
@@ -881,6 +922,24 @@ int game::get_dice_roll(int tilenum)
 {
 	tilenum = tilenum % active_num_tiles;
 	return(pieces[determine_x_index_from_tile(tilenum)][determine_y_index_from_tile(tilenum)].check_dice_roll());
+}
+
+
+int game::set_docks()
+{
+	int retval = 0;
+	//this function needs to sassign all the docks!
+	for (int i = 0; i < active_num_tiles; i++)
+	{
+		cout << "Make game::set_docks() set all the dock values for tiles! right now it can just be static! make sure it matches the layout!" << endl;
+	}
+	return(retval);
+}
+
+//this function returns the dock type from the specified tile and corner.
+int game::get_dock_type(int tilenum, int corner)
+{
+	return(pieces[determine_x_index_from_tile(tilenum)][determine_y_index_from_tile(tilenum)].get_dock_type(corner));
 }
 
 //this function needs to roll the dice, compute the resources awarded to each player, give those resources to player, and handle the case of 7!
@@ -1126,7 +1185,6 @@ int game::calculate_card_to_steal(int playernum)
 	}
 	else
 		card = -44;		//error code to indicate that the player doesnt have enough cards to steal
-	//do a case statement or something to generate the card to steal. have it teired so if its < numwheat, the steal a wheat, less than numwheat+numore but > numwheat, steal an ore, etc.
 	return(numcards);
 }
 
@@ -1172,13 +1230,19 @@ string game::get_board_info()
 	//players		-> # of players
 	//longest road
 	//largest army
+	//current robber tile
 	//pieces
 		//send all tile data by tile number
 
 	string data_out;
 	int tempy = 0;
 	int tempx = 0;
-	data_out = players + longest_road + largest_army;
+	char tempchar = (current_robber_tile + 1);
+	data_out = players;
+	data_out += (longest_road + 1);
+	data_out += (largest_army + 1);
+	data_out += tempchar;
+//	data_out = players + longest_road + largest_army + tempchar;
 	for (int x = 0; x < active_num_tiles; x++)
 	{
 		tempy = determine_y_index_from_tile(x);

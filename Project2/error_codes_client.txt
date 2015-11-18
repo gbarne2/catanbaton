@@ -27,6 +27,9 @@
 -45   unknown card steal error, no cards will be stolen
 -49   Invalid trade status
 
+#dev card codes
+-52	  number of dev cards requested exceeds maximum dev cards per transaction
+-53	  insufficient resources for trade
 #game play codes
 -60	Unable to place robber, new_tile = current tile
 -61	2nd check failed to place robber because a robber is already on this tile

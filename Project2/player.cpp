@@ -86,6 +86,99 @@ int player::cities_left()
 	return(cities_to_build);
 }
 
+int player::get_number_of_docks()
+{
+	return(docks.size());
+}
+
+int player::check_if_dock_available(int type)	//returns > 1 if the dock of type is owned by player.
+{
+	int retval = 0;
+	if (docks.size() > 0)	//if any elements in docks array, then check them!
+	{
+		for (int x = 0; x < docks.size(); x++)
+		{
+			if (docks.at(x) == type)
+				retval = type;
+		}
+	}
+	else
+		retval = 0;	//nothing.
+	return(retval);
+}
+
+int player::execute_dock_trade(int type, int qty, int requested_card, int dock)
+{
+	int retval = 0;
+	if (qty < 0)
+		qty = abs(qty);
+	retval = check_resource_amount(type);
+	if (dock == THREETOONEDOCK)
+		//if this, then need to take 3 cards
+	{
+		if (retval >= (3*qty))
+		{
+			//do the trade
+			update_resources(type, -3 * qty);
+			retval = update_resources(requested_card, qty);
+		}
+		else
+			retval = -20;
+	}
+	else
+	{
+		if (retval >= (2 * qty))
+		{
+			//do the trade
+			update_resources(type, -2 * qty);
+			retval = update_resources(requested_card, qty);
+		}
+		else
+			retval = -20;
+	}
+	return(0);
+}
+int player::use_dock_to_trade(int type, int qty, int requested_card)		//qty will be the number of cards to get in return for the trade.
+{
+	int retval = 0;
+	if (check_if_dock_available(type) > 0)
+	{
+		retval = execute_dock_trade(type, qty, requested_card, type);
+	}
+	else if (check_if_dock_available(THREETOONEDOCK))// && ((qty % 3) == 0) && (qty > 0))	//or if player is trying to use 3 to one port. the type contains the card to trade, which corresponds to the port type. if the player doesnt have that port type, they may have the 3 to one port.
+	{
+		retval = execute_dock_trade(type, qty, requested_card, THREETOONEDOCK);
+	}
+	else
+	{
+		retval = 0;
+	}
+	return(retval);
+}
+
+int player::add_dock_to_player(int type)
+{
+	int flag = 0;
+	int retval = 1;
+	for (int x = 0; x < docks.size(); x++)
+	{
+		if (docks.at(x) == type)		//if any dock in vector equals this type, then dont add it!
+			retval = -1;
+	}
+	if (retval > 0)	//if still > 0, then this dock doesn't already exist in vector.
+		docks.push_back(type);
+	return(retval);
+}
+
+int player::get_dock_by_index(int index)
+{
+	int retval = -1;
+	if ((index < docks.size()) && (index >= 0))
+		retval = docks.at(index);
+	return(retval);
+
+}
+
 int player::update_resources(int type, int amount)
 {
 	switch(type)

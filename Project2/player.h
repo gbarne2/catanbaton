@@ -1,4 +1,6 @@
 #pragma once
+#include <vector>
+#include <algorithm>
 #include <string>
 #include <iostream>
 #include <WinSock2.h>
@@ -15,6 +17,8 @@
 #define START_ROADS			150
 #define START_CITIES		4
 #endif
+
+using namespace std;
 
 /*
 struct trade_cards
@@ -44,6 +48,7 @@ class player
 {
 	sockaddr client_address;
 	SOCKET ClientSocket;
+	vector<unsigned int> docks;
 	int player_ID;
 	std::string Player_name;
 	int qty_wood;
@@ -58,13 +63,19 @@ class player
 	int calculate_victory_points(int);
 	long int numRXbytes;
 	long int numTXbytes;
+	int execute_dock_trade(int type, int qty, int requested_card, int dock);
 
 public:
 	player(void);
 	player(int, std::string);
 	player(int, std::string, SOCKET);
 	void set_client_address(sockaddr, SOCKET);
-	SOCKET get_client_socket(void);
+	SOCKET get_client_socket(void); 
+	int get_number_of_docks();
+	int check_if_dock_available(int type);	//returns > 1 if the dock of type is owned by player.
+	int use_dock_to_trade(int type, int qty, int requested_card);
+	int add_dock_to_player(int type);
+	int get_dock_by_index(int index);
 	int update_resources(int type, int amount);
 	int check_resource_amount(int type);
 	int roads_left(void);

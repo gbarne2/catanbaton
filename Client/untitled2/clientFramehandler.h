@@ -5,10 +5,12 @@
 #include "playerClient.h"
 #include "gameClient.h"
 
+#ifndef ACTIVE_NUM_TILES_CLIENT
 #define ACTIVE_NUM_TILES_CLIENT		19
+#endif
 
 #ifndef PACKET_TYPES
-#define PACKET_TYPES					69
+#define PACKET_TYPES					699
 #define INVALID_PACKET_TYPE				-1001
 #define INVALID_PACKET_HEADER			-1002
 #define FAILED_TO_BUILD_ROAD			-31
@@ -42,6 +44,7 @@
 #define PLACE_ROBBER_PACKET             53
 #define START_TURN_INIT_PLACEMENT       54
 #define END_INIT_PLACEMENT_PHASE        55
+#define USE_DOCK_TO_TRADE_CARDS         56
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
 #define INVALID_PACKET_OR_SENDER        69
 

@@ -20,7 +20,7 @@
 
 #define setwval 1
 using namespace std;
-char* tempaddr = "192.168.0.102";
+char* tempaddr = "192.168.0.105";
 
 const int vp_to_win = 10;
 const int max_clients = 16;

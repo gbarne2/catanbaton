@@ -57,10 +57,7 @@ int game_started = 0;
 int request_user_place_robber = 0;
 int waiting_on_robber = 0;
 string playercolors[5] = {NO_PLAYER_COLOR, PLAYER_1_COLOR, PLAYER_2_COLOR, PLAYER_3_COLOR, PLAYER_4_COLOR};
-/*
- *TODO:
- * need to make a function to 'paint' the board info... it needs to update color of buttons based on who owns them!
- */
+
 static int update_board_icons = 0;
 char rxdatabuff [4096];
 const int road_array_tile_num[72] = {0,0,0,0,0,0,3,3,3,3,3,7,7,7,7,7,12,12,12,12,12,16,16,16,16,16,17,17,17,17,17,18,18,18,18,18,15,15,15,15,15,11,11,11,11,11,6,6,6,6,6,2,2,2,2,2,10,10,10,5,5,5,1,1,1,14,14,9,8,8,4,4};
@@ -68,6 +65,22 @@ const int road_array_road_num[72] = {0,1,2,3,4,5,0,1,2,3,4,0,1,2,3,4,0,1,2,3,5,5
 const int settlement_array_tile_num[54] = {0,0,0,0,0,0,3,3,3,3,7,7,7,7,12,12,12,12,16,16,16,16,17,17,17,17,18,18,18,18,15,15,15,15,11,11,11,11,6,6,6,6,2,2,2,2,1,1,4,9,9,9,9,9};
 const int settlement_array_corner_num[54] = {0,1,2,3,4,5,1,2,3,4,1,2,3,4,0,1,2,3,0,1,2,3,0,1,2,5,5,0,1,2,1,4,5,0,1,0,5,4,3,0,5,4,0,3,4,5,5,2,1,0,1,2,3,4};
 const int tile_mapping_array[19] = {9,5,4,8,3,1,0,2,6,10,13,14,12,7,16,17,11,15,18};
+
+int MainWindow::print_tile_board_info()
+{
+    string tileboard = "";
+    fstream filetowrite;
+    string tempstrs = "board printout.txt";
+    QString folderpath = QDir::currentPath();
+    tempstrs = folderpath.toStdString() + tempstrs;
+    filetowrite.open(tempstrs, fstream::out);
+    for(int x = 0; x < active_num_tiles; x++)
+        tileboard += Cgame.get_tile_board_string(x);
+    filetowrite.write(tileboard.c_str(), tileboard.size());
+    filetowrite.close();
+    return(0);
+}
+
 QList<QPushButton*> buttonlist;
 /*
 int get_tile_resource(int tile_num, QString& file)
@@ -339,6 +352,13 @@ MainWindow::MainWindow(QWidget *parent) :
     forestpic = QPixmap(FOREST_ICON);
     desertpic = QPixmap(DESERT_ICON);
 */
+
+/*
+    QPixmap pix(500,500);
+    QPainter painter(&pix);
+    painter.setBrush(QBrush(Qt::blue));
+    painter.drawEllipse(596,409,500, 500);
+*/
     for(int x = 0; x < buttonlist.size(); x++)
         connect(buttonlist[x],SIGNAL(pressed()), this, SLOT(on_pushButton_clicked()));
     buttonstatus = new int[buttonlist.size()];
@@ -456,7 +476,7 @@ int MainWindow::Init_game_and_connection()
         Cgame.joinGame();
         clientFrameHandler(Cgame, rxdatabuff);
         retval = 1;
-        Sleep(2000);
+        Sleep(500);
         server_connected = 1;
     }
     else
@@ -466,7 +486,7 @@ int MainWindow::Init_game_and_connection()
         Sleep(100);
 //        ui->NotifyText->setBackgroundRole("background-color: RED");
         ui->NotifyText->repaint();
-        Sleep(5000);
+        Sleep(100);
         retval = -1;
     }
 /*    if(retval >= 0)
@@ -591,16 +611,21 @@ int start_turn_flag
     if(Cgame.flag_update_board == 1)
     {
         Cgame.flag_update_board = 0;
+        Sleep(100);
         update_board_colors();
         if(already_printed_board == 0)
         {
             set_icons_and_rollvals_on_board();
             already_printed_board = 1;
         }
+        else
+            setdicerolls(); //force update the dice rolls for the robber. need to update all since there is no memory of the last tile that had the robber.. so dont know which two to update!
     }
     if(Cgame.dice_roll_flag)
     {
         Cgame.dice_roll_flag = 0;
+        if(Cgame.update_dice_roll(0) == 7)      //if a 7 was rolled, prompt user to place robber.
+            request_user_place_robber = 1;
         ui->CURR_DICE_ROLL->display(Cgame.update_dice_roll(0));
     }
     if(Cgame.resources_flag)
@@ -623,8 +648,6 @@ int start_turn_flag
     if(Cgame.begin_turn_init_placement)
     {
         //need to place a road and a settlement!
-        if(debug_text)
-            std::cout << "Flags processed, please place a settlement and a road" << std::endl;
         QMessageBox msgBox;
         if(place_init_settlement == 0)
         {
@@ -635,10 +658,11 @@ int start_turn_flag
             msgBox.exec();
             place_init_settlement = 1;
         }
-//        else
-//        {
-            //if it is 1, then user has already been notified. just wait
-//        }
+        else
+        {
+            if(debug_text)
+                std::cout << "Flags processed, please place a settlement and a road" << std::endl;            //if it is 1, then user has already been notified. just wait
+        }
     }
     //add ability to check for other player starting turn. need to update resources
     return(0);
@@ -663,7 +687,6 @@ void MainWindow::update_resources_display()
             //4 sheep
             //5 brick
             //6 desert
-
 }
 
 void MainWindow::setdicerolls()
@@ -748,6 +771,8 @@ jumptryagain:
             }
             break;
         }
+        if(Cgame.current_robber_pos == tilenum) //if this tile has the robber on it, update it to indicate robber!
+            tempstr = "Robber";
         if(tempstr == "DESERT")     //if its the desert tile, then
         {
             ptr->hide();
@@ -769,7 +794,10 @@ jumptryagain:
                 QRegion* region = new QRegion(*rect, QRegion::Ellipse);
          //       qDebug() << region->boundingRect().size();
                 ptr->setMask(*region);
-                ptr->setStyleSheet("color: grey;background-color: rgba(255,255,255,175);");
+                if(tempstr == "Robber") //if robber on tile, make it look like it!
+                    ptr->setStyleSheet("color: white;background-color: rgba(10,10,10,175);");
+                else
+                    ptr->setStyleSheet("color: grey;background-color: rgba(255,255,255,175);");
             }
         }
     }
@@ -786,12 +814,14 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr, int x)
     {
         get_road_road_and_tile_from_name(nname, tile, road);
         retval = Cgame.get_road_owner(road, tile);
-        if((buttonstatus[x] != retval) && (retval >= 0) && (retval <= Cgame.check_num_players()))
+        std::cout << "settlement data: " << ptr->styleSheet().toStdString() << std::endl;
+        std::cout << "Cplayer color data: " << playercolors[retval] << std::endl;
+        if((buttonstatus[x] != retval) && (retval >= 0))// && (retval <= Cgame.check_num_players()))
 //        if(/*(retval > 0) ||*/ ((ptr->styleSheet().toStdString() != playercolors[retval]) && (retval >= 0))) // && (retval < playercolors.size()))
         {
-            buttonstatus[x] = retval;
             tempstr = QString::fromUtf8(playercolors[retval].c_str());
             ptr->setStyleSheet(tempstr);
+            buttonstatus[x] = retval;
         }
     }
     else if(nname[0] == 's')
@@ -808,7 +838,6 @@ void MainWindow::set_button_color(std::string nname, QPushButton *ptr, int x)
             ptr->setStyleSheet(tempstr);
         }
     }
-    Sleep(5);
 //    else if(nname[0] == 'D')
 //        setDiceRoll(nname, ptr);
 //    else
@@ -846,11 +875,12 @@ string MainWindow::print_board()
 
     std::stringstream strStream;
     strStream.flush();
-    fstream filetowrite;
-    string tempstrs = "board printout.txt";
-    QString folderpath = QDir::currentPath();
-    tempstrs = folderpath.toStdString() + tempstrs;
-    filetowrite.open(tempstrs, fstream::out);
+    fstream filetowritee;
+    string tempstrss = "board printouttttt.txt";
+    QString folderpathh = QDir::currentPath();
+    print_tile_board_info();
+    tempstrss = folderpathh.toStdString() + "/" + tempstrss;
+    filetowritee.open(tempstrss, fstream::out);
 
 //    strStream = std::stringstream();	//flush string stream...
 //	strStream.open("tempfile.secret");
@@ -893,8 +923,8 @@ string MainWindow::print_board()
 //	filein.open("tempfile.secret");
 //	filein.rdbuf() >> s;
 //	strStream << filein.rdbuf();
-    filetowrite << strStream;
-    filetowrite.close();
+    filetowritee << strStream.str();
+    filetowritee.close();
     return(strStream.str());
 }
 
@@ -936,22 +966,40 @@ void MainWindow::on_pushButton_clicked()
             ui->NotifyText->repaint();
             Sleep(100);
             tempvec = Cgame.check_players_on_tile(retval);
+            tile = retval;
             if(tempvec.size() == 0) //if empty, either no one was on tile or only this player was.
             {
+                retval = 0;
                 if(debug_text)
                     std::cout << "No one available to steal from!" << std::endl;
             }
             else
             {
-                tile = retval;
+                QMessageBox msgBB;
+                msgBB.setText("Please select a tile to place the robber on!");
+                tempstrrr = "Please enter the player number of who you want to steal from.\nYour options are:\n";
+                for(int xxxxx = 0; xxxxx < tempvec.size(); xxxxx++)
+                {
+                    tempstrrr += tempvec.at(xxxxx);
+                    tempstrrr += "\n";
+                }
+
+                msgBB.setInformativeText(tempstrrr);
+                msgBB.setStandardButtons(QMessageBox::Ok);
+                msgBB.setDefaultButton(QMessageBox::Ok);
+                ui->NotifyText->setText("You must select a tile to place the robber on!");
+                ui->NotifyText->repaint();
+                waiting_on_robber = 1;
+                msgBB.exec();
                 std::cout << "Make onbutton press handle selecting who to steal from when placing robber!" << std::endl;
                 retval = tempvec[0];
-                Cgame.place_robber(tile, retval);
-                clientFrameHandler(Cgame, rxdatabuff);
-                update_resources_display();
             }
-            waiting_on_robber = 0;
+            Cgame.place_robber(tile, retval);
+            clientFrameHandler(Cgame, rxdatabuff);
+            update_resources_display();
         }
+        waiting_on_robber = 0;
+
     }
     else if(waiting_on_robber == 0)
     {
@@ -1061,6 +1109,11 @@ void MainWindow::on_pushButton_clicked()
             else if(senderObjName.toStdString() == "B_INIT_DICE_ROLLS")
             {
                 setdicerolls();
+            }
+            else if(senderObjName.toStdString() == "B_USE_PORT")
+            {
+                //this will handle when trying to use a port! Eventually this needs to be handled by clicking on the dock icons!
+
             }
             else if(senderObjName.toStdString() == "B_card_DKB")
             {
@@ -1252,7 +1305,6 @@ void MainWindow::on_pushButton_clicked()
         msgB.setDefaultButton(QMessageBox::Ok);
         ui->NotifyText->setText("You must select a tile to place the robber on!");
         ui->NotifyText->repaint();
-        Sleep(100);
         waiting_on_robber = 1;
         msgB.exec();
     }

@@ -96,6 +96,7 @@ get_time_limit
 #define PLACE_ROBBER_PACKET         53
 #define START_TURN_INIT_PLACEMENT	54
 #define END_INIT_PLACEMENT_PHASE    55
+#define USE_DOCK_TO_TRADE_CARDS		56
 #define INVALID_PACKET_OR_SENDER	69
 #define MAX_DEV_CARDS_PER_TRANSACTION 10
 #endif
@@ -412,7 +413,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					//data[0] = card type
 					//data[1] = data associated with it. will end up needing more than one int for this field...
 					use_dev_card(session, datain[dataptr], player_number, datain[dataptr + 1], servv);
-					cout << "Make me able to handle development cards!" << endl;
+					cout << "Make me able to handle development cards! server_catan line 415" << endl;
 				}
 				else
 					invalid_sender = 1;
@@ -436,7 +437,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 //					session.build_std_board(active_num_tiles);
 					Sleep(500);
 					send_board_info(session, servv);
-					Sleep(2000);
+					Sleep(1000);
 					cout << "Make START_GAME frame send out player number as data byte. " << endl << "right now its sending out the variable player_number. it needs to come" << endl << "from the player info class" << endl;
 					send_start_game(session, servv);
 					initial_placement_phase = 1; 
@@ -480,6 +481,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					}
 					trade_in_progress = 0;	//reset this flag just in case a trade never went through. otherwise it would block other people from trading on their turns
 					send_end_turn(session, servv, player_number);
+					Sleep(2000);
 					send_board_info(session, servv);
 					//need to make this send the command to clients to inform players its someone elses turn! probably should also send board data now
 					turn_started_already = 0;
@@ -488,14 +490,14 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					invalid_sender = 1;
 				break;
 			case STEAL_CARD_ROBBER:
-				//datain[0] = player to steal from
-				//datain[1] = tile to place robber
+				//datain[0] = tile to place robber
+				//datain[1] = player to steal from
 				if ((last_player == player_number) && ((read_dice_roll(session) == 7) || (session.who_can_place_robber(-7) == player_number)))					
 				{
-					place_robber(session, datain[dataptr + 1], player_number, servv);
-					retval = steal_card(session, player_number, datain[dataptr]);
+					place_robber(session, datain[dataptr], player_number, servv);
+					retval = steal_card(session, player_number, datain[dataptr+1]);
 					send_packet(session, player_number, retval, STEAL_CARD_ROBBER, servv);	//tell player they stole a card (and what the card was!)
-					temp = datain[dataptr];
+					temp = datain[dataptr+1];
 					send_packet(session, temp, retval*(-1), STEAL_CARD_ROBBER, servv);	//tell player what card was stolen from them. if > 0, it was aquired, if < 0 it was stolen
 				}
 				else
@@ -538,7 +540,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					//				retval = read_dice_roll(session);
 					if (retval == 7)
 					{
-						//		place_robber(session, );
+					//	place_robber(session, );
 						last_player = player_number;
 						session.who_can_place_robber(player_number);	//update who can place the robber. need to send packet to tell client to update 
 					}
@@ -546,7 +548,7 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 					{
 //						send_resources_all_players(session, servv);	//maybe dont do this yet, so that the player 'rolls' the dice to get this info.
 					}
-					Sleep(1000);
+					Sleep(500);
 //					send_resources_all_players(session, servv);
 				}
 				else
@@ -584,9 +586,9 @@ int framehandler(game &session, char *datain, int size_of_data, tcpserver servv,
 						session.delete_settlement(datain[dataptr] - 1, player_number, datain[dataptr + 1] - 1);
 						number_of_init_placements -= 1;	//if unable to build, reduce this by one to keep the count at the same value after increment.
 					}
-					Sleep(1000);	//give the clients a chance to update their side
+					Sleep(500);	//give the clients a chance to update their side
 					send_board_info(session, servv);
-					Sleep(2000);	//give the clients a chance to update their side
+					Sleep(1500);	//give the clients a chance to update their side
 					if (number_of_init_placements >= session.check_number_of_players() * 2)	//if each player has been able to place twice, then end init placement phase
 					{
 						send_end_init_placement(session, servv);
@@ -815,7 +817,8 @@ int send_dice_roll(game session, tcpserver servv)
 }
 
 /*		This function should never be uncommented! the dice rolling is handled at the beginning of every turn, and should only be read from the game session at this level.
-int roll_dice()
+int 
+()
 {
 	int temp = (rand()*rand()) % 11 + 2;	//rand() is seeded whenever board is build, aka start of game.
 	return(read_dice_roll(69, temp));
@@ -836,23 +839,28 @@ int send_board_info(game session, tcpserver servv)
 
 int send_resources(game session, int playernum, tcpserver servv)
 {
-	int temp[5] = { 0,0,0,0,0 };
+	int temp[13] = { 0,0,0,0,0, };
 	string datastr;
 	char tempc[5] = { 0, };
 	int temp2 = 0;
+	int temp3 = 0;
 	ostringstream convert;
+	temp3 = session.check_num_docks_by_player(playernum);
 	for (int x = 0; x < 5; x++)
 	{
 		temp[x] = session.check_resources(playernum, x+1);
 		tempc[x] = temp[x];
 //		convert << temp2;
 	}
+	temp[5] = temp3 + 1;	//add 1 to make sure it cant be 0!
+	for (int x = 6; x < temp3 + 6; x++)
+		temp[x] = session.get_dock_by_index(playernum, x - 6);
 //	datastr = convert.str();
 //	char *tempc = new char[datastr.length() + 1];
 //	for (int x = 0; x < datastr.length(); x++)
 //		tempc[x] = datastr[x];
 //	strcpy(tempc, datastr.c_str());
-	temp2 = send_packet(session, playernum, tempc, READ_RESOURCES,5,servv);
+	temp2 = send_packet(session, playernum, tempc, READ_RESOURCES, 6 + temp3,servv);
 	return(temp2);
 }
 

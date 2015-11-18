@@ -42,7 +42,7 @@ What does the client need to define / do
 using namespace std;
 
 #ifndef PACKET_TYPES
-#define PACKET_TYPES					69
+#define PACKET_TYPES					699
 #define INVALID_PACKET_TYPE				-1001
 #define INVALID_PACKET_HEADER			-1002
 #define FAILED_TO_BUILD_ROAD			-31
@@ -76,6 +76,7 @@ using namespace std;
 #define PLACE_ROBBER_PACKET             53
 #define START_TURN_INIT_PLACEMENT       54
 #define END_INIT_PLACEMENT_PHASE        55
+#define USE_DOCK_TO_TRADE_CARDS         56
 #define RESET_STATIC_VAR_IN_FUNCTION	-57
 #define INVALID_PACKET_OR_SENDER        69
 
@@ -266,6 +267,10 @@ jumpheretoprocessmultiplepackets:
             session.playerinfo.update_resources(3, datain[dataptr++]);
             session.playerinfo.update_resources(4, datain[dataptr++]);
             session.playerinfo.update_resources(5, datain[dataptr++]);
+            for(int xc = 1; xc < datain[dataptr]; xc++)
+            {   //update the docks!
+                session.playerinfo.update_docks(datain[dataptr + xc]);      //do xc so that it has the offset in for the size byte that didnt increment the pointer
+            }
             flag_rx_packet_needs_processing = 1;
             session.resources_flag = 1;
             break;
@@ -337,6 +342,7 @@ jumpheretoprocessmultiplepackets:
         case PLACE_ROBBER_PACKET:
             //this function should be called when a 7 is rolled.
             dv_play_knight_flag = 1;
+            request_user_place_robber = 1;
             cout << "Make framehandler function notify user about robber placement" << endl;
             //note, this packet shouldnt be sent from here. it should only be sent by the server when either a 7 is rolled or for a knight
             break;
@@ -514,6 +520,14 @@ int update_board_info(gameClient &session, char* data, int datasize)
 //	int numtiles = 0;
     vector<int>::iterator p = numtiles.begin();
     tilenum = *p;		//?  pretty sure this is how to get the value!
+    //should have three bytes of data before tile data.
+    //  # players
+    //  player with longest road card
+    //  player with largest army card
+    //  where the robber is now.
+    session.longest_road = data[1] - 1;
+    session.largest_army = data[2] - 1;
+    session.current_robber_pos = data[3] - 1;
     while (startindex < datasize - 1)
     {
         if (data[startindex] == 'S')

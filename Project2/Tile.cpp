@@ -313,6 +313,27 @@ int tile::read_road(int road)
 	return(roads[road%6]);
 }
 
+int tile::set_dock_type(int corner, int type)
+{
+	int retval = type;
+	ptr = cornersz.begin() + (corner % 6);
+	if (ptr->dock_on_corner == 0)	//if unassigned, then assign it a value. 
+	{
+		if ((type > 0) && (type <= NO_DOCK))
+			ptr->dock_on_corner = type;
+		else
+			retval = -72;
+	}
+	else
+		retval = -73;
+	return(retval);
+}
+
+int tile::get_dock_type(int corner)
+{
+	ptr = cornersz.begin() + (corner % 6);
+	return(ptr->dock_on_corner);
+}
 
 int tile::set_resource_type(int res_type)
 {

@@ -132,12 +132,14 @@ private:
 	int deduct_resources_trade_low(int, int, int);
 	void initialize_dev_card_deck();
 	int placements_per_player = 0;
+	int set_docks();
 
 public:
 	game(void); 
 	int reset_placements_per_player() { placements_per_player = 1; return(placements_per_player); }
 	int check_tile_resource_type(int);
 	int next_player(void);
+	int get_dock_type(int tile, int corner);
 	int check_current_player(void);
 	int check_number_of_players(void); 
 //	int create_player_order(int);
@@ -153,6 +155,9 @@ public:
 	int check_resources_devcard(int playernum);
 	int purchase_DV_card(int playernum);
 	int redeem_DV_card(int playernum, int dvcard);
+	int use_port_to_trade_cards(int playernum, int type, int qty, int requested_card);
+	int check_num_docks_by_player(int playernum);
+	int get_dock_by_index(int playernum, int index);
 	int who_can_place_robber(int);
 	void get_current_dv_cards(int (&arrayarray)[5], int player_number);
 	int check_corner_building_type(int corner, int tilenum);
@@ -208,15 +213,30 @@ public:
 		if ((temp > 0) && (temp1 > 0))
 		{
 			pieces[xcoord][ycoord].build_settlement(corner_numbz, playernum);
+			if ((pieces[xcoord][ycoord].get_dock_type(corner_numbz) != 0) && (pieces[xcoord][ycoord].get_dock_type(corner_numbz) != NO_DOCK))	//if there is a dock on this tile, then update the player object.
+			{
+				player_ptr = player_list.begin() + playernum % (players + 1);
+				player_ptr->add_dock_to_player(pieces[xcoord][ycoord].get_dock_type(corner_numbz));
+			}
 			Sleep(50);
 			if ((xcoord1 != xcoord) || (ycoord1 != ycoord))
 			{
 				pieces[xcoord1][ycoord1].build_settlement(corner1, playernum);
+				if ((pieces[xcoord1][ycoord1].get_dock_type(corner1) != 0) && (pieces[xcoord1][ycoord1].get_dock_type(corner1) != NO_DOCK))	//if there is a dock on this tile, then update the player object.
+				{
+					player_ptr = player_list.begin() + playernum % (players + 1);
+					player_ptr->add_dock_to_player(pieces[xcoord1][ycoord1].get_dock_type(corner1));
+				}
 				Sleep(50);
 			}
 			if (((xcoord2 != xcoord) || (ycoord2 != ycoord)) && ((xcoord2 != xcoord1) || (ycoord2 != ycoord1)))
 			{
 				pieces[xcoord2][ycoord2].build_settlement(corner2, playernum);
+				if ((pieces[xcoord2][ycoord2].get_dock_type(corner2) != 0) && (pieces[xcoord2][ycoord2].get_dock_type(corner2) != NO_DOCK))	//if there is a dock on this tile, then update the player object.
+				{
+					player_ptr = player_list.begin() + playernum % (players + 1);
+					player_ptr->add_dock_to_player(pieces[xcoord2][ycoord2].get_dock_type(corner2));
+				}
 				Sleep(50);
 			}
 			temp = deduct_resources_settlement(playernum);

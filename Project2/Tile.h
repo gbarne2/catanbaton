@@ -27,6 +27,24 @@ index	|	Data
 
 
 */
+
+#ifndef dockvalues
+#define dockvalues		0
+#define WHEATDOCK		1
+#define OREDOCK			2
+#define WOODDOCK		3
+#define SHEEPDOCK		4
+#define BRICKDOCK		5
+#define THREETOONEDOCK	6
+#define NO_DOCK			7
+#endif
+
+struct dock
+{
+	//define the data members required for the dock tiles here.
+	//for now these will be statically set?
+};
+
 struct Corner
 {
 	int corner_index;
@@ -34,6 +52,7 @@ struct Corner
 	vector<int> players_connected;		//1-3 players can have roads connected to the same corner.
 	int property_owner;
 	int property_type;			//0 = none, 1 = settlement, 2 = city. makes it easy to multiply resources
+	int dock_on_corner;	//if > 0, there is a dock here. the number in this var indicated the type of dock.
 };
 
 struct Corners_array
@@ -67,6 +86,8 @@ public:
 	int read_corner_owner(int corner);
 	int read_corner_type(int corner);
 	int read_road(int road);
+	int set_dock_type(int corner, int type);
+	int get_dock_type(int corner);
 //	void init_corners(Corner temp) {cornersz.push_back(temp);}
 	int check_build_settlement_tile(int corner, int player);
 	int upgrade_settlement(int corner, int player);

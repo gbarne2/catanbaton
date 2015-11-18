@@ -43,6 +43,7 @@ class MainWindow : public QMainWindow
     int devcardtouse;
     int place_init_settlement;
     void update_resources_display();
+    int print_tile_board_info();
     string print_board();
     int updatecolortile;
     int updateboardcolors;

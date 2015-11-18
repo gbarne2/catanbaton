@@ -59,12 +59,18 @@ public:
     int flag_your_turn;
     int flag_update_board;
 
+ //public variables
+    int longest_road;
+    int largest_army;
+    int current_robber_pos;
+
  //functions
     int place_initial_settlement_road(int tileset, int corner, int tileroad, int road);
     gameClient();
     ~gameClient();
     SOCKET initsocketthing();
     int startGame();
+    string get_tile_board_string(int);
     int check_player_resource_amt(int);
     int build_road(int tile, int corner);
     int build_settlement(int tile, int corenr);
@@ -96,6 +102,8 @@ public:
     int buy_dv_cardd(int);
     int get_qty_dv_cardd(int);
     int use_dev_cardd(int);
+    void update_docks(int docktype);
+    vector<int> get_docks_now();
     int joinGame();
 };
 

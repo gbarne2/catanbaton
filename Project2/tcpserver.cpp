@@ -127,7 +127,7 @@ int tcpserver::receiveUntilDoneWithEcho(SOCKET ClientSock)
 		}
 
 	} while (iResult > 0);
-	return(0);
+	return(iResult);
 }
 
 int tcpserver::sendPacket(SOCKET ClientSock, char *data, int length)

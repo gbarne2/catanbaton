@@ -42,6 +42,8 @@
 
 
 #general error codes/wtf happened codes?
+-72		invalid dock type
+-73		unable to assign a dock type to a corner with a type already assigned
 -78		failed to init the player turn order!
 
 #server game manager level codes
